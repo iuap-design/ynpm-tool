@@ -14,6 +14,7 @@ const ora = require('ora');
 
 const IPCOMPANY = '172.20.18.23';
 const YON_MIRROR = 'http://maven.yonyou.com/nexus/content/groups/NPM-Yonyou-Repository/';
+// const YON_MIRROR = 'https://registry.npm.taobao.org';
 // const DEAFAULT_MIRROR = 'https://registry.npmjs.org';
 const DEAFAULT_MIRROR = 'https://registry.npm.taobao.org';
 
@@ -98,14 +99,18 @@ co(function* (){
     }
 
     // execSync(arg_install);
+    const start = process.hrtime();
     const spinner = ora().start();
     spinner.color = 'green';
     spinner.text = 'Installing package ⬇️... If happen error, call me, my mobile is 186...😝';
     var data = yield Exec(arg_install);
     console.log(chalk.bold('\n\nInstall Info:\n' + data[0]));
     console.log(chalk.yellow('Warn Info:\n' + data[1]));
+    const end = process.hrtime(start);
+    console.log(chalk.green(`√ Execution time : ${end[0]}.${parseInt(end[1]/1000000)}s`));
     console.log(chalk.green(`√ Finish, Happy enjoy coding!`));
     spinner.stop();
+
     process.exit(1);
 
 }).catch(err => {

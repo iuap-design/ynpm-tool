@@ -1,0 +1,39 @@
+{
+  "name": "yon",
+  "version": "0.0.4",
+  "description": "",
+  "main": "lib/index.js",
+  "bin": {
+    "yon": "bin/yon"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/iuap-design/yon.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "chalk": "^1.1.3",
+    "co": "^4.6.0",
+    "ora": "^1.1.0",
+    "request": "^2.81.0",
+    "tcp-ping": "^0.1.1",
+    "thunkify": "^2.1.2"
+  },
+  "devDependencies": {
+    "autod": "2",
+    "coffee": "3",
+    "eslint": "3",
+    "eslint-config-egg": "3",
+    "intelli-espower-loader": "1",
+    "istanbul": "*",
+    "mm": "2",
+    "mocha": "3",
+    "power-assert": "1",
+    "thunk-mocha": "1"
+  }
+}

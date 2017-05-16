@@ -1,0 +1,117 @@
+#!/usr/bin/env node
+
+'use strict';
+
+const co = require('co');
+const chalk = require('chalk');
+const execSync = require('child_process').execSync;
+const exec = require('child_process').exec;
+const pkgFile = require('../package.json');
+const thunkify = require("thunkify");
+const tcpp = require('tcp-ping');
+const request = require('request');
+const ora = require('ora');
+
+const IPCOMPANY = '172.20.18.23';
+const YON_MIRROR = 'http://maven.yonyou.com/nexus/content/groups/NPM-Yonyou-Repository/';
+// const DEAFAULT_MIRROR = 'https://registry.npmjs.org';
+const DEAFAULT_MIRROR = 'https://registry.npm.taobao.org';
+
+/**
+ * yon --version || yon -v
+ */
+const opt = process.argv[2];
+if(opt == '-v' || opt == '--version') {
+    console.log( 'Yonyou Package Manager(yon) : v' + pkgFile.version );
+    process.exit(0);
+}
+
+/**
+ * yon --help || yon -h
+ */
+ if(opt == '-h' || opt == '--help' || opt == undefined) {
+     console.log(
+   `
+   Usage:
+   ----------------------------------------------------
+     yon install
+     yon install <pkg>
+     yon install <pkg>@<tag>
+     yon install <pkg>@<version>
+     yon install <pkg>@<version range>
+     yon install <folder>
+     yon install <tarball file>
+     yon install <tarball url>
+     yon install <git:// url>
+     yon install <github username>/<github project>
+
+   Options:
+   ----------------------------------------------------
+     --save, -S, --save-dev, -D: save installed dependencies into package.json
+     -g, --global: install devDependencies to global directory
+
+   Others:
+   ----------------------------------------------------
+     yon --registry: change default mirror address
+
+   `
+     );
+     process.exit(0);
+ }
+
+const IP_Req = thunkify(request);
+const Ping = thunkify(tcpp.ping);
+const Exec = thunkify(exec);
+
+co(function* (){
+    //IP判断 - 耗时暂取消
+    /*
+    const IP_Response = yield IP_Req('https://api.ipify.org?format=json')
+    const IP_Body = IP_Response[IP_Response.length - 1]
+    const IP_ADDRESS = JSON.parse(IP_Body)['ip'];
+    const IP_REG = new RegExp(/^123\.103/);
+    if(IP_REG.test(IP_ADDRESS)){
+        console.log('内网')
+    }
+    */
+
+    // Ping内网
+    const Ping_Response = yield Ping({
+        address:IPCOMPANY,
+        timeout:50,
+        attempts:1
+    })
+    let registry = Ping_Response.avg ? YON_MIRROR : DEAFAULT_MIRROR;
+
+    if(Ping_Response.avg) {
+        console.log(chalk.dim('Yonyou Mirror Downloading...\n'));
+    } else {
+        console.log(chalk.dim('CNPM Mirror Downloading...\n'));
+    }
+
+
+    const argvs = process.argv;
+    let arg_install = `npm --registry=${registry} `;
+    if(argvs[2] == 'i' || argvs[2] == 'install'){
+        const argv_part = argvs.slice(2).join(' ');
+        arg_install += argv_part;
+    }
+
+    // execSync(arg_install);
+    const spinner = ora().start();
+    spinner.color = 'green';
+    spinner.text = 'Installing package ⬇️... If happen error, call me, my mobile is 186...😝';
+    var data = yield Exec(arg_install);
+    console.log(chalk.bold('\n\nInstall Info:\n' + data[0]));
+    console.log(chalk.yellow('Warn Info:\n' + data[1]));
+    console.log(chalk.green(`√ Finish, Happy enjoy coding!`));
+    spinner.stop();
+    process.exit(1);
+
+}).catch(err => {
+    console.error(chalk.red('\n' + err));
+    // console.error(chalk.red(err.stack));
+    console.error(chalk.yellow('yon version: %s'), pkgFile.version);
+    console.error(chalk.yellow('yon args: %s'), process.argv.slice(2).join(' '));
+    process.exit(1);
+});

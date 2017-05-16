@@ -85,11 +85,12 @@ co(function* (){
     let registry = Ping_Response.avg ? YON_MIRROR : DEAFAULT_MIRROR;
 
     if(Ping_Response.avg) {
-        console.log(chalk.dim('Yonyou Mirror Downloading...\n'));
+        console.log(chalk.dim('Yonyou Mirror Downloading...'));
     } else {
-        console.log(chalk.dim('CNPM Mirror Downloading...\n'));
+        console.log(chalk.dim('CNPM Mirror Downloading...'));
     }
 
+    console.log(chalk.dim(`Mirror:${registry}`));
 
     const argvs = process.argv;
     let arg_install = `npm --registry=${registry} `;

@@ -75,6 +75,13 @@ co(function* (){
         console.log('内网')
     }
     */
+    const argvs = process.argv;
+    if(argvs[2] != 'i' || argvs[2] != 'install'){
+        console.error(chalk.red('Yon current only support to install packages \nPlease check your command :'));
+        const incmd = argvs.splice(2).join(' ');
+        console.log(chalk.green('yon ' + incmd));
+        process.exit(1);
+    }
 
     // Ping内网
     const Ping_Response = yield Ping({
@@ -92,7 +99,7 @@ co(function* (){
 
     console.log(chalk.dim(`Mirror:${registry}`));
 
-    const argvs = process.argv;
+
     let arg_install = `npm --registry=${registry} `;
     if(argvs[2] == 'i' || argvs[2] == 'install'){
         const argv_part = argvs.slice(2).join(' ');

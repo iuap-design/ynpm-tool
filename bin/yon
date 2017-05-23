@@ -76,7 +76,7 @@ co(function* (){
     }
     */
     const argvs = process.argv;
-    if(argvs[2] != 'i' || argvs[2] != 'install'){
+    if(argvs[2] !== 'i' && argvs[2] != 'install'){
         console.error(chalk.red('Yon current only support to install packages \nPlease check your command :'));
         const incmd = argvs.splice(2).join(' ');
         console.log(chalk.green('yon ' + incmd));

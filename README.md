@@ -17,7 +17,7 @@
 ## 安装
 
 ```
-npm install ynpm-cli -g
+npm install ynpm-tool -g
 ```
 
 

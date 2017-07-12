@@ -19,32 +19,32 @@ const YON_MIRROR = 'http://maven.yonyou.com/nexus/content/groups/NPM-Yonyou-Repo
 const DEAFAULT_MIRROR = 'https://registry.npm.taobao.org';
 
 /**
- * yon --version || yon -v
+ * ynpm --version || ynpm -v
  */
 const opt = process.argv[2];
 if(opt == '-v' || opt == '--version') {
-    console.log( 'Yonyou Package Manager(yon) : v' + pkgFile.version );
+    console.log( 'Yonyou Package Manager(ynpm) : v' + pkgFile.version );
     process.exit(0);
 }
 
 /**
- * yon --help || yon -h
+ * ynpm --help || ynpm -h
  */
  if(opt == '-h' || opt == '--help' || opt == undefined) {
      console.log(
    `
    Usage:
    ----------------------------------------------------
-     yon install
-     yon install <pkg>
-     yon install <pkg>@<tag>
-     yon install <pkg>@<version>
-     yon install <pkg>@<version range>
-     yon install <folder>
-     yon install <tarball file>
-     yon install <tarball url>
-     yon install <git:// url>
-     yon install <github username>/<github project>
+     ynpm install
+     ynpm install <pkg>
+     ynpm install <pkg>@<tag>
+     ynpm install <pkg>@<version>
+     ynpm install <pkg>@<version range>
+     ynpm install <folder>
+     ynpm install <tarball file>
+     ynpm install <tarball url>
+     ynpm install <git:// url>
+     ynpm install <github username>/<github project>
 
    Options:
    ----------------------------------------------------
@@ -53,7 +53,7 @@ if(opt == '-v' || opt == '--version') {
 
    Others:
    ----------------------------------------------------
-     yon --registry: change default mirror address
+     ynpm --registry: change default mirror address
 
    `
      );
@@ -77,9 +77,9 @@ co(function* (){
     */
     const argvs = process.argv;
     if(argvs[2] !== 'i' && argvs[2] != 'install'){
-        console.error(chalk.red('Yon current only support to install packages \nPlease check your command :'));
+        console.error(chalk.red('YNPM current only support to install packages \nPlease check your command :'));
         const incmd = argvs.splice(2).join(' ');
-        console.log(chalk.green('yon ' + incmd));
+        console.log(chalk.green('ynpm ' + incmd));
         process.exit(1);
     }
 
@@ -124,7 +124,7 @@ co(function* (){
 }).catch(err => {
     console.error(chalk.red('\n' + err));
     // console.error(chalk.red(err.stack));
-    console.error(chalk.yellow('yon version: %s'), pkgFile.version);
-    console.error(chalk.yellow('yon args: %s'), process.argv.slice(2).join(' '));
+    console.error(chalk.yellow('ynpm version: %s'), pkgFile.version);
+    console.error(chalk.yellow('ynpm args: %s'), process.argv.slice(2).join(' '));
     process.exit(1);
 });

@@ -1,10 +1,10 @@
 {
-  "name": "yon",
-  "version": "0.0.6",
+  "name": "ynpm-cli",
+  "version": "0.0.7",
   "description": "",
   "main": "lib/index.js",
   "bin": {
-    "yon": "bin/yon"
+    "ynpm": "bin/yon"
   },
   "scripts": {
     "docs": "tdoc build"

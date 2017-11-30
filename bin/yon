@@ -12,11 +12,11 @@ const tcpp = require('tcp-ping');
 const request = require('request');
 const ora = require('ora');
 
-const IPCOMPANY = '172.20.18.23';
+const IPCOMPANY = '172.16.51.12';
 const YON_MIRROR = 'http://maven.yonyou.com/nexus/content/groups/NPM-Yonyou-Repository/';
-// const YON_MIRROR = 'https://registry.npm.taobao.org';
 // const DEAFAULT_MIRROR = 'https://registry.npmjs.org';
 const DEAFAULT_MIRROR = 'https://registry.npm.taobao.org';
+const HOST_REGISTRY = '';
 
 /**
  * ynpm --version || ynpm -v
@@ -75,13 +75,6 @@ co(function* (){
         console.log('内网')
     }
     */
-    const argvs = process.argv;
-    if(argvs[2] !== 'i' && argvs[2] != 'install'){
-        console.error(chalk.red('YNPM current only support to install packages \nPlease check your command :'));
-        const incmd = argvs.splice(2).join(' ');
-        console.log(chalk.green('ynpm ' + incmd));
-        process.exit(1);
-    }
 
     // Ping内网
     const Ping_Response = yield Ping({
@@ -91,35 +84,43 @@ co(function* (){
     })
     let registry = Ping_Response.avg ? YON_MIRROR : DEAFAULT_MIRROR;
 
-    if(Ping_Response.avg) {
-        console.log(chalk.dim('Yonyou Mirror Downloading...'));
-    } else {
-        console.log(chalk.dim('CNPM Mirror Downloading...'));
-    }
-
-    console.log(chalk.dim(`Mirror:${registry}`));
-
+    const argvs = process.argv;
+    const spinner = ora().start();
+    spinner.color = 'green';
 
     let arg_install = `npm --registry=${registry} `;
     if(argvs[2] == 'i' || argvs[2] == 'install'){
+        if(Ping_Response.avg) {
+            console.log(chalk.dim('Yonyou Mirror Downloading...\n'));
+        } else {
+            console.log(chalk.dim('CNPM Mirror Downloading...\n'));
+        }
+
         const argv_part = argvs.slice(2).join(' ');
         arg_install += argv_part;
+
+        // execSync(arg_install);
+        spinner.text = 'Installing package ⬇ ...';
+        var data = yield Exec(arg_install);
+        console.log(chalk.bold('\n\nInstall Info:\n' + data[0]));
+        console.log(chalk.yellow('Warn Info:\n' + data[1]));
+        console.log(chalk.green(`√ Finish, Happy enjoy coding!`));
+
+    } else if (argvs[2] == 'publish' && argvs[3] == 'inner'){
+        var arg_publish_inner = `npm --registry=${HOST_REGISTRY} publish`;
+        spinner.text = 'Publishing your package in Yonyou Local Area Net';
+        var data = yield Exec(arg_publish_inner);
+
+    } else if ( argvs[2] == 'publish' && !argvs[3]){
+        var arg_publish = `npm publish`;
+        spinner.text = 'Publishing your package on NPM Official Repos';
+        var data = yield Exec(arg_publish);
+
     }
-
-    // execSync(arg_install);
-    const start = process.hrtime();
-    const spinner = ora().start();
-    spinner.color = 'green';
-    spinner.text = 'Installing package ⬇️... If happen error, call me, my mobile is 186...😝';
-    var data = yield Exec(arg_install);
-    console.log(chalk.bold('\n\nInstall Info:\n' + data[0]));
-    console.log(chalk.yellow('Warn Info:\n' + data[1]));
-    const end = process.hrtime(start);
-    console.log(chalk.green(`√ Execution time : ${end[0]}.${parseInt(end[1]/1000000)}s`));
-    console.log(chalk.green(`√ Finish, Happy enjoy coding!`));
     spinner.stop();
-
     process.exit(1);
+
+
 
 }).catch(err => {
     console.error(chalk.red('\n' + err));

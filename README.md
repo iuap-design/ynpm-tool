@@ -63,32 +63,10 @@ $ ynpm -v 或 ynpm --version
 
   管理员会提供账号，可通过申请获得，简单配置即可实现内部发包。
 
-  - 管理员提供账号密码，形式为`user:pass`转化为`base64`后的字符串形式（请以管理员实际给到的密码为准，以下仅为测试）：
-
-    ```
-    b252bm86b252bm9QYXNz
-    ```
-
-  - 用户在shell中，配置一条`_auth`信息，即可实现内网发包功能：
-
-    ```
-    $ npm config set _auth=b252bm86b252bm9QYXNz
-    ```
-
-- **发包说明**
-
-  为避免发包用户滥用权限，所有发包用户均需提供私有包的组织（或项目名），即`@group`.
-
-  如用户账号仅支持发布`@ynpmyou_fed`的私有包，发布的包会做以下验证，判断是否可上传：
-
-  ```
-  @ynpmyou_fed/tinper  // 可正常内网发布
-  @ynpmyou_fed/comp    // 可正常内网发布 
-  @mywork/tinper      // 超出权限，不可发布
-  @newgroup/comp      // 超出权限，不可发布
-  ```
+  内部发包使用说明，可参考此[wiki链接](https://github.com/iuap-design/ynpm-tool/wiki)
 
   ​
+
 
 #### Todo
 

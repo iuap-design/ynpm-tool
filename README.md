@@ -1,4 +1,4 @@
-# ynpm-tool - 内部镜像
+# ynpm - 内部镜像
 
 #### 概述
 
@@ -55,9 +55,9 @@ $ ynpm -v 或 ynpm --version
 
 - **默认用户**
 
-  所有下载安装工具的，均可使用`ynpm install`功能下载安装包
+  所有下载安装工具的，均可使用`ynpm install`功能下载安装包或`ynpm publish`公网发包
 
-- **发包用户**
+- **内网发包用户**
 
   > `0.2.0`版本起实现内网发包，可支持`@group/packageName`形式的私有包发送。
 

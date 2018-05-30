@@ -1,7 +1,7 @@
 {
   "name": "ynpm-tool",
-  "version": "0.2.2",
-  "description": "",
+  "version": "0.2.3",
+  "description": "yonyou FED large front end technology department, an enterprise internal contracting tool.",
   "main": "lib/index.js",
   "bin": {
     "ynpmold": "bin/yon",
@@ -15,7 +15,7 @@
     "url": "git+https://github.com/iuap-design/yon.git"
   },
   "keywords": [],
-  "author": "",
+  "author": "jonyshi@126.com",
   "license": "ISC",
   "dependencies": {
     "btoa": "^1.2.1",

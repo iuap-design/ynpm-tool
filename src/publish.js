@@ -9,7 +9,7 @@ const ora = require('ora');
 const co = require('co');
 const chalk = require('chalk');
 const ini = require('ini');
-const reportInfo = require('./reportInfo/index');
+const {userInfo} = require('./reportInfo/index');
 const utils = require('./utils');
 const help = require('./help');
 
@@ -24,16 +24,14 @@ module.exports = (registry) => {
 
     co(function* (){
         if(argvs[2] == 'publish' && argvs[3] == 'inner'){
-          
-        //    let config = JSON.parse(getRc("ynpm"));
-        //     if(!config || !config.user || !config.email ){
-        //         help.setConfig();
-        //         spinner.stop();
-        //         process.exit(0);
-        //     }
-            // reportInfo.userInfo();
-            // console.log("验证通过")
-            
+            // let data = yield userInfo();
+            // if(!data){
+            //     help.setConfig();
+            //     spinner.stop();
+            //     process.exit(0);
+            // }
+            // console.log("验证通过");
+            // console.log(data);
             // Get Publish Package Info
             var packOrigin = JSON.parse(fs.readFileSync(path.join(process.cwd(),'package.json'))).name;
             var packName = packOrigin.split('/')[0].replace("@","");
@@ -49,13 +47,11 @@ module.exports = (registry) => {
             var npmUserConfig = npmConfigReturn[0].trim();
             var iniConfig = ini.parse(fs.readFileSync(npmUserConfig, 'utf-8'))
             var parseAuth = new Buffer(iniConfig._auth, 'base64').toString().split(":")[0];
-            console.log("----npmConfigReturn----");
-            console.log(npmConfigReturn);
-            //  Verify Publish Scoped
+            //  Verify Publish Scoped 
             if(jsonRes[parseAuth] && jsonRes[parseAuth].includes(packName)){
                 console.log('Aviable: Pass Validation, Start to Publish...')
                 var arg_publish_inner = `npm --registry=${utils.HOST_REGISTRY} publish`;
-                spinner.text = 'Publishing your package in Yonyou Local Area Net';
+                spinner.text = 'Publishing your package in Yonyou Local Area Net ---';
                 var data = yield Exec(arg_publish_inner);
                 
             } else if(jsonRes[parseAuth]) {
@@ -63,7 +59,6 @@ module.exports = (registry) => {
             } else {
                 console.error("Error: Cant Find User, Please Use `npm config set _auth=base64String` or Contact Admin to Create User!");
             }
-            
         }else if(argvs[2] == 'publish' && argvs[3] != 'inner'){
             var arg_publish = `npm publish`;
             spinner.text = 'Publishing your package on NPM Official Repos';

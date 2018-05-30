@@ -2,7 +2,7 @@
 
 'use strict';
 
-// let {userInfo} = require('../src/reportInfo/index');
+let {userInfo} = require('../src/reportInfo/index');
 // var argv = require('minimist')(process.argv.slice(2));
 // var commands = argv._;
 

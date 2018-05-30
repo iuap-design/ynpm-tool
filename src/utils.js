@@ -1,11 +1,11 @@
 'use strict';
 
 //  Nexus OSS 3.3 Info
- const IPCOMPANY = '172.16.75.107';
- const YON_MIRROR = 'http://172.16.75.107:8081/repository/ynpm-group/';
- const DEAFAULT_MIRROR = 'https://registry.npm.taobao.org';
- const HOST_REGISTRY = 'http://172.16.75.107:8081/repository/ynpm-host/';
- const CDNJSON = 'http://iuap-design-cdn.oss-cn-beijing.aliyuncs.com/static/ynpm/ynpm.json'
+const IPCOMPANY = '172.20.27.204';
+const YON_MIRROR = 'http://172.20.27.204:8081/repository/ynpm-all/';
+const DEAFAULT_MIRROR = 'https://registry.npm.taobao.org';
+const HOST_REGISTRY = 'http://172.20.27.204:8081/repository/ynpm-private/';
+const CDNJSON = 'http://iuap-design-cdn.oss-cn-beijing.aliyuncs.com/static/ynpm/ynpm.json'
 
 const chalk = require('chalk');
 const path = require('path');
@@ -31,12 +31,13 @@ function getCommands(fileName){
         console.log("argvs[2]---ff- ",argvs[2].toString() +" ==== "+ argvs[3]);
         let data = fs.readFileSync(getRcFile(fileName),"utf-8");
         data = JSON.parse(data);
-        data["sshk"] = btoa(data.user+":"+data.email);
-        console.log(data["sshk"]);
+        data["sshk"] = btoa(data.user+":"+data.user);
+        let sshk = data["sshk"]+data.email;
+        console.log(sshk);
         console.log(chalk.green(`
         help:
         ------------------------请复制你的sshk----------------------------
-        ${data["sshk"]}
+        ${sshk}
         ------------------------end----------------------------
         `));
         config = data;
@@ -52,12 +53,14 @@ function getCommands(fileName){
 }
 
  function setRc(fileName){
-    try{ 
-      if(getValidateRc(fileName) == ""){
+   let path = getRcFile(fileName);
+    try{
+      let valida = getValidateRc(fileName);
+      if(!valida){
           let comm = getCommands(fileName);
-          comm?fs.writeFileSync(getRcFile(fileName),JSON.stringify(comm)):"";
+          comm?fs.writeFileSync(path,JSON.stringify(comm)):"";
       }else{
-        let comm = getCommands(fileName);
+        let comm = getCommands(fileName); 
         let config = fs.readFileSync(path,"utf-8");
         if(comm){
           config = JSON.parse(config);

@@ -4,8 +4,8 @@
   "description": "",
   "main": "lib/index.js",
   "bin": {
-    "ynpm": "bin/yon",
-    "ynpmdev": "bin/index.js"
+    "ynpmold": "bin/yon",
+    "ynpm": "bin/index.js"
   },
   "scripts": {
     "docs": "tdoc build"

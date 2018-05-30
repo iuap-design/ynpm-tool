@@ -25,10 +25,10 @@ const YON_MIRROR = 'http://maven.yonyou.com/nexus/content/groups/NPM-Yonyou-Repo
 */
 
 //  Nexus OSS 3.3 Info
-const IPCOMPANY = '172.16.75.107';
-const YON_MIRROR = 'http://172.16.75.107:8081/repository/ynpm-group/';
+const IPCOMPANY = '172.20.27.204';
+const YON_MIRROR = 'http://172.20.27.204:8081/repository/ynpm-all/';
 const DEAFAULT_MIRROR = 'https://registry.npm.taobao.org';
-const HOST_REGISTRY = 'http://172.16.75.107:8081/repository/ynpm-host/';
+const HOST_REGISTRY = 'http://172.20.27.204:8081/repository/ynpm-private/';
 const CDNJSON = 'http://iuap-design-cdn.oss-cn-beijing.aliyuncs.com/static/ynpm/ynpm.json'
 
 /**
@@ -139,9 +139,11 @@ co(function* (){
 
 
         //  Verify Publish Scoped
+        console.log(parseAuth+"==========",jsonRes);
         if(jsonRes[parseAuth] && jsonRes[parseAuth].includes(packName)){
             console.log('Aviable: Pass Validation, Start to Publish...')
             var arg_publish_inner = `npm --registry=${HOST_REGISTRY} publish`;
+            console.log("--arg_publish_inner-- : "+arg_publish_inner);
             spinner.text = 'Publishing your package in Yonyou Local Area Net';
             var data = yield Exec(arg_publish_inner);
         } else if(jsonRes[parseAuth]) {

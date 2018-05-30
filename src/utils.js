@@ -1,10 +1,10 @@
 'use strict';
 
 //  Nexus OSS 3.3 Info
-const IPCOMPANY = '172.20.27.204';
-const YON_MIRROR = 'http://172.20.27.204:8081/repository/ynpm-all/';
+const IPCOMPANY = '123.103.9.196';
+const YON_MIRROR = 'http://123.103.9.196:8081/repository/ynpm-all/';
 const DEAFAULT_MIRROR = 'https://registry.npm.taobao.org';
-const HOST_REGISTRY = 'http://172.20.27.204:8081/repository/ynpm-private/';
+const HOST_REGISTRY = 'http://123.103.9.196:8081/repository/ynpm-private/';
 const CDNJSON = 'http://iuap-design-cdn.oss-cn-beijing.aliyuncs.com/static/ynpm/ynpm.json'
 
 const chalk = require('chalk');

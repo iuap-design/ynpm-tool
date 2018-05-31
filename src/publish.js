@@ -24,31 +24,21 @@ module.exports = (registry) => {
 
     co(function* (){
         if(argvs[2] == 'publish' && argvs[3] == 'inner'){
-            // let data = yield userInfo();
-            // if(!data){
-            //     help.setConfig();
-            //     spinner.stop();
-            //     process.exit(0);
-            // }
-            // console.log("验证通过");
-            // console.log(data);
+            var ynpmConfig = JSON.parse(getRc("ynpm"));
+            //validate user rolse
+            let data = yield userInfo();
+            if(!data){
+                help.setConfig();
+                spinner.stop();
+                process.exit(0);
+            }
+            console.log("validate success");
+            console.log(data);
             // Get Publish Package Info
             var packOrigin = JSON.parse(fs.readFileSync(path.join(process.cwd(),'package.json'))).name;
-            var packName = packOrigin.split('/')[0].replace("@","");
+            var packName = packOrigin.split('/')[0].replace("@",""); 
             
-            // Get Data
-            var cdnRes = yield IP_Req(utils.CDNJSON);
-            var jsonRes = JSON.parse(cdnRes[cdnRes.length - 1]);
-            
-            // Get User Info - using offical method - ini
-            var _auth;
-            var npmConfigReturn = yield Exec('npm get userconfig');
-            // npmConfigReturn: [ '/Users/AYA/.npmrc\n', '' ]
-            var npmUserConfig = npmConfigReturn[0].trim();
-            var iniConfig = ini.parse(fs.readFileSync(npmUserConfig, 'utf-8'))
-            var parseAuth = new Buffer(iniConfig._auth, 'base64').toString().split(":")[0];
-            //  Verify Publish Scoped 
-            if(jsonRes[parseAuth] && jsonRes[parseAuth].includes(packName)){
+            if(ynpmConfig.user && ynpmConfig.sshk && data){
                 console.log('Aviable: Pass Validation, Start to Publish...')
                 var arg_publish_inner = `npm --registry=${utils.HOST_REGISTRY} publish`;
                 spinner.text = 'Publishing your package in Yonyou Local Area Net ---';

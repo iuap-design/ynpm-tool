@@ -128,24 +128,25 @@ co(function* (){
         // Get Data
         var cdnRes = yield IP_Req(CDNJSON);
         var jsonRes = JSON.parse(cdnRes[cdnRes.length - 1]);
-        
+        console.log("=====jsonRes=====",jsonRes);
         // Get User Info - using offical method - ini
         var _auth;
         var npmConfigReturn = yield Exec('npm get userconfig');
         // npmConfigReturn: [ '/Users/AYA/.npmrc\n', '' ]
         var npmUserConfig = npmConfigReturn[0].trim();
+        console.log("=====npmUserConfig=====",npmUserConfig);
         var iniConfig = ini.parse(fs.readFileSync(npmUserConfig, 'utf-8'))
         var parseAuth = new Buffer(iniConfig._auth, 'base64').toString().split(":")[0];
 
-
         //  Verify Publish Scoped
-        console.log(parseAuth+"==========",jsonRes);
+        console.log(parseAuth+"==========");
         if(jsonRes[parseAuth] && jsonRes[parseAuth].includes(packName)){
             console.log('Aviable: Pass Validation, Start to Publish...')
             var arg_publish_inner = `npm --registry=${HOST_REGISTRY} publish`;
             console.log("--arg_publish_inner-- : "+arg_publish_inner);
             spinner.text = 'Publishing your package in Yonyou Local Area Net';
-            var data = yield Exec(arg_publish_inner);
+            console.log("arg_publish_inner:"+arg_publish_inner);
+            // var data = yield Exec(arg_publish_inner);
         } else if(jsonRes[parseAuth]) {
             console.error(`Error: Overflow User Privilege, Publish Package Scoped with "@${jsonRes[parseAuth]}" or Contact Admin to Extend Privilege!`);
         } else {

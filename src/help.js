@@ -42,9 +42,9 @@ module.exports = {
       help:
       ------------------------请设置npm发包账户信息----------------------------
       设置用户名
-      $ ynpm set user="ahua"
+      $ ynpm set user="xx"
       设置email
-      $ ynpm set email=yon@yonyou.com 
+      $ ynpm set email=xx@yonyou.com 
       生成key
       $ ynpm sshk
       ------------------------请设置npm发包账户信息----------------------------

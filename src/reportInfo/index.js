@@ -6,30 +6,32 @@ const fs = require('fs');
 const fetch = require('node-fetch');
 const co = require('co');
 
-const {getRc,setRc} = require('../utils');
+const {getRc,setRc,getHttpConfig} = require('../utils');
 
-const httpConfig = {
-  host: 'http://localhost', 
-  port:3001,
-  path:"/user/getTokenValidate",
-  // method:"get",
-  // path:"/package/get",
-  // headers:{
-  //   'Content-Type':'application/x-www-form-urlencoded',
-  //   // 'Content-Length':contents.length
-  // }
-}
+// const httpConfig = {
+//   host: YNPM_SERVER, 
+//   port:3001,
+//   path:"/user/getTokenValidate",
+//   // method:"get",
+//   // path:"/package/get",
+//   // headers:{
+//   //   'Content-Type':'application/x-www-form-urlencoded',
+//   //   // 'Content-Length':contents.length
+//   // }
+// }
 
 function get(options,params) {
   let url = options.host?options.host:"127.0.0.1";
   url += ":";
-  url += options.metporthod?options.port:"3001";
+  url += options.method?options.port:"";
   url += options.path?options.path:"";
   // let met = options.method.toUpperCase();
   // if(met != "GET")return;
-  let par = "?"; 
-  for(let attr in params){ 
-    let _att = attr + "="+ params[attr] + "&"; 
+  let par = "?",i = 0 ,len = Object.keys(params).length;
+  for(let attr in params){
+    i++;
+    let _att = attr + "="+ params[attr];
+    len == i?"": _att += "&";
     par += _att;
   };
   url += par;
@@ -62,8 +64,13 @@ function userInfo(){
   //   console.error(chalk.red('\n' + err));
   // });
   let parame = JSON.parse(getRc("ynpm"));
-  let a = {user:"aa",ssk:"434"};
-  return get(httpConfig,a);
+  // let a = {user:"aa",ssk:"434"};
+  let config = getHttpConfig({
+    path:"/user/getTokenValidate",
+  });
+  console.log("------------userInfo-------------------");
+  console.log(config);
+  return get(config,parame);
 }
 
 module.exports = {

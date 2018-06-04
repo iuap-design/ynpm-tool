@@ -10,7 +10,7 @@ const co = require('co');
 const chalk = require('chalk');
 const ini = require('ini');
 const {userInfo} = require('./reportInfo/index');
-const utils = require('./utils');
+const {getRc,HOST_REGISTRY} = require('./utils');
 const help = require('./help');
 
 const IP_Req = thunkify(request);
@@ -33,17 +33,16 @@ module.exports = (registry) => {
                 process.exit(0);
             }
             console.log("validate success");
-            console.log(data);
+            // console.log(data);
             // Get Publish Package Info
             var packOrigin = JSON.parse(fs.readFileSync(path.join(process.cwd(),'package.json'))).name;
             var packName = packOrigin.split('/')[0].replace("@",""); 
-            
+
             if(ynpmConfig.user && ynpmConfig.sshk && data){
                 console.log('Aviable: Pass Validation, Start to Publish...')
-                var arg_publish_inner = `npm --registry=${utils.HOST_REGISTRY} publish`;
+                var arg_publish_inner = `npm --registry=${HOST_REGISTRY} publish`;
                 spinner.text = 'Publishing your package in Yonyou Local Area Net ---';
                 var data = yield Exec(arg_publish_inner);
-                
             } else if(jsonRes[parseAuth]) {
                 console.error(`Error: Overflow User Privilege, Publish Package Scoped with "@${jsonRes[parseAuth]}" or Contact Admin to Extend Privilege!`);
             } else {

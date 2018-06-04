@@ -6,6 +6,7 @@ const YON_MIRROR = 'http://123.103.9.196:8081/repository/ynpm-all/';
 const DEAFAULT_MIRROR = 'https://registry.npm.taobao.org';
 const HOST_REGISTRY = 'http://123.103.9.196:8081/repository/ynpm-private/';
 // const CDNJSON = 'http://iuap-design-cdn.oss-cn-beijing.aliyuncs.com/static/ynpm/ynpm.json'
+const YNPM_SERVER = "http://ir6fs8gj.c87e2267-1001-4c70-bb2a-ab41f3b81aa3.app.yyuap.com";
 
 const chalk = require('chalk');
 const path = require('path');
@@ -21,6 +22,40 @@ const userPath = process.env.HOME;
 const fileName = "ynpm";
 // let rc = require("runtime-configuration");
 // const yarnConfig = require('yarn-config-directory');
+
+/**
+ *server 接口设置
+ * @param {*} config
+ * @returns
+ */
+function getHttpConfig(config){
+  console.log("-----config----",config);
+
+  // //开发环境
+  // return Object.assign({
+  //   host: YNPM_SERVER, 
+  //   port:3001,
+  //   path:"/api",
+  //   // method:"get",
+  //   // path:"/package/get",
+  //   // headers:{
+  //   //   'Content-Type':'application/x-www-form-urlencoded',
+  //   //   // 'Content-Length':contents.length
+  //   // }
+  // },config)
+  
+  //线上
+  return Object.assign({
+    host: YNPM_SERVER,
+    path:"/api",
+    // method:"get",
+    // path:"/package/get",
+    // headers:{
+    //   'Content-Type':'application/x-www-form-urlencoded',
+    //   // 'Content-Length':contents.length
+    // }
+  },config)
+}
 
 function getCommands(fileName){
   let config = {}; 
@@ -107,12 +142,12 @@ function getRcFile(fileName){
 
 module.exports = {
   registry:"",
-
   IPCOMPANY,
   YON_MIRROR,
   DEAFAULT_MIRROR,
   HOST_REGISTRY,
-  CDNJSON,
+  // CDNJSON,
+  getHttpConfig,
   setRc,
   getRc,
   getPing: () => {
@@ -139,38 +174,3 @@ module.exports = {
    });
   }
 }
-
-
-// var Global = function() {
-//   console.log(" Global ");
-// };
-
-// Global.prototype = {
-
-//   registry : '',
-//   /**
-//    * Ping_Response
-//    */
-//   Ping_Response: {}, 
-
-
-//   getPing: () => {
-//     return co(function* (){
-//       // Ping内网
-//      const Ping_Response = yield Ping({
-//          address: IPCOMPANY,
-//          port: 8081,
-//          timeout: 50,
-//          attempts: 1
-//      })
-//      let registry = Ping_Response.avg ? YON_MIRROR : DEAFAULT_MIRROR;
-//      console.log("registry",registry);
-//      this.registry = registry;
-//      this.Ping_Response = registrPing_Responsey;
-//    }).catch(err => {
-//      console.error(chalk.red('\n' + err));
-//    });
-//   }
-// }
-
-// module.exports = new Global();

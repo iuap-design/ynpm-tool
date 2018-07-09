@@ -42,7 +42,7 @@ module.exports = (registry) => {
                 console.log('Aviable: Pass Validation, Start to Publish...')
                 var arg_publish_inner = `npm --registry=${HOST_REGISTRY} publish`;
                 spinner.text = 'Publishing your package in Yonyou Local Area Net ---';
-                var data = yield Exec(arg_publish_inner);
+                yield Exec(arg_publish_inner);
             } else if(jsonRes[parseAuth]) {
                 console.error(`Error: Overflow User Privilege, Publish Package Scoped with "@${jsonRes[parseAuth]}" or Contact Admin to Extend Privilege!`);
             } else {

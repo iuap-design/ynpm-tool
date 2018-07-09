@@ -6,7 +6,9 @@ const YON_MIRROR = 'http://123.103.9.196:8081/repository/ynpm-all/';
 const DEAFAULT_MIRROR = 'https://registry.npm.taobao.org';
 const HOST_REGISTRY = 'http://123.103.9.196:8081/repository/ynpm-private/';
 // const CDNJSON = 'http://iuap-design-cdn.oss-cn-beijing.aliyuncs.com/static/ynpm/ynpm.json'
-const YNPM_SERVER = "http://ir6fs8gj.c87e2267-1001-4c70-bb2a-ab41f3b81aa3.app.yyuap.com";
+
+// const YNPM_SERVER = "http://ir6fs8gj.c87e2267-1001-4c70-bb2a-ab41f3b81aa3.app.yyuap.com";
+const YNPM_SERVER = "http://127.0.0.1";
 
 const chalk = require('chalk');
 const path = require('path');
@@ -24,13 +26,35 @@ const fileName = "ynpm";
 // const yarnConfig = require('yarn-config-directory');
 
 /**
+ * 根据数据源寻找属性是否存在
+ * @param {array }}} array 数据源
+ * @param {string} attr 属性
+ */
+function getByAtrrBool(array,attr){
+  let b = false;
+  for(let index = 0; index < array.length; index++) {
+    const element = array[index]; 
+    element == attr?b = true:"";
+  }
+  return b;
+}
+
+function consoleLog(...arg){
+  // const argvs = process.argv;
+  console.log("arg:",arg);
+  console.log("consoleLogconsoleLogconsoleLogconsoleLogconsoleLog",global.ynpm); 
+  // if(global.ynpm.NODE_DEV){
+  //   for (let index = 0; index < argvs.length; index++) {
+  //     console.log(argvs[index]);
+  //   }
+  // }
+}
+/**
  *server 接口设置
  * @param {*} config
  * @returns
  */
 function getHttpConfig(config){
-  console.log("-----config----",config);
-
   // //开发环境
   // return Object.assign({
   //   host: YNPM_SERVER, 
@@ -48,6 +72,7 @@ function getHttpConfig(config){
   return Object.assign({
     host: YNPM_SERVER,
     path:"/api",
+    port:"3002"
     // method:"get",
     // path:"/package/get",
     // headers:{
@@ -150,6 +175,8 @@ module.exports = {
   getHttpConfig,
   setRc,
   getRc,
+  consoleLog,
+  getByAtrrBool,
   getPing: () => {
     return co(function* (){
       // Ping内网

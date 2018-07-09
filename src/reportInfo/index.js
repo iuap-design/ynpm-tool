@@ -22,11 +22,12 @@ const {getRc,setRc,getHttpConfig} = require('../utils');
 
 function get(options,params) {
   let url = options.host?options.host:"127.0.0.1";
-  url += ":";
-  url += options.method?options.port:"";
+  url += options.port?":"+options.port:"";
+  // url += options.method?options.port:"";
   url += options.path?options.path:"";
   // let met = options.method.toUpperCase();
   // if(met != "GET")return;
+  
   let par = "?",i = 0 ,len = Object.keys(params).length;
   for(let attr in params){
     i++;
@@ -58,18 +59,10 @@ function isEmptyObject(obj){
 };
 
 function userInfo(){
-  // return co(function* (){ 
-
-  // }).catch(err => {
-  //   console.error(chalk.red('\n' + err));
-  // });
   let parame = JSON.parse(getRc("ynpm"));
-  // let a = {user:"aa",ssk:"434"};
   let config = getHttpConfig({
-    path:"/user/getTokenValidate",
+    path:"/user/getUserValidate",
   });
-  console.log("------------userInfo-------------------");
-  console.log(config);
   return get(config,parame);
 }
 

@@ -86,3 +86,17 @@ $ ynpm -v 或 ynpm --version
 - 实现npm私有镜像镜像`@`下载 ✅
 - 给出下载进度
 - 去除`If happen error, call me, my mobile is 186`✅
+
+
+
+
+##### 使用
+
+ynpm set user=jonyshi
+
+ynpm set email=jonyshi
+
+拷贝sshk 
+
+登陆 ynpm web 端  设置sshk
+

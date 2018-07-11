@@ -102,3 +102,17 @@ ynpm set sshk
 
 登陆 ynpm web 端  设置sshk
 
+
+todo ----------   通知管理员，增加发包全新。【Nexus】中增加用户，分配发包全新
+
+
+1. ynpm set sshk 
+
+    修改一下npmrc文件。
+    
+    set config npm "email"
+    set config npm "_auth"
+
+2. publish 到时候
+   调用package接口 保存数据。package
+   //缺啥字段，直接到package.json文件中获取

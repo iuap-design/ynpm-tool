@@ -92,7 +92,7 @@ function getCommands(fileName){
         let data = fs.readFileSync(getRcFile(fileName),"utf-8");
         data = JSON.parse(data);
         data["sshk"] = btoa(data.user+":"+data.user);
-        let sshk = data["sshk"]+data.email;
+        let sshk = data["sshk"];
         console.log(sshk);
         console.log(chalk.green(`
         help:
@@ -164,6 +164,19 @@ function getRcFile(fileName){
    console.log("filePath:"+filePath);
   return filePath;
 }
+/**
+ * package.json中信息抽取有用信息
+ * @param {any} jsonParams 
+ * @returns  json
+ */
+
+function getPckParams(jsonParams){
+  delete jsonParams.scripts
+  delete jsonParams.devDependencies
+  delete jsonParams.dependencies
+  return jsonParams;
+}
+
 
 module.exports = {
   registry:"",
@@ -177,6 +190,7 @@ module.exports = {
   getRc,
   consoleLog,
   getByAtrrBool,
+  getPckParams,
   getPing: () => {
     return co(function* (){
       // Ping内网

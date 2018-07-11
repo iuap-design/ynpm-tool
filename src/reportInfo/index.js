@@ -66,7 +66,15 @@ function userInfo(){
   return get(config,parame);
 }
 
+function setPackage(params){
+  let config = getHttpConfig({
+    path:"/package/set",
+  });
+  return get(config,params);
+}
+
 module.exports = {
-   userInfo
+   userInfo,
+   setPackage
 }
 

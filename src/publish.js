@@ -9,8 +9,8 @@ const ora = require('ora');
 const co = require('co');
 const chalk = require('chalk');
 const ini = require('ini');
-const {userInfo} = require('./reportInfo/index');
-const {getRc,HOST_REGISTRY} = require('./utils');
+const {userInfo, setPackage} = require('./reportInfo/index');
+const {getRc,HOST_REGISTRY,getPckParams} = require('./utils');
 const help = require('./help');
 
 const IP_Req = thunkify(request);
@@ -35,14 +35,16 @@ module.exports = (registry) => {
             console.log("validate success");
             // console.log(data);
             // Get Publish Package Info
-            var packOrigin = JSON.parse(fs.readFileSync(path.join(process.cwd(),'package.json'))).name;
-            var packName = packOrigin.split('/')[0].replace("@",""); 
+            var packOrigin = JSON.parse(fs.readFileSync(path.join(process.cwd(),'package.json')));
 
             if(ynpmConfig.user && ynpmConfig.sshk && data){
                 console.log('Aviable: Pass Validation, Start to Publish...')
                 var arg_publish_inner = `npm --registry=${HOST_REGISTRY} publish`;
                 spinner.text = 'Publishing your package in Yonyou Local Area Net ---';
                 yield Exec(arg_publish_inner);
+                let params = getPckParams(packOrigin)
+                console.log('=====', JSON.stringify(params))
+                let pckMsg = yield setPackage({name:params.name, version:params.version, packageInfo:JSON.stringify(params)})
             } else if(jsonRes[parseAuth]) {
                 console.error(`Error: Overflow User Privilege, Publish Package Scoped with "@${jsonRes[parseAuth]}" or Contact Admin to Extend Privilege!`);
             } else {

@@ -96,6 +96,8 @@ ynpm set user=jonyshi
 
 ynpm set email=jonyshi
 
+ynpm set sshk
+
 拷贝sshk 
 
 登陆 ynpm web 端  设置sshk

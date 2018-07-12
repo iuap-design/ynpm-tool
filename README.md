@@ -103,16 +103,34 @@ ynpm set sshk
 登陆 ynpm web 端  设置sshk
 
 
-todo ----------   通知管理员，增加发包全新。【Nexus】中增加用户，分配发包全新
+#### todo List[7.18]
+
+##### ynpm-tools 部分
+
+  1. sshk 的时候，npmrc文件中 _auth 没写进去。
+  2. sshk 提示信息不全。完整提示网站地址。
+  3. set email的时候，直接生成sshk，且提示出来。
+  4. 增加ynpm sshk 只是获取sshk的提示，进行展示。
+  5. publish 
+  6. install  需测试npm包是否冲突问题。安装到本地是否可用。
+  7. 尝试npm register 方式调用 install，去掉npminstall 包的依赖。
+  
+
+##### npm publish 部分
+
+ 1. uiser_id 未存进去数据库。
+ 2. 根据auth查询改成根据user_id 查询。
 
 
-1. ynpm set sshk 
+##### web 部分
 
-    修改一下npmrc文件。
-    
-    set config npm "email"
-    set config npm "_auth"
+1. 新手指南、安装使用教程
+2. 我发布的页面，要根据user_id 
+3. 组件详情页面，为显示问题。
+4. 热门包，过滤不对。
 
-2. publish 到时候
-   调用package接口 保存数据。package
-   //缺啥字段，直接到package.json文件中获取
+
+##### Nexus 
+
+1. Nexus账户同步到我们自己的数据库。
+ 

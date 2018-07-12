@@ -44,7 +44,7 @@ module.exports = (registry) => {
                 yield Exec(arg_publish_inner);
                 let params = getPckParams(packOrigin)
                 console.log('=====', JSON.stringify(params))
-                let pckMsg = yield setPackage({name:params.name, version:params.version, packageInfo:JSON.stringify(params)})
+                let pckMsg = yield setPackage({name:params.name, author: ynpmConfig.user, version:params.version, packageInfo:JSON.stringify(params)})
             } else if(jsonRes[parseAuth]) {
                 console.error(`Error: Overflow User Privilege, Publish Package Scoped with "@${jsonRes[parseAuth]}" or Contact Admin to Extend Privilege!`);
             } else {

@@ -18,6 +18,7 @@ const tcpp = require('tcp-ping');
 const thunkify = require("thunkify");
 const btoa = require('btoa');
 let objectAssign = require('object-assign');
+const exec = require('child_process').exec;
 const Ping = thunkify(tcpp.ping);
 
 const userPath = process.env.HOME;
@@ -114,25 +115,51 @@ function getCommands(fileName){
 
  function setRc(fileName){
    let path = getRcFile(fileName);
+   console.log('getRcFile====', path)
     try{
       let valida = getValidateRc(fileName);
+      console.log('valida',valida)
       if(!valida){
           let comm = getCommands(fileName);
           comm?fs.writeFileSync(path,JSON.stringify(comm)):"";
       }else{
+        console.log('valida222',valida)
         let comm = getCommands(fileName); 
         let config = fs.readFileSync(path,"utf-8");
+        console.log('comm',comm)
         if(comm){
           config = JSON.parse(config);
           config = objectAssign(config,comm);
+          let set_npmrc_email_config = `npm config set email=${config.email}`;
+          let set_npmrc_auth_config = `npm config set _auth=${config.sshk}`;
           config = JSON.stringify(config);
           fs.writeFileSync(path,config);
+          console.log(`npm config set email=${config.email}`)
+          console.log(`npm config set _auth=${config.sshk}`)
+          exec(set_npmrc_email_config,(error, stdout, stderr)=>{
+            if(error) {
+              console.error('error: ' + error);
+              return;
+            }
+            // console.log('stdout: ' + stdout);
+            // console.log('stderr: ' + stderr);
+          });
+          exec(set_npmrc_auth_config,(error, stdout, stderr)=>{
+            if(error) {
+              console.error('error: ' + error);
+              return;
+            }
+            // console.log('stdout: ' + stdout);
+            // console.log('stderr: ' + stderr);
+          });
         };
       }
     }catch(e){
       
     }
 }
+
+
 /**
  * 获取文件
  * @param {any} fileName 
@@ -160,6 +187,7 @@ function getValidateRc(fileName){
 }
 
 function getRcFile(fileName){
+  console.log('getRcFile===',fileName)
    let  filePath = fileName? userPath+"/."+fileName+"rc":"";
    console.log("filePath:"+filePath);
   return filePath;

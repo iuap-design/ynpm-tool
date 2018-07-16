@@ -84,11 +84,30 @@ function getHttpConfig(config){
 }
 
 function getCommands(fileName){
-  let config = {}; 
+  console.log('fileName===', fileName)
+  let config = {};
   let argvs = process.argv;
   try{
       console.log(argvs);
-      if(argvs[2] == "set" && argvs[3] == "sshk"){
+      let attr
+      if(argvs[2] == "set" && argvs[3].indexOf("email") > -1 ){
+        
+        console.log("argvs[2]---ff- ",argvs[2].toString() +" ==== "+ argvs[3]);
+        let data = fs.readFileSync(getRcFile(fileName),"utf-8");
+        data = JSON.parse(data);
+        attr = argvs[3].split("=");
+        data[attr[0]] = attr[1];
+        data["sshk"] = btoa(data.user+":"+data.user);
+        let sshk = data["sshk"];
+        console.log(sshk);
+        console.log(chalk.green(`
+        help:
+        ------------------------请复制你的sshk----------------------------
+        ${sshk}
+        ------------------------end----------------------------
+        `));
+        config = data;
+      }else if(argvs[2] == "set" && argvs[3] == "sshk"){
         console.log("argvs[2]---ff- ",argvs[2].toString() +" ==== "+ argvs[3]);
         let data = fs.readFileSync(getRcFile(fileName),"utf-8");
         data = JSON.parse(data);
@@ -101,9 +120,8 @@ function getCommands(fileName){
         ${sshk}
         ------------------------end----------------------------
         `));
-        config = data;
       }else if(argvs[2] == "set"){
-        let attr = argvs[3].split("=");
+        attr = argvs[3].split("=");
         config[attr[0]] = attr[1];
       }else{return null;}
       return config;
@@ -121,36 +139,35 @@ function getCommands(fileName){
       console.log('valida',valida)
       if(!valida){
           let comm = getCommands(fileName);
+          
           comm?fs.writeFileSync(path,JSON.stringify(comm)):"";
       }else{
         console.log('valida222',valida)
         let comm = getCommands(fileName); 
         let config = fs.readFileSync(path,"utf-8");
-        console.log('comm',comm)
+        console.log('config======',config)
+        console.log('comm======',comm)
         if(comm){
-          config = JSON.parse(config);
+          config = config?JSON.parse(config):{};
           config = objectAssign(config,comm);
           let set_npmrc_email_config = `npm config set email=${config.email}`;
           let set_npmrc_auth_config = `npm config set _auth=${config.sshk}`;
           config = JSON.stringify(config);
           fs.writeFileSync(path,config);
-          console.log(`npm config set email=${config.email}`)
-          console.log(`npm config set _auth=${config.sshk}`)
+          
           exec(set_npmrc_email_config,(error, stdout, stderr)=>{
             if(error) {
               console.error('error: ' + error);
               return;
             }
-            // console.log('stdout: ' + stdout);
-            // console.log('stderr: ' + stderr);
-          });
-          exec(set_npmrc_auth_config,(error, stdout, stderr)=>{
-            if(error) {
-              console.error('error: ' + error);
-              return;
-            }
-            // console.log('stdout: ' + stdout);
-            // console.log('stderr: ' + stderr);
+            console.log('npm添加成功 email');
+            exec(set_npmrc_auth_config,(error, stdout, stderr)=>{
+              if(error) {
+                console.error('error: ' + error);
+                return;
+              }
+              console.log('npm添加成功 _auth');
+            });
           });
         };
       }

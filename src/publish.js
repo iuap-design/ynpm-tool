@@ -23,7 +23,8 @@ module.exports = (registry) => {
     spinner.color = 'green';
 
     co(function* (){
-        if(argvs[2] == 'publish' && argvs[3] == 'inner'){
+        console.log('argvs[2]', argvs[2])
+        if(argvs[2] == 'publish'){
             var ynpmConfig = JSON.parse(getRc("ynpm"));
             //validate user rolse
             let data = yield userInfo();
@@ -32,7 +33,7 @@ module.exports = (registry) => {
                 spinner.stop();
                 process.exit(0);
             }
-            console.log("validate success");
+            console.log("validate success",data);
             // console.log(data);
             // Get Publish Package Info
             var packOrigin = JSON.parse(fs.readFileSync(path.join(process.cwd(),'package.json')));
@@ -44,17 +45,19 @@ module.exports = (registry) => {
                 yield Exec(arg_publish_inner);
                 let params = getPckParams(packOrigin)
                 console.log('=====', JSON.stringify(params))
-                let pckMsg = yield setPackage({name:params.name, author: ynpmConfig.user, version:params.version, packageInfo:JSON.stringify(params)})
+                let pckMsg = yield setPackage({userId: data.user_id, name:params.name, author: ynpmConfig.user, version:params.version, packageInfo:escape(JSON.stringify(params))})
             } else if(jsonRes[parseAuth]) {
                 console.error(`Error: Overflow User Privilege, Publish Package Scoped with "@${jsonRes[parseAuth]}" or Contact Admin to Extend Privilege!`);
             } else {
                 console.error("Error: Cant Find User, Please Use `npm config set _auth=base64String` or Contact Admin to Create User!");
             }
-        }else if(argvs[2] == 'publish' && argvs[3] != 'inner'){
-            var arg_publish = `npm publish`;
-            spinner.text = 'Publishing your package on NPM Official Repos';
-            var data = yield Exec(arg_publish);
         }
+        // else if(argvs[2] == 'publish' && argvs[3] != 'inner'){
+        //     var arg_publish = `npm publish`;
+        //     spinner.text = 'Publishing your package on NPM Official Repos';
+        //     var data = yield Exec(arg_publish);
+        // }
+        
         spinner.stop();
         process.exit(0);
     }).catch(err => {

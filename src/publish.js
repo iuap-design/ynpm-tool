@@ -23,7 +23,6 @@ module.exports = (registry) => {
     spinner.color = 'green';
 
     co(function* (){
-        console.log('argvs[2]', argvs[2])
         if(argvs[2] == 'publish'){
             var ynpmConfig = JSON.parse(getRc("ynpm"));
             //validate user rolse
@@ -33,7 +32,6 @@ module.exports = (registry) => {
                 spinner.stop();
                 process.exit(0);
             }
-            console.log("validate success",data);
             // console.log(data);
             // Get Publish Package Info
             var packOrigin = JSON.parse(fs.readFileSync(path.join(process.cwd(),'package.json')));
@@ -44,7 +42,6 @@ module.exports = (registry) => {
                 spinner.text = 'Publishing your package in Yonyou Local Area Net ---';
                 yield Exec(arg_publish_inner);
                 let params = getPckParams(packOrigin)
-                console.log('=====', JSON.stringify(params))
                 let pckMsg = yield setPackage({userId: data.user_id, name:params.name, author: ynpmConfig.user, version:params.version, packageInfo:escape(JSON.stringify(params))})
             } else if(jsonRes[parseAuth]) {
                 console.error(`Error: Overflow User Privilege, Publish Package Scoped with "@${jsonRes[parseAuth]}" or Contact Admin to Extend Privilege!`);

@@ -3,7 +3,7 @@
 //  Nexus OSS 3.3 Info
 const IPCOMPANY = '123.103.9.196';
 const YON_MIRROR = 'http://123.103.9.196:8081/repository/ynpm-all/';
-const DEAFAULT_MIRROR = 'https://registry.npm.taobao.org';
+// const DEAFAULT_MIRROR = 'https://registry.npm.taobao.org';
 const HOST_REGISTRY = 'http://123.103.9.196:8081/repository/ynpm-private/';
 // const CDNJSON = 'http://iuap-design-cdn.oss-cn-beijing.aliyuncs.com/static/ynpm/ynpm.json'
 
@@ -21,6 +21,7 @@ let objectAssign = require('object-assign');
 const exec = require('child_process').exec;
 const Ping = thunkify(tcpp.ping);
 
+const help = require('./help');
 const userPath = process.env.HOME;
 const fileName = "ynpm";
 // let rc = require("runtime-configuration");
@@ -84,42 +85,29 @@ function getHttpConfig(config){
 }
 
 function getCommands(fileName){
-  console.log('fileName===', fileName)
   let config = {};
   let argvs = process.argv;
   try{
-      console.log(argvs);
       let attr
       if(argvs[2] == "set" && argvs[3].indexOf("email") > -1 ){
-        
-        console.log("argvs[2]---ff- ",argvs[2].toString() +" ==== "+ argvs[3]);
         let data = fs.readFileSync(getRcFile(fileName),"utf-8");
         data = JSON.parse(data);
         attr = argvs[3].split("=");
+        if(attr[1]===undefined){
+          console.error('email 不能为空')
+          return
+        }
         data[attr[0]] = attr[1];
         data["sshk"] = btoa(data.user+":"+data.user);
         let sshk = data["sshk"];
-        console.log(sshk);
-        console.log(chalk.green(`
-        help:
-        ------------------------请复制你的sshk----------------------------
-        ${sshk}
-        ------------------------end----------------------------
-        `));
+        help.showSSHKMsg(sshk)
         config = data;
       }else if(argvs[2] == "set" && argvs[3] == "sshk"){
-        console.log("argvs[2]---ff- ",argvs[2].toString() +" ==== "+ argvs[3]);
         let data = fs.readFileSync(getRcFile(fileName),"utf-8");
         data = JSON.parse(data);
         data["sshk"] = btoa(data.user+":"+data.user);
         let sshk = data["sshk"];
-        console.log(sshk);
-        console.log(chalk.green(`
-        help:
-        ------------------------请复制你的sshk----------------------------
-        ${sshk}
-        ------------------------end----------------------------
-        `));
+        help.showSSHKMsg(sshk)
       }else if(argvs[2] == "set"){
         attr = argvs[3].split("=");
         config[attr[0]] = attr[1];
@@ -133,20 +121,14 @@ function getCommands(fileName){
 
  function setRc(fileName){
    let path = getRcFile(fileName);
-   console.log('getRcFile====', path)
     try{
       let valida = getValidateRc(fileName);
-      console.log('valida',valida)
       if(!valida){
           let comm = getCommands(fileName);
-          
           comm?fs.writeFileSync(path,JSON.stringify(comm)):"";
       }else{
-        console.log('valida222',valida)
         let comm = getCommands(fileName); 
         let config = fs.readFileSync(path,"utf-8");
-        console.log('config======',config)
-        console.log('comm======',comm)
         if(comm){
           config = config?JSON.parse(config):{};
           config = objectAssign(config,comm);
@@ -204,9 +186,7 @@ function getValidateRc(fileName){
 }
 
 function getRcFile(fileName){
-  console.log('getRcFile===',fileName)
    let  filePath = fileName? userPath+"/."+fileName+"rc":"";
-   console.log("filePath:"+filePath);
   return filePath;
 }
 /**
@@ -227,7 +207,7 @@ module.exports = {
   registry:"",
   IPCOMPANY,
   YON_MIRROR,
-  DEAFAULT_MIRROR,
+  // DEAFAULT_MIRROR,
   HOST_REGISTRY,
   // CDNJSON,
   getHttpConfig,
@@ -245,7 +225,8 @@ module.exports = {
          timeout: 50,
          attempts: 1
      })
-     let registry = Ping_Response.avg ? YON_MIRROR : DEAFAULT_MIRROR;
+    //  let registry = Ping_Response.avg ? YON_MIRROR : DEAFAULT_MIRROR;
+     let registry = YON_MIRROR;
      if(Ping_Response.avg) {
           console.log(chalk.dim('Yonyou Mirror Downloading...\n'));
       } else {

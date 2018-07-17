@@ -1,4 +1,3 @@
-'use strict';
 
 const chalk = require('chalk');
 const path = require('path');
@@ -10,8 +9,11 @@ const exec = require('child_process').exec;
 const thunkify = require("thunkify");
 const Exec = thunkify(exec);
 const Ping = thunkify(tcpp.ping);
+const process_new = require('process');
+// var install = require('npm-install-package')
 // const npminstall = require('npminstall');
-const {HOST_REGISTRY,DEAFAULT_MIRROR,YON_MIRROR} = require('./utils');
+// const {HOST_REGISTRY,DEAFAULT_MIRROR,YON_MIRROR} = require('./utils');
+const {HOST_REGISTRY,YON_MIRROR} = require('./utils');
 const {addDownloadNum} = require('./reportInfo/index');
 
 
@@ -24,19 +26,29 @@ module.exports = (registry) => {
     let isupdatepackdep = false;
     //默认 更新 dependence  
     let isupdatedevdepend = false; 
-    console.log('argvs', argvs)
-    console.log('argvs', argvs[3])
     if(argvs[3] == "--save" || argvs[3] == "--save-dev"){
         for(let i =4; i < argvs.length; i++){
             let pacgName = argvs[i].split("@");
             //防止包名中有@开头的(@yonyou/ac-button)
             if(pacgName[0] === '') {
-                _pack.push({name: '@'+pacgName[1], version:'latest'})
+                if(argvs[3] == "--save") {
+                    _pack.push({name: '@'+pacgName[1], version:'latest',postfix:'--save'})
+                }else{
+                    _pack.push({name: '@'+pacgName[1], version:'latest',postfix:'--save-dev'})
+                }
             } else {
                 if(pacgName.length == 2){
-                    _pack.push({name: pacgName[0], version:pacgName[1]})
+                    if(argvs[3] == "--save") {
+                        _pack.push({name: pacgName[0], version:pacgName[1],postfix:'--save'})
+                    }else{
+                        _pack.push({name: pacgName[0], version:pacgName[1],postfix:'--save-dev'})
+                    }
                 }else{
-                    _pack.push({ name: argvs[i], version:'latest' });
+                    if(argvs[3] == "--save") {
+                        _pack.push({name: argvs[i], version:'latest',postfix:'--save'})
+                    }else{
+                        _pack.push({name: argvs[i], version:'latest',postfix:'--save-dev'})
+                    }
                 }
             }
         }
@@ -50,12 +62,24 @@ module.exports = (registry) => {
             let pacgName = argvs[i].split("@");
             //防止包名中有@开头的(@yonyou/ac-button)
             if(pacgName[0] === '') {
-                _pack.push({name: '@'+pacgName[1], version:'latest'})
+                if(argvs[3] == "--save") {
+                    _pack.push({name: '@'+pacgName[1], version:'latest',postfix:'--save'})
+                }else{
+                    _pack.push({name: '@'+pacgName[1], version:'latest',postfix:'--save-dev'})
+                }
             } else {
                 if(pacgName.length == 2){
-                    _pack.push({name: pacgName[0], version:pacgName[1]})
+                    if(argvs[argvs.length-1] == "--save") {
+                        _pack.push({name: pacgName[0], version:pacgName[1],postfix:'--save'})
+                    }else{
+                        _pack.push({name: pacgName[0], version:pacgName[1],postfix:'--save-dev'})
+                    }
                 }else{
-                    _pack.push({ name: argvs[i], version:'latest' });
+                    if(argvs[argvs.length-1] == "--save") {
+                        _pack.push({name: argvs[i], version:'latest',postfix:'--save'})
+                    }else{
+                        _pack.push({name: argvs[i], version:'latest',postfix:'--save-dev'})
+                    }
                 }
             }
         }
@@ -65,7 +89,6 @@ module.exports = (registry) => {
         isupdatepackdep = true
     } else if( argvs.length == 3 && argvs[2] == "install" ) { 
         //ynpm install 命令
-        console.log('ynpm install ')
         try {
             let pkgJson = JSON.parse(fs.readFileSync(path.join(process.cwd(), 'package.json'),'utf-8'))
             let dependencies = pkgJson.dependencies
@@ -73,24 +96,19 @@ module.exports = (registry) => {
             let devDependencies = pkgJson.devDependencies
             let devDependencies_arr = Object.keys(devDependencies)
             for(let i = 0; i< dependencies_arr.length; i++) {
-                _pack.push({ name: dependencies_arr[i], version: dependencies[dependencies_arr[i]] })
+                _pack.push({ name: dependencies_arr[i], version: dependencies[dependencies_arr[i]], postfix:'--save'})
             }
             for(let i = 0; i< devDependencies_arr.length; i++) {
-                _pack.push({ name: devDependencies_arr[i], version: devDependencies[devDependencies_arr[i]] })
+                _pack.push({ name: devDependencies_arr[i], version: devDependencies[devDependencies_arr[i]], postfix:'--save-dev'})
             }
         } catch(e) {
             console.log(`package.json 找不到或者格式不对`)
         }
-
     }
     // _pack.push({ name:'@yonyou/ac-button' , version:'latest'});
-    // console.log("---",_pack);
     const spinner = ora().start();
     spinner.color = 'green';
     
-
-    // console.log("_pack----__dirname",__dirname)
-    console.log("_pack",_pack);
     // HOST_REGISTRY
     let allInner = install(spinner,process.cwd(),_pack,YON_MIRROR,isupdatepackdep,isupdatedevdepend);//内网缓存中下载
 
@@ -111,54 +129,69 @@ function install(spinner,root,pkgs,registry,isupdatepackdep,isupdatedevdepend){
             timeout: 50,
             attempts: 1
         })
-        let registry = Ping_Response.avg ? YON_MIRROR : DEAFAULT_MIRROR;
+        if(!Ping_Response.avg){
+            console.error('only download in inner internet!')
+            return
+        }else{
+            let registry = YON_MIRROR
+        }
+        // let registry = Ping_Response.avg ? YON_MIRROR : DEAFAULT_MIRROR;
 
         const spinner = ora().start();
         spinner.color = 'green';
-
-        let arg_install = `npm --registry=${registry} `;
+        
+        let npm_registry = `npm --registry=${registry} `;
+        
         
         if(Ping_Response.avg) {
             console.log(chalk.dim('Yonyou Mirror Downloading...\n'));
         } else {
             console.log(chalk.dim('CNPM Mirror Downloading...\n'));
         }
-
         const argv_part = argvs.slice(2).join(' ');
-        arg_install += argv_part;
-        console.log('arg_install',arg_install)
+        let arg_install = npm_registry + argv_part;
         // execSync(arg_install);
         
-        
         let installPackMap = new Map(),sum=0;
-
-        for(let pack = 0; pack < pkgs.length; pack++){
-            spinner.text = `Installing ${pkgs[pack].name} package ⬇️...`;
-            let status = yield npminstall(arg_install);
-            console.log('status', status)
-            if(status){
-                //包下载量统计。
-                // installPackMap.set("name", pkgs[pack].name)
-                // installPackMap.set("version", pkgs[pack].version)
-            }
-        }
-        // if(packs.length == sum){
-        //     //包下载量统计。
-        //     //
+        let arg_common,foot,total=pkgs.length;
+        console.time(`updated ${total} packages in`);
+        // let status = yield npminstall(arg_install);
+        // console.timeEnd("sort");
+        // spinner.stop();
+        // process.exit(0);
+        // return;
+        showProcess(spinner,pkgs)
+        console.log(arg_install)
+        yield npminstall(arg_install);
+        // for(let pack = 0; pack < pkgs.length; pack++){
+        //     foot = Math.floor((pack+1)/total*100) + "%";
+        //     spinner.text = `[${total}/${pack}] Installing ${pkgs[pack].name} package ⬇️...   ${foot}`;
+        //     arg_command = `${arg_install} ${pkgs[pack].name}  ${pkgs[pack].postfix}`
+        //     console.log('arg_command',arg_command)
+        //     let status = yield npminstall(arg_command);
+        //     // if(status){
+        //         //包下载量统计。
+        //         // installPackMap.set("name", pkgs[pack].name)
+        //         // installPackMap.set("version", pkgs[pack].version)
+        //     // }
         // }
-        // updateDependencies(root, pkgs);
-
+        console.log('\n')
+        console.timeEnd(`updated ${total} packages in`);
+        spinner.stop();
         // console.log(chalk.bold('\n\nInstall Info:\n' + data[0]));
         // console.log(chalk.yellow('Warn Info:\n' + data[1]));
+        console.log('\n')
         console.log(chalk.green(`√ Finish, Happy enjoy coding!`));
         if(isupdatepackdep) {
             updateDependencies(root, pkgs,isupdatedevdepend)
         }
-        console.log('installPackMap',installPackMap)
+        
+        let spinner_axios = ora().start();
+        spinner_axios.color = 'green';
         //统计下载次数
         addDownloadNum({installPackMap:JSON.stringify(pkgs)})
         setTimeout(()=>{
-            spinner.stop();
+            spinner_axios.stop();
             process.exit(0);
         },50)
     }).catch(err => {
@@ -171,6 +204,7 @@ function install(spinner,root,pkgs,registry,isupdatepackdep,isupdatedevdepend){
 function npminstall(arg_install){
     return co(function* (){
         try {
+            // console.log('===',arg_process)
             yield Exec(arg_install);
             return true;
         } catch (err) {
@@ -185,7 +219,6 @@ function npminstall(arg_install){
 
 function install_bak(spinner,root,pkgs,registry){
     co(function* (){
-        console.log("pkgs---k",pkgs);
         yield npminstall({
             root:process.cwd(),
             pkgs,
@@ -207,7 +240,6 @@ function updateDependencies(root, pkgs, isupdatedevdepend) {
     let node_modules
     let pkgJson = JSON.parse(fs.readFileSync(path.join(`${root}`, 'package.json')))
     !pkgJson.dependencies?pkgJson.dependencies={}:null
-    console.log(pkgs)
     if(isupdatedevdepend) {
         for(let pkg of pkgs) {
             node_modules = JSON.parse(fs.readFileSync(path.join(`${root}/node_modules/${pkg.name}/`, 'package.json')))
@@ -220,4 +252,31 @@ function updateDependencies(root, pkgs, isupdatedevdepend) {
         }
     }
     fs.writeFileSync(path.join(`${root}`, 'package.json'), JSON.stringify(pkgJson, null, '  '), 'utf-8')
+}
+
+
+function showProcess(spinner,pkgs) {
+    let text1 = `.`;
+    let text2 = `..`;
+    let text3 = `...`;
+    let time = 0,value,index=0;
+    let pkg_arr = pkgs.map((item)=>item.name)
+    let pkg_arr_len = pkg_arr.length
+    setInterval(() => {
+        if(time%3===0){
+            value = text1
+        }else if(time%3===1){
+            value = text2
+        }else {
+            value = text3
+        }
+        if(index<pkg_arr_len-1){
+            spinner.text = `Installing ${pkg_arr[index]} package ⬇️ ${value}`
+        }else {
+            spinner.text = `Installing ${pkg_arr[pkg_arr_len-1]} package ⬇️ ${value}`
+        }
+        index++
+        time++
+        time===3?time=0:null
+    },500)
 }

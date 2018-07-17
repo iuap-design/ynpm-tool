@@ -29,7 +29,6 @@ function get(options,params) {
   url += options.path?options.path:"";
   // let met = options.method.toUpperCase();
   // if(met != "GET")return;
-  console.log('params',params)
   let par = "?",i = 0 ,len = Object.keys(params).length;
   for(let attr in params){
     i++;
@@ -38,7 +37,7 @@ function get(options,params) {
     par += _att;
   };
   url += par;
-  console.log("url: "+url);
+  // console.log("url: "+url);
   return fetch(url)
   .then(res => res.text())
   .then(body =>{

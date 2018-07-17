@@ -61,6 +61,14 @@ module.exports = {
         console.log(chalk.cyan("Info : " + msg));
         // console.log();
     },
+    showSSHKMsg: (sshk) => {
+      console.log(chalk.green(`
+        help:
+        ------------------------请复制你的sshk----------------------------
+        ${sshk}
+        ------------------------end----------------------------
+        `));
+    },
     error: (msg) => {
         // console.log();
         console.log(chalk.red("Error : " + msg));

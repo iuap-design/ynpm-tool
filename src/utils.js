@@ -142,13 +142,11 @@ function getCommands(fileName){
               console.error('error: ' + error);
               return;
             }
-            console.log('npm添加成功 email');
             exec(set_npmrc_auth_config,(error, stdout, stderr)=>{
               if(error) {
                 console.error('error: ' + error);
                 return;
               }
-              console.log('npm添加成功 _auth');
             });
           });
         };

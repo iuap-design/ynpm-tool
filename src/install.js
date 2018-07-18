@@ -52,7 +52,7 @@ module.exports = (registry) => {
                 }
             }
         }
-        if(argvs[3] == "--save") {
+        if(argvs[3] == "--save-dev") {
             isupdatedevdepend = true
         }
         isupdatepackdep = true
@@ -83,7 +83,7 @@ module.exports = (registry) => {
                 }
             }
         }
-        if(argvs[argvs.length-1] == "--save") {
+        if(argvs[argvs.length-1] == "--save-dev") {
             isupdatedevdepend = true
         }
         isupdatepackdep = true
@@ -182,6 +182,7 @@ function install(spinner,root,pkgs,registry,isupdatepackdep,isupdatedevdepend){
         // console.log(chalk.yellow('Warn Info:\n' + data[1]));
         console.log('\n')
         console.log(chalk.green(`√ Finish, Happy enjoy coding!`));
+        console.log(isupdatepackdep,isupdatedevdepend)
         if(isupdatepackdep) {
             updateDependencies(root, pkgs,isupdatedevdepend)
         }

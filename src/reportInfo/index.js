@@ -53,34 +53,6 @@ function get(options,params) {
 }
 
 
-function post(options,params) {
-  let url = options.host?options.host:"127.0.0.1";
-  url += options.port?":"+options.port:"";
-  // url += options.method?options.port:"";
-  url += options.path?options.path:"";
-  console.log("url: "+url);
-  console.log(params)
-  const form = new URLSearchParams();
-  for(let [key,value] in params) {
-    console.log(key,value)
-    form.append(key, value);
-  }
-  console.log('form',form)
-
-
-  return fetch(url,{ method: 'POST', body: form })
-  .then(res => res.text())
-  .then(body =>{
-    let data = null;
-    try{
-      let res = JSON.parse(body);
-      if(!isEmptyObject(res.data)){
-        data = res.data;
-      }
-    }catch(err){};
-    return data;
-  }); 
-}
 
 function isEmptyObject(obj){
   for(var key in obj){

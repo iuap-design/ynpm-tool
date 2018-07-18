@@ -40,7 +40,13 @@ module.exports = (registry) => {
                 console.log('Aviable: Pass Validation, Start to Publish...')
                 var arg_publish_inner = `npm --registry=${HOST_REGISTRY} publish`;
                 spinner.text = 'Publishing your package in Yonyou Local Area Net ---';
-                yield Exec(arg_publish_inner);
+                try{
+                    yield Exec(arg_publish_inner);
+                }catch(e){
+                    console.error(chalk.red('\n' + '请检查一下版本号问题'));
+                    spinner.stop();
+                    process.exit(0);
+                }
                 let params = getPckParams(packOrigin)
                 let pckMsg = yield setPackage({userId: data.user_id, name:params.name, author: ynpmConfig.user, version:params.version, packageInfo:escape(JSON.stringify(params))})
             } else if(jsonRes[parseAuth]) {

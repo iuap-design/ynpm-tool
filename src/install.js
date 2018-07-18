@@ -25,7 +25,8 @@ module.exports = (registry) => {
     //ynpm install 不用更新packagejson
     let isupdatepackdep = false;
     //默认 更新 dependence  
-    let isupdatedevdepend = false; 
+    let isupdatedevdepend = false;
+    
     if(argvs[3] == "--save" || argvs[3] == "--save-dev"){
         for(let i =4; i < argvs.length; i++){
             let pacgName = argvs[i].split("@");
@@ -88,6 +89,7 @@ module.exports = (registry) => {
         }
         isupdatepackdep = true
     } else if( argvs.length == 3 && argvs[2] == "install" ) { 
+        console.log('argvs.length == 3')
         //ynpm install 命令
         try {
             let pkgJson = JSON.parse(fs.readFileSync(path.join(process.cwd(), 'package.json'),'utf-8'))
@@ -104,7 +106,8 @@ module.exports = (registry) => {
         } catch(e) {
             console.log(`package.json 找不到或者格式不对`)
         }
-    }
+        
+    } 
     // _pack.push({ name:'@yonyou/ac-button' , version:'latest'});
     const spinner = ora().start();
     spinner.color = 'green';
@@ -162,7 +165,13 @@ function install(spinner,root,pkgs,registry,isupdatepackdep,isupdatedevdepend){
         // return;
         showProcess(spinner,pkgs)
         console.log(arg_install)
-        yield npminstall(arg_install);
+        let status = yield npminstall(arg_install);
+        //如果报错就不进行下去
+        if(!status){
+            spinner.stop();
+            process.exit(0);
+            return
+        }
         // for(let pack = 0; pack < pkgs.length; pack++){
         //     foot = Math.floor((pack+1)/total*100) + "%";
         //     spinner.text = `[${total}/${pack}] Installing ${pkgs[pack].name} package ⬇️...   ${foot}`;
@@ -182,7 +191,6 @@ function install(spinner,root,pkgs,registry,isupdatepackdep,isupdatedevdepend){
         // console.log(chalk.yellow('Warn Info:\n' + data[1]));
         console.log('\n')
         console.log(chalk.green(`√ Finish, Happy enjoy coding!`));
-        console.log(isupdatepackdep,isupdatedevdepend)
         if(isupdatepackdep) {
             updateDependencies(root, pkgs,isupdatedevdepend)
         }
@@ -272,9 +280,9 @@ function showProcess(spinner,pkgs) {
             value = text3
         }
         if(index<pkg_arr_len-1){
-            spinner.text = `Installing ${pkg_arr[index]} package ⬇️ ${value}`
+            spinner.text = `[${pkg_arr_len}/${index}]Installing ${pkg_arr[index]} package ⬇️ ${value}`
         }else {
-            spinner.text = `Installing ${pkg_arr[pkg_arr_len-1]} package ⬇️ ${value}`
+            spinner.text = `[${pkg_arr_len}/${pkg_arr_len}]Installing ${pkg_arr[pkg_arr_len-1]} package ⬇️ ${value}`
         }
         index++
         time++

@@ -35,12 +35,17 @@ npm install ynpm-tool -g
 # 安装(install相关命令均支持)
 $ ynpm install xxx --option
 
-
-# 正常发包
+# 正常发包[只发布用友内网包]
 $ ynpm publish
 
-# 内网发包
-$ ynpm publish inner
+# 设置用户名
+$ ynpm set user=jonyshi
+
+# 设置用email
+$ ynpm set email=jonyshi
+
+# 获取sshk
+$ ynpm set sshk
 
 # 帮助
 $ ynpm 或 ynpm -h 或 ynpm --help
@@ -53,9 +58,9 @@ $ ynpm -v 或 ynpm --version
 
 #### 权限说明
 
-- **默认用户**
+- **默认内网发包**
 
-  所有下载安装工具的，均可使用`ynpm install`功能下载安装包或`ynpm publish`公网发包
+  所有下载安装工具的，均可使用`ynpm install`功能下载安装包或`ynpm publish`内网发包
 
 - **内网发包用户**
 
@@ -63,7 +68,7 @@ $ ynpm -v 或 ynpm --version
 
   管理员会提供账号，可通过申请获得，简单配置即可实现内部发包。
 
-  内部发包使用说明，可参考此[wiki链接](https://github.com/iuap-design/ynpm-tool/wiki)
+  内部发包使用说明，可参考此[官网新手文档](https://package.yonyoucloud.com/)
 
   ​
 
@@ -75,62 +80,3 @@ $ ynpm -v 或 ynpm --version
   根据反馈，少数包会报错。原因是安装包依赖一个外链下载(可能是github或amazon等第三方地址)。因为众所周知的原因，你很有可能下载不到从而出现timeout(相同的问题cnpm也会存在）.
 
   解决办法：冷静点，再装一次
-
-
-
-#### Todo
-
-- 增加自定义镜像选择
-- 增加内部发包功能`ynpm publish`✅
-- 内部发包权限管理✅
-- 实现npm私有镜像镜像`@`下载 ✅
-- 给出下载进度
-- 去除`If happen error, call me, my mobile is 186`✅
-
-
-
-
-##### 使用
-
-ynpm set user=jonyshi
-
-ynpm set email=jonyshi
-
-ynpm set sshk
-
-拷贝sshk 
-
-登陆 ynpm web 端  设置sshk
-
-
-#### todo List[7.18]
-
-##### ynpm-tools 部分
-
-  1. sshk 的时候，npmrc文件中 _auth 没写进去。
-  2. sshk 提示信息不全。完整提示网站地址。
-  3. set email的时候，直接生成sshk，且提示出来。
-  4. 增加ynpm sshk 只是获取sshk的提示，进行展示。
-  5. publish 
-  6. install  需测试npm包是否冲突问题。安装到本地是否可用。
-  7. 尝试npm register 方式调用 install，去掉npminstall 包的依赖。
-  
-
-##### npm publish 部分
-
- 1. uiser_id 未存进去数据库。
- 2. 根据auth查询改成根据user_id 查询。
-
-
-##### web 部分
-
-1. 新手指南、安装使用教程
-2. 我发布的页面，要根据user_id 
-3. 组件详情页面，为显示问题。
-4. 热门包，过滤不对。
-
-
-##### Nexus 
-
-1. Nexus账户同步到我们自己的数据库。
- 

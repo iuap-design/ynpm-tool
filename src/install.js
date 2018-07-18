@@ -10,9 +10,6 @@ const thunkify = require("thunkify");
 const Exec = thunkify(exec);
 const Ping = thunkify(tcpp.ping);
 const process_new = require('process');
-// var install = require('npm-install-package')
-// const npminstall = require('npminstall');
-// const {HOST_REGISTRY,DEAFAULT_MIRROR,YON_MIRROR} = require('./utils');
 const {HOST_REGISTRY,YON_MIRROR} = require('./utils');
 const {addDownloadNum} = require('./reportInfo/index');
 
@@ -108,16 +105,10 @@ module.exports = (registry) => {
         }
         
     } 
-    // _pack.push({ name:'@yonyou/ac-button' , version:'latest'});
     const spinner = ora().start();
-    spinner.color = 'green';
-    
+    spinner.color = 'green'; 
     // HOST_REGISTRY
     let allInner = install(spinner,process.cwd(),_pack,YON_MIRROR,isupdatepackdep,isupdatedevdepend);//内网缓存中下载
-
-    // if(allInner)return;
-    // let privateInner = install(spinner,process.cwd(),registry);//内网发包中下载
-    // if(privateInner)return;
 }
 
 
@@ -138,8 +129,6 @@ function install(spinner,root,pkgs,registry,isupdatepackdep,isupdatedevdepend){
         }else{
             let registry = YON_MIRROR
         }
-        // let registry = Ping_Response.avg ? YON_MIRROR : DEAFAULT_MIRROR;
-
         const spinner = ora().start();
         spinner.color = 'green';
         

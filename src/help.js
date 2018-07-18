@@ -57,21 +57,20 @@ module.exports = {
         process.exit();
     },
     info: (msg) => {
-        // console.log();
-        console.log(chalk.cyan("Info : " + msg));
-        // console.log();
+      console.log(chalk.cyan("Info : " + msg)); 
     },
     showSSHKMsg: (sshk) => {
       console.log(chalk.green(`
         help:
-        -------------请复制你的sshk到https://package.yonyoucloud.com/setting设置您的key-------------------
+        -------------请复制你的sshk到-------------------
+        https://package.yonyoucloud.com/setting 设置您的key
+
         ${sshk}
-        ---------------------------------------------end-----------------------------------------------
+
+        -------------end-------------------
         `));
     },
     error: (msg) => {
-        // console.log();
-        console.log(chalk.red("Error : " + msg));
-        // console.log();
+      console.log(chalk.red("Error : " + msg));
     }
 }

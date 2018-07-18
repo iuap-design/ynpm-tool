@@ -1,14 +1,11 @@
 'use strict';
 
-//  Nexus OSS 3.3 Info
-const IPCOMPANY = '123.103.9.196';
-const YON_MIRROR = 'http://123.103.9.196:8081/repository/ynpm-all/';
-// const DEAFAULT_MIRROR = 'https://registry.npm.taobao.org';
-const HOST_REGISTRY = 'http://123.103.9.196:8081/repository/ynpm-private/';
-// const CDNJSON = 'http://iuap-design-cdn.oss-cn-beijing.aliyuncs.com/static/ynpm/ynpm.json'
-
-// const YNPM_SERVER = "http://ir6fs8gj.c87e2267-1001-4c70-bb2a-ab41f3b81aa3.app.yyuap.com";
-const YNPM_SERVER = "http://127.0.0.1";
+//  Nexus OSS 3.12 Info
+const IPCOMPANY = 'ynpm.yonyoucloud.com';
+const YON_MIRROR = 'http://ynpm.yonyoucloud.com/repository/ynpm-all/';
+const HOST_REGISTRY = 'http://ynpm.yonyoucloud.com/repository/ynpm-private/';
+const YNPM_SERVER = "http://ir6fs8gj.c87e2267-1001-4c70-bb2a-ab41f3b81aa3.app.yyuap.com";
+// const YNPM_SERVER = "http://127.0.0.1";
 
 const chalk = require('chalk');
 const path = require('path');
@@ -24,8 +21,6 @@ const Ping = thunkify(tcpp.ping);
 const help = require('./help');
 const userPath = process.env.HOME;
 const fileName = "ynpm";
-// let rc = require("runtime-configuration");
-// const yarnConfig = require('yarn-config-directory');
 
 /**
  * 根据数据源寻找属性是否存在
@@ -41,46 +36,16 @@ function getByAtrrBool(array,attr){
   return b;
 }
 
-function consoleLog(...arg){
-  // const argvs = process.argv;
-  console.log("arg:",arg);
-  console.log("consoleLogconsoleLogconsoleLogconsoleLogconsoleLog",global.ynpm); 
-  // if(global.ynpm.NODE_DEV){
-  //   for (let index = 0; index < argvs.length; index++) {
-  //     console.log(argvs[index]);
-  //   }
-  // }
-}
 /**
  *server 接口设置
  * @param {*} config
  * @returns
  */
 function getHttpConfig(config){
-  // //开发环境
-  // return Object.assign({
-  //   host: YNPM_SERVER, 
-  //   port:3001,
-  //   path:"/api",
-  //   // method:"get",
-  //   // path:"/package/get",
-  //   // headers:{
-  //   //   'Content-Type':'application/x-www-form-urlencoded',
-  //   //   // 'Content-Length':contents.length
-  //   // }
-  // },config)
-  
-  //线上
   return Object.assign({
     host: YNPM_SERVER,
     path:"/api",
-    port:"3002"
-    // method:"get",
-    // path:"/package/get",
-    // headers:{
-    //   'Content-Type':'application/x-www-form-urlencoded',
-    //   // 'Content-Length':contents.length
-    // }
+    port:"3001"
   },config)
 }
 
@@ -211,7 +176,6 @@ module.exports = {
   getHttpConfig,
   setRc,
   getRc,
-  consoleLog,
   getByAtrrBool,
   getPckParams,
   getPing: () => {
@@ -223,17 +187,14 @@ module.exports = {
          timeout: 50,
          attempts: 1
      })
-    //  let registry = Ping_Response.avg ? YON_MIRROR : DEAFAULT_MIRROR;
      let registry = YON_MIRROR;
      if(Ping_Response.avg) {
           console.log(chalk.dim('Yonyou Mirror Downloading...\n'));
       } else {
           console.log(chalk.dim(`CNPM Mirror ${process.argv[2]} ...\n`));
-      }
-    //  console.log("registry",registry);
+      } 
      this.registry = registry;
-     return registry;
-    //  return {Ping_Response,registry};
+     return registry; 
    }).catch(err => {
      console.error(chalk.red('\n' + err));
    });

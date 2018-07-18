@@ -32,8 +32,6 @@ module.exports = (registry) => {
                 spinner.stop();
                 process.exit(0);
             }
-            // console.log(data);
-            // Get Publish Package Info
             var packOrigin = JSON.parse(fs.readFileSync(path.join(process.cwd(),'package.json')));
 
             if(ynpmConfig.user && ynpmConfig.sshk && data){

@@ -9,19 +9,7 @@ const co = require('co');
 const  URLSearchParams =require('url').URLSearchParams;
 
 const {getRc,setRc,getHttpConfig} = require('../utils');
-
-// const httpConfig = {
-//   host: YNPM_SERVER, 
-//   port:3001,
-//   path:"/user/getTokenValidate",
-//   // method:"get",
-//   // path:"/package/get",
-//   // headers:{
-//   //   'Content-Type':'application/x-www-form-urlencoded',
-//   //   // 'Content-Length':contents.length
-//   // }
-// }
-
+ 
 function get(options,params) {
   let url = options.host?options.host:"127.0.0.1";
   url += options.port?":"+options.port:"";

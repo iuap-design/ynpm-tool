@@ -10,11 +10,8 @@ const thunkify = require("thunkify");
 const Exec = thunkify(exec);
 const Ping = thunkify(tcpp.ping);
 const process_new = require('process');
-const {HOST_REGISTRY,YON_MIRROR} = require('./utils');
+const {HOST_REGISTRY,YON_MIRROR,IPCOMPANY} = require('./utils');
 const {addDownloadNum} = require('./reportInfo/index');
-
-
-const IPCOMPANY = '172.20.27.204';
 
 module.exports = (registry) => { 
     const argvs = process.argv;
@@ -86,7 +83,6 @@ module.exports = (registry) => {
         }
         isupdatepackdep = true
     } else if( argvs.length == 3 && argvs[2] == "install" ) { 
-        console.log('argvs.length == 3')
         //ynpm install 命令
         try {
             let pkgJson = JSON.parse(fs.readFileSync(path.join(process.cwd(), 'package.json'),'utf-8'))
@@ -153,7 +149,7 @@ function install(spinner,root,pkgs,registry,isupdatepackdep,isupdatedevdepend){
         // process.exit(0);
         // return;
         showProcess(spinner,pkgs)
-        console.log(arg_install)
+        // console.log(arg_install)
         let status = yield npminstall(arg_install);
         //如果报错就不进行下去
         if(!status){

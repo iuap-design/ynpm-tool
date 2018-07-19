@@ -10,7 +10,7 @@ const thunkify = require("thunkify");
 const Exec = thunkify(exec);
 const Ping = thunkify(tcpp.ping);
 const process_new = require('process');
-const {HOST_REGISTRY,YON_MIRROR,IPCOMPANY} = require('./utils');
+const {HOST_REGISTRY,YON_MIRROR,IPCOMPANY,YON_INNER_MIRROR} = require('./utils');
 const {addDownloadNum} = require('./reportInfo/index');
 
 module.exports = (registry) => { 
@@ -119,12 +119,7 @@ function install(spinner,root,pkgs,registry,isupdatepackdep,isupdatedevdepend){
             timeout: 50,
             attempts: 1
         })
-        if(!Ping_Response.avg){
-            console.error('only download in inner internet!')
-            return
-        }else{
-            let registry = YON_MIRROR
-        }
+        let registry = Ping_Response.avg ? YON_INNER_MIRROR : YON_MIRROR
         const spinner = ora().start();
         spinner.color = 'green';
         
@@ -272,5 +267,5 @@ function showProcess(spinner,pkgs) {
         index++
         time++
         time===3?time=0:null
-    },500)
+    },800)
 }

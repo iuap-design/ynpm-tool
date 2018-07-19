@@ -1,8 +1,9 @@
 'use strict';
 
 //  Nexus OSS 3.12 Info
-const IPCOMPANY = 'ynpm.yonyoucloud.com';
+const IPCOMPANY = '123.103.9.196';
 const YON_MIRROR = 'http://ynpm.yonyoucloud.com/repository/ynpm-all/';
+const YON_INNER_MIRROR = 'http://123.103.9.196:8081/repository/ynpm-all/';
 const HOST_REGISTRY = 'http://ynpm.yonyoucloud.com/repository/ynpm-private/';
 const YNPM_SERVER = "http://ir6fs8gj.c87e2267-1001-4c70-bb2a-ab41f3b81aa3.app.yyuap.com";
 // const YNPM_SERVER = "http://127.0.0.1";
@@ -44,7 +45,7 @@ function getByAtrrBool(array,attr){
 function getHttpConfig(config){
   return Object.assign({
     host: YNPM_SERVER,
-    path:"/api",
+    // path:"/api",
     port:"3001"
   },config)
 }
@@ -170,6 +171,7 @@ module.exports = {
   registry:"",
   IPCOMPANY,
   YON_MIRROR,
+  YON_INNER_MIRROR,
   // DEAFAULT_MIRROR,
   HOST_REGISTRY,
   // CDNJSON,

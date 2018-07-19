@@ -119,17 +119,17 @@ function install(spinner,root,pkgs,registry,isupdatepackdep,isupdatedevdepend){
             timeout: 50,
             attempts: 1
         })
-        let registry = Ping_Response.avg ? YON_INNER_MIRROR : YON_MIRROR
+        // let registry = Ping_Response.avg ? YON_INNER_MIRROR : YON_MIRROR
+        let registry = YON_MIRROR
         const spinner = ora().start();
         spinner.color = 'green';
         
         let npm_registry = `npm --registry=${registry} `;
         
-        
         if(Ping_Response.avg) {
-            console.log(chalk.dim('Yonyou Mirror Downloading...\n'));
+            console.log(chalk.dim('Yonyou Inner Mirror Downloading...\n'));
         } else {
-            console.log(chalk.dim('CNPM Mirror Downloading...\n'));
+            console.log(chalk.dim('Yonyou Mirror Downloading...\n'));
         }
         const argv_part = argvs.slice(2).join(' ');
         let arg_install = npm_registry + argv_part;

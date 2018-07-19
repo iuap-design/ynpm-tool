@@ -39,15 +39,18 @@ module.exports = (registry) => {
                 var arg_publish_inner = `npm --registry=${HOST_REGISTRY} publish`;
                 spinner.text = 'Publishing your package in Yonyou Local Area Net ---';
                 try{
-                    yield Exec(arg_publish_inner);
+                    let publish_result = yield Exec(arg_publish_inner);
                 }catch(e){
-                    console.error(chalk.red('\n' + '请检查一下版本号问题'));
+                    console.error(e)
+                    console.error(chalk.red('\n' + '请检查一下package.json版本号!'));
                     spinner.stop();
                     process.exit(0);
                 }
                 let params = getPckParams(packOrigin)
                 let pckMsg = yield setPackage({userId: data.user_id, name:params.name, author: ynpmConfig.user, version:params.version, packageInfo:escape(JSON.stringify(params))})
-            } else if(jsonRes[parseAuth]) {
+                console.log('\n')
+                console.log(chalk.green(`√ Finish, Happy enjoy coding!`));
+            } else if(publish_result[parseAuth]) {
                 console.error(`Error: Overflow User Privilege, Publish Package Scoped with "@${jsonRes[parseAuth]}" or Contact Admin to Extend Privilege!`);
             } else {
                 console.error("Error: Cant Find User, Please Use `npm config set _auth=base64String` or Contact Admin to Create User!");

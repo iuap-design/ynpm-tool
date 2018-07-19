@@ -62,12 +62,12 @@ module.exports = {
     showSSHKMsg: (sshk) => {
       console.log(chalk.green(`
         help:
-        -------------请复制你的sshk到-------------------
+        -------------请复制你的sshk到-----------------
         https://package.yonyoucloud.com/setting 设置您的key
 
         ${sshk}
 
-        -------------end-------------------
+        -------------------end----------------------
         `));
     },
     error: (msg) => {

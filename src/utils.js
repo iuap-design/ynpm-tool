@@ -44,9 +44,7 @@ function getByAtrrBool(array,attr){
  */
 function getHttpConfig(config){
   return Object.assign({
-    host: YNPM_SERVER,
-    // path:"/api",
-    port:"3001"
+    host: YNPM_SERVER
   },config)
 }
 

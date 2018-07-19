@@ -119,7 +119,7 @@ function install(spinner,root,pkgs,registry,isupdatepackdep,isupdatedevdepend){
             timeout: 50,
             attempts: 1
         }) 
-        let registry = Ping_Response.avg ? YON_INNER_MIRROR : YON_MIRROR
+        let registry = YON_MIRROR;// Ping_Response.avg ? YON_INNER_MIRROR : YON_MIRROR
         const spinner = ora().start();
         spinner.color = 'green'; 
         let npm_registry = `npm --registry=${registry} `; 

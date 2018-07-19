@@ -118,14 +118,11 @@ function install(spinner,root,pkgs,registry,isupdatepackdep,isupdatedevdepend){
             port: 8081,
             timeout: 50,
             attempts: 1
-        })
-        // let registry = Ping_Response.avg ? YON_INNER_MIRROR : YON_MIRROR
-        let registry = YON_MIRROR
+        }) 
+        let registry = Ping_Response.avg ? YON_INNER_MIRROR : YON_MIRROR
         const spinner = ora().start();
-        spinner.color = 'green';
-        
-        let npm_registry = `npm --registry=${registry} `;
-        
+        spinner.color = 'green'; 
+        let npm_registry = `npm --registry=${registry} `; 
         if(Ping_Response.avg) {
             console.log(chalk.dim('Yonyou Inner Mirror Downloading...\n'));
         } else {
@@ -133,18 +130,9 @@ function install(spinner,root,pkgs,registry,isupdatepackdep,isupdatedevdepend){
         }
         const argv_part = argvs.slice(2).join(' ');
         let arg_install = npm_registry + argv_part;
-        // execSync(arg_install);
-        
-        let installPackMap = new Map(),sum=0;
         let arg_common,foot,total=pkgs.length;
         console.time(`updated ${total} packages in`);
-        // let status = yield npminstall(arg_install);
-        // console.timeEnd("sort");
-        // spinner.stop();
-        // process.exit(0);
-        // return;
-        showProcess(spinner,pkgs)
-        // console.log(arg_install)
+        showProcess(spinner,pkgs) 
         let status = yield npminstall(arg_install);
         //如果报错就不进行下去
         if(!status){
@@ -152,23 +140,9 @@ function install(spinner,root,pkgs,registry,isupdatepackdep,isupdatedevdepend){
             process.exit(0);
             return
         }
-        // for(let pack = 0; pack < pkgs.length; pack++){
-        //     foot = Math.floor((pack+1)/total*100) + "%";
-        //     spinner.text = `[${total}/${pack}] Installing ${pkgs[pack].name} package ⬇️...   ${foot}`;
-        //     arg_command = `${arg_install} ${pkgs[pack].name}  ${pkgs[pack].postfix}`
-        //     console.log('arg_command',arg_command)
-        //     let status = yield npminstall(arg_command);
-        //     // if(status){
-        //         //包下载量统计。
-        //         // installPackMap.set("name", pkgs[pack].name)
-        //         // installPackMap.set("version", pkgs[pack].version)
-        //     // }
-        // }
         console.log('\n')
         console.timeEnd(`updated ${total} packages in`);
         spinner.stop();
-        // console.log(chalk.bold('\n\nInstall Info:\n' + data[0]));
-        // console.log(chalk.yellow('Warn Info:\n' + data[1]));
         console.log('\n')
         console.log(chalk.green(`√ Finish, Happy enjoy coding!`));
         if(isupdatepackdep) {

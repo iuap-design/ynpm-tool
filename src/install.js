@@ -153,15 +153,6 @@ function installValidate(pkgs, spinner) {
     }
 }
 
-
-/**
- * 采集下载量的数据。
- */
-// function collectPackage(){
-//     //统计下载次数
-//     addDownloadNum({installPackMap:JSON.stringify(pkgs)})
-// }
-
 function npminstall(arg_install){
     return co(function* (){
         try {
@@ -177,25 +168,6 @@ function npminstall(arg_install){
         return false;
     });
 }
-
-// function install_bak(spinner,root,pkgs,registry){
-//     co(function* (){
-//         yield npminstall({
-//             root:process.cwd(),
-//             pkgs,
-//             // :[ { name: 'bee-table', version: '1.2.7' } ],
-//          //  registry: 'https://registry.npm.taobao.org',
-//           registry,
-//         });
-        
-//         spinner.stop();
-//         process.exit(0);
-//     }).catch(err => {
-//         console.error(chalk.red('\n' + err));
-//         spinner.stop();
-//         process.exit(0);
-//     });
-// }
 
 /**
  * 修改dependencies文件

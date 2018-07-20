@@ -32,27 +32,13 @@ function setDependencies(package){
 module.exports = (registry) => { 
     const argvs = process.argv;
     let _pack = [];
-    //ynpm install 不用更新packagejson
-    let isupdatepackdep = false;
-    //默认 更新 dependence  
-    let isupdatedevdepend = false;
     
     let pkgJson = JSON.parse(fs.readFileSync(path.join(process.cwd(), 'package.json'),'utf-8'));
 
     let package = [];
     let commIndex = argvs.findIndex(comm=>comm == "--save");
     let devCommIndex = argvs.findIndex(comm=>comm == "--save-dev");
-    let type, commLeng = argvs.length-1;
-    // type=0 => ynpm install 
-    // type=1 => ynpm install --save
-    // type=2 => ynpm install --save-dev
-    if(commIndex > -1) {
-        type = 1
-    } else if(devCommIndex > -1) {
-        type = 2
-    } else {
-        type=0
-    }
+    let commLeng = argvs.length-1;
     if(commIndex == commLeng || devCommIndex == commLeng){
         package = argvs.slice(3,commLeng)
         _pack  = getPackMsg(package)
@@ -73,8 +59,6 @@ module.exports = (registry) => {
     }
     const spinner = ora().start();
     spinner.color = 'green';
-
-
     // HOST_REGISTRY
     let allInner = installValidate(_pack, spinner);//内网缓存中下载
     let pkgs = _pack
@@ -92,8 +76,26 @@ module.exports = (registry) => {
             stop(spinner);
             return
         }
-        //更新package.json
-        updateDependencies(pkgJson,pkgs,type);
+        let tempPkgs = {}
+        // --save 时候写入package.json
+        if(commIndex > -1) {
+            for(let pkg of pkgs) {
+                tempPkgs[pkg.name] = pkg.version
+            }
+            pkgJson.dependencies = Object.assign(pkgJson.dependencies,tempPkgs)
+            //更新package.json
+            updateDependencies(pkgJson);
+            // --save-dev 时候写入package.json
+        } else if(devCommIndex > -1) {
+            for(let pkg of pkgs) {
+                tempPkgs[pkg.name] = pkg.version
+            }
+            pkgJson.devDependencies = Object.assign(pkgJson.devDependencies,tempPkgs)
+            //更新package.json
+            updateDependencies(pkgJson);
+        }
+        console.log('pkgJson',pkgJson)
+        
         addDownloadNum({installPackMap:JSON.stringify(pkgs)})
 
         console.log('\n')
@@ -175,27 +177,10 @@ function npminstall(arg_install){
  * @param {*} dependencies 
  * @param {*} type 
  */
-function updateDependencies(packJson,pkgs,type) {
-    
+function updateDependencies(packJson) {
     let root = process.cwd();
-    if(type==1){
-        !packJson.dependencies?packJson.dependencies={}:null
-        for(let pkg of pkgs) {
-
-            packJson.dependencies[pkg.name] = pkg.version
-        }
-    }else if(type==2){
-        !packJson.devDependencies?packJson.devDependencies={}:null
-        for(let pkg of pkgs) {
-            packJson.devDependencies[pkg.name] = pkg.version
-        }
-    }else {
-        return;
-    }
-    
     fs.writeFileSync(path.join(`${root}`, 'package.json'), JSON.stringify(packJson, null, '  '), 'utf-8')
 }
-
 
 function showProcess(spinner,pkgs) {
     let text1 = `.`;

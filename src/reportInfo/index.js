@@ -62,7 +62,6 @@ function addDownloadNum(params){
   let config = getHttpConfig({
     path:"/package/addDownloadNum",
   });
-  console.log(config,params)
   return get(config,params);
 }
 

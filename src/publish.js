@@ -8,7 +8,6 @@ const exec = require('child_process').exec;
 const ora = require('ora');
 const co = require('co');
 const chalk = require('chalk');
-const ini = require('ini');
 const {userInfo, setPackage} = require('./reportInfo/index');
 const {getRc,HOST_REGISTRY,getPckParams} = require('./utils');
 const help = require('./help');

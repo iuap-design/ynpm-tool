@@ -7,7 +7,7 @@ const YON_INNER_MIRROR = 'http://172.20.27.204:8081/repository/ynpm-all/';
 const YON_MIRROR = 'http://123.103.9.196:8081/repository/ynpm-all/';
 const HOST_REGISTRY = 'http://123.103.9.196:8081/repository/ynpm-private/';
 const YNPM_SERVER = "http://package.yonyoucloud.com/npm";
-// const YNPM_SERVER = "http://127.0.0.1";
+// const YNPM_SERVER = "http://127.0.0.1:3001/npm";
 
 const chalk = require('chalk');
 const path = require('path');
@@ -188,12 +188,13 @@ module.exports = {
          timeout: 50,
          attempts: 1
      })
-     let registry = YON_MIRROR;
-    //  if(Ping_Response.avg) {
-    //       console.log(chalk.dim('Yonyou Mirror Downloading...\n'));
-    //   } else {
-    //       console.log(chalk.dim(`CNPM Mirror ${process.argv[2]} ...\n`));
-    //   }
+     if(Ping_Response.avg) {
+          console.log(chalk.dim('Yonyou Inner Mirror Downloading...\n'));
+      } else {
+          console.log(chalk.dim(`Yonyou Mirror Downloading...\n`));
+      }
+     let registry = Ping_Response.avg ? YON_INNER_MIRROR : YON_MIRROR;
+     
      this.registry = registry;
      return registry;
    }).catch(err => {

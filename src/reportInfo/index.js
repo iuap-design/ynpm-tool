@@ -25,7 +25,8 @@ function get(options,params) {
     par += _att;
   };
   url += par;
-  // console.log("url: "+url);
+  console.log("url: "+url);
+
   return fetch(url)
   .then(res => res.text())
   .then(body =>{
@@ -61,7 +62,7 @@ function addDownloadNum(params){
   let config = getHttpConfig({
     path:"/package/addDownloadNum",
   });
-
+  console.log(config,params)
   return get(config,params);
 }
 

@@ -46,13 +46,16 @@ module.exports = (registry) => {
         package = argvs.slice(4,commLeng+1)
         _pack  = getPackMsg(package)
     }else if(argvs.length == 3 && argvs[2] == "install"){
+        console.log('1');
         //ynpm install 命令
         try {
             let dependencies = {};
             dependencies = Object.assign(pkgJson.dependencies,pkgJson.devDependencies);
+            console.log('dependencies',dependencies)
             Object.keys(dependencies).forEach(name => {
                 _pack.push({ name: name, version: dependencies[name] })
             })
+            console.log('_pack',_pack)
         } catch(e) {
             console.error(chalk.red('\n package.json is not de find !'));
         }

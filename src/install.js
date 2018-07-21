@@ -1,4 +1,4 @@
-
+'use strict';
 const chalk = require('chalk');
 const path = require('path');
 const fs = require('fs');
@@ -20,31 +20,22 @@ function countStrLeng(str,subStr){
     return count;
 }
 
-function setDependencies(package){
-    let dependencies = {};
-    package.forEach(data=>{
-        dependencies.name = data.name;
-        dependencies.version = data.version;
-    })
-    return dependencies;
-}
-
 module.exports = (registry) => { 
     const argvs = process.argv;
     let _pack = [];
     
     let pkgJson = JSON.parse(fs.readFileSync(path.join(process.cwd(), 'package.json'),'utf-8'));
 
-    let package = [];
+    let _package;
     let commIndex = argvs.findIndex(comm=>comm == "--save");
     let devCommIndex = argvs.findIndex(comm=>comm == "--save-dev");
     let commLeng = argvs.length-1;
     if(commIndex == commLeng || devCommIndex == commLeng){
-        package = argvs.slice(3,commLeng)
-        _pack  = getPackMsg(package)
+        _package = argvs.slice(3,commLeng)
+        _pack  = getPackMsg(_package)
     }else if(commIndex == 3 || devCommIndex == 3){
-        package = argvs.slice(4,commLeng+1)
-        _pack  = getPackMsg(package)
+        _package = argvs.slice(4,commLeng+1)
+        _pack  = getPackMsg(_package)
     }else if(argvs.length == 3 && argvs[2] == "install"){
         console.log('1');
         //ynpm install 命令
@@ -72,8 +63,11 @@ module.exports = (registry) => {
         let arg_install = npm_registry + argv_part;
         let packTotal = pkgs.length;
         console.time(`updated ${packTotal} packages in`);
+        console.log('arg_install',arg_install)
         showProcess(spinner,pkgs);//进度
+        console.log('start npm install')
         let status = yield npminstall(arg_install);
+
         //如果报错就不进行下去
         if(!status){
             stop(spinner);
@@ -114,7 +108,7 @@ module.exports = (registry) => {
 }
 
 function getPackMsg(_pack) {
-    let package = [];
+    let _package = [];
     _pack.forEach(pa=>{
         let count = countStrLeng(pa,"@");
         let obj ={name:"",version:"latest"};
@@ -131,9 +125,9 @@ function getPackMsg(_pack) {
                 obj.version =  ind==0?"latest":_pas[1];
             }
         }
-        package.push(obj)
+        _package.push(obj)
     })
-    return package
+    return _package
 }
 
 function stop(spinner){
@@ -159,6 +153,7 @@ function installValidate(pkgs, spinner) {
 function npminstall(arg_install){
     return co(function* (){
         try {
+            console.log('执行 npminstall')
             // console.log('===',arg_process)
             yield Exec(arg_install);
             return true;
@@ -189,6 +184,8 @@ function showProcess(spinner,pkgs) {
     let text3 = `...`;
     let time = 0,value,index=0;
     let pkgLeng = pkgs.length
+
+    console.log('showProcess ==== pkgs.length', pkgLeng)
     setInterval(() => {
         let item = pkgs[index];
         if(time%3===0){
@@ -198,7 +195,9 @@ function showProcess(spinner,pkgs) {
         }else {
             value = text3
         }
+
         if(index<pkgLeng-1){
+            console.log(`[${pkgLeng}/${index}]Installing ${item.name} package ⬇️ ${value}`)
             spinner.text = `[${pkgLeng}/${index}]Installing ${item.name} package ⬇️ ${value}`
         }else {
             spinner.text = `[${pkgLeng}/${pkgLeng}]Installing ${pkgs[pkgLeng-1].name} package ⬇️ ${value}`

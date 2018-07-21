@@ -1,3 +1,4 @@
+'use strict';
 const chalk = require('chalk');
 const path = require('path');
 const fs = require('fs');
@@ -36,7 +37,7 @@ function init(fun){
 
 module.exports = {
   plugin: function(options,global) {
-    commands = options.cmd;
+    let commands = options.cmd;
     const argvs = process.argv;
     switch (commands) {
         case "-h":

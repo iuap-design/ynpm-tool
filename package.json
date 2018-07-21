@@ -1,6 +1,6 @@
 {
   "name": "ynpm-tool",
-  "version": "2.0.0",
+  "version": "2.0.5",
   "description": "yonyou FED large front end technology department, an enterprise internal contracting tool.",
   "main": "lib/index.js",
   "bin": {
@@ -22,16 +22,13 @@
     "chalk": "^1.1.3",
     "co": "^4.6.0",
     "ini": "^1.3.5",
-    "minimist": "^1.2.0",
     "node-fetch": "^2.1.2",
-    "npminstall": "^3.5.0",
     "object-assign": "^4.1.1",
     "ora": "^1.1.0",
     "request": "^2.81.0",
     "tcp-ping": "^0.1.1",
     "tdoc": "0.0.1",
-    "thunkify": "^2.1.2",
-    "yarn-config-directory": "^1.0.1"
+    "thunkify": "^2.1.2"
   },
   "devDependencies": {
     "autod": "2",

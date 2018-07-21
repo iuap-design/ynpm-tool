@@ -35,12 +35,17 @@ npm install ynpm-tool -g
 # 安装(install相关命令均支持)
 $ ynpm install xxx --option
 
-
-# 正常发包
+# 正常发包[只发布用友内网包]
 $ ynpm publish
 
-# 内网发包
-$ ynpm publish inner
+# 设置用户名
+$ ynpm set user=jonyshi
+
+# 设置用email
+$ ynpm set email=jonyshi
+
+# 获取sshk
+$ ynpm set sshk
 
 # 帮助
 $ ynpm 或 ynpm -h 或 ynpm --help
@@ -53,9 +58,9 @@ $ ynpm -v 或 ynpm --version
 
 #### 权限说明
 
-- **默认用户**
+- **默认内网发包**
 
-  所有下载安装工具的，均可使用`ynpm install`功能下载安装包或`ynpm publish`公网发包
+  所有下载安装工具的，均可使用`ynpm install`功能下载安装包或`ynpm publish`内网发包
 
 - **内网发包用户**
 
@@ -63,7 +68,7 @@ $ ynpm -v 或 ynpm --version
 
   管理员会提供账号，可通过申请获得，简单配置即可实现内部发包。
 
-  内部发包使用说明，可参考此[wiki链接](https://github.com/iuap-design/ynpm-tool/wiki)
+  内部发包使用说明，可参考此[官网新手文档](https://package.yonyoucloud.com/)
 
   ​
 
@@ -75,14 +80,3 @@ $ ynpm -v 或 ynpm --version
   根据反馈，少数包会报错。原因是安装包依赖一个外链下载(可能是github或amazon等第三方地址)。因为众所周知的原因，你很有可能下载不到从而出现timeout(相同的问题cnpm也会存在）.
 
   解决办法：冷静点，再装一次
-
-
-
-#### Todo
-
-- 增加自定义镜像选择
-- 增加内部发包功能`ynpm publish`✅
-- 内部发包权限管理✅
-- 实现npm私有镜像镜像`@`下载 ✅
-- 给出下载进度
-- 去除`If happen error, call me, my mobile is 186`✅

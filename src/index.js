@@ -2,12 +2,10 @@ const chalk = require('chalk');
 const path = require('path');
 const fs = require('fs');
 const co = require('co'); 
-const {getRc,setRc,getPing} = require('./utils');
+const {getRc,setRc,getPing,getByAtrrBool,consoleLog} = require('./utils');
 const help = require('./help');
 const install = require('./install');
 const publish = require('./publish');
-// const init = require('./init');
-// const page = require('./page');
 
 function getHelp() {
   console.log(chalk.green(" Usage : "));
@@ -34,14 +32,12 @@ function init(fun){
   }
   return fun(registry); 
 }
- 
+
 
 module.exports = {
   plugin: function(options,global) {
     commands = options.cmd;
     const argvs = process.argv;
-    console.log("argvs:",argvs);
-    console.log("commands:",commands);
     switch (commands) {
         case "-h":
         case "-help":

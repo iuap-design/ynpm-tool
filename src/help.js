@@ -42,9 +42,9 @@ module.exports = {
       help:
       ------------------------请设置npm发包账户信息----------------------------
       设置用户名
-      $ ynpm set user="ahua"
+      $ ynpm set user="xx"
       设置email
-      $ ynpm set email=yon@yonyou.com 
+      $ ynpm set email=xx@yonyou.com 
       生成key
       $ ynpm sshk
       ------------------------请设置npm发包账户信息----------------------------
@@ -57,13 +57,20 @@ module.exports = {
         process.exit();
     },
     info: (msg) => {
-        // console.log();
-        console.log(chalk.cyan("Info : " + msg));
-        // console.log();
+      console.log(chalk.cyan("Info : " + msg)); 
+    },
+    showSSHKMsg: (sshk) => {
+      console.log(chalk.green(`
+        help:
+        -------------请复制你的sshk到-----------------
+        https://package.yonyoucloud.com/setting 设置您的key
+
+        ${sshk}
+
+        -------------------end----------------------
+        `));
     },
     error: (msg) => {
-        // console.log();
-        console.log(chalk.red("Error : " + msg));
-        // console.log();
+      console.log(chalk.red("Error : " + msg));
     }
 }

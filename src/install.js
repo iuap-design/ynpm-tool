@@ -94,8 +94,6 @@ module.exports = (registry) => {
             //更新package.json
             updateDependencies(pkgJson);
         }
-        console.log('pkgJson',pkgJson)
-        
         addDownloadNum({installPackMap:JSON.stringify(pkgs)})
 
         console.log('\n')

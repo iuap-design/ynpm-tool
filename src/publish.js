@@ -49,10 +49,8 @@ module.exports = (registry) => {
                 let pckMsg = yield setPackage({userId: data.user_id, name:params.name, author: ynpmConfig.user, version:params.version, packageInfo:escape(JSON.stringify(params))})
                 console.log('\n')
                 console.log(chalk.green(`√ Finish, Happy enjoy coding!`));
-            } else if(publish_result[parseAuth]) {
-                console.error(`Error: Overflow User Privilege, Publish Package Scoped with "@${jsonRes[parseAuth]}" or Contact Admin to Extend Privilege!`);
             } else {
-                console.error("Error: Cant Find User, Please Use `npm config set _auth=base64String` or Contact Admin to Create User!");
+                console.error("Error: Cant Find User, Please Use `npm set user=xxx && npm set email=xxx` or Contact Admin to Create User!");
             }
         }
         // else if(argvs[2] == 'publish' && argvs[3] != 'inner'){

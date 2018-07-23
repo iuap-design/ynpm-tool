@@ -51,7 +51,18 @@ module.exports = {
         case "install":
             co(function* (){
               // Ping内网;
-              install(yield getPing());
+              install(yield getPing(),'');
+            }).catch(err => {
+              console.error(chalk.red('\n' + err));
+            });
+            break;
+        case "installdev":
+            console.log(process.argv)
+            //替换 installdev 成 install
+            process.argv[2] = 'install'
+            co(function* (){
+              // Ping内网;
+              install(yield getPing(),'dev');
             }).catch(err => {
               console.error(chalk.red('\n' + err));
             });

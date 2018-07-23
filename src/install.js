@@ -20,33 +20,40 @@ function countStrLeng(str,subStr){
     return count;
 }
 
-module.exports = (registry) => { 
+function console_log(ifHasLog,msg){
+    if(ifHasLog == 'dev') {
+        console.log(msg)
+    }
+    return
+}
+
+
+module.exports = (registry,ifHasLog) => {
     const argvs = process.argv;
     let _pack = [];
     
     let pkgJson = JSON.parse(fs.readFileSync(path.join(process.cwd(), 'package.json'),'utf-8'));
-
     let _package;
     let commIndex = argvs.findIndex(comm=>comm == "--save");
     let devCommIndex = argvs.findIndex(comm=>comm == "--save-dev");
     let commLeng = argvs.length-1;
-    if(commIndex == commLeng || devCommIndex == commLeng){
+    if(commIndex == commLeng || devCommIndex == commLeng){//npm install   xx  --save        
+        console_log(ifHasLog, 'npm install   xx  --save ')
         _package = argvs.slice(3,commLeng)
         _pack  = getPackMsg(_package)
-    }else if(commIndex == 3 || devCommIndex == 3){
+    }else if(commIndex == 3 || devCommIndex == 3){//npm install --save  xx 
+        console_log(ifHasLog, 'npm install --save  xx')
         _package = argvs.slice(4,commLeng+1)
         _pack  = getPackMsg(_package)
-    }else if(argvs.length == 3 && argvs[2] == "install"){
-        console.log('1');
+    }else if(argvs.length == 3 && argvs[2] == "install"){//npm install
         //ynpm install 命令
         try {
+            console_log(ifHasLog, 'npm install')
             let dependencies = {};
             dependencies = Object.assign(pkgJson.dependencies,pkgJson.devDependencies);
-            console.log('dependencies',dependencies)
             Object.keys(dependencies).forEach(name => {
                 _pack.push({ name: name, version: dependencies[name] })
             })
-            console.log('_pack',_pack)
         } catch(e) {
             console.error(chalk.red('\n package.json is not de find !'));
         }
@@ -62,10 +69,10 @@ module.exports = (registry) => {
         const argv_part = argvs.slice(2).join(' ');
         let arg_install = npm_registry + argv_part;
         let packTotal = pkgs.length;
-        console.time(`updated ${packTotal} packages in`);
-        console.log('arg_install',arg_install)
+        // console.time(`updated ${packTotal} packages in`);
+        let startTime = new Date()
         showProcess(spinner,pkgs);//进度
-        console.log('start npm install')
+        console_log(ifHasLog, arg_install)
         let status = yield npminstall(arg_install);
 
         //如果报错就不进行下去
@@ -80,6 +87,7 @@ module.exports = (registry) => {
                 tempPkgs[pkg.name] = pkg.version
             }
             pkgJson.dependencies = Object.assign(pkgJson.dependencies,tempPkgs)
+            console_log(ifHasLog, pkgJson)
             //更新package.json
             updateDependencies(pkgJson);
             // --save-dev 时候写入package.json
@@ -88,13 +96,15 @@ module.exports = (registry) => {
                 tempPkgs[pkg.name] = pkg.version
             }
             pkgJson.devDependencies = Object.assign(pkgJson.devDependencies,tempPkgs)
+            console_log(ifHasLog, pkgJson)
             //更新package.json
             updateDependencies(pkgJson);
         }
         addDownloadNum({installPackMap:JSON.stringify(pkgs)})
 
         console.log('\n')
-        console.timeEnd(`updated ${packTotal} packages in`);
+        let endTime = new Date()
+        console.log(`updated ${packTotal} packages in ${(endTime-startTime)/1000}s`);
         console.log('\n')
         console.log(chalk.green(`√ Finish, Happy enjoy coding!`));
         setTimeout(()=>{
@@ -153,8 +163,6 @@ function installValidate(pkgs, spinner) {
 function npminstall(arg_install){
     return co(function* (){
         try {
-            console.log('执行 npminstall')
-            // console.log('===',arg_process)
             yield Exec(arg_install);
             return true;
         } catch (err) {
@@ -184,8 +192,6 @@ function showProcess(spinner,pkgs) {
     let text3 = `...`;
     let time = 0,value,index=0;
     let pkgLeng = pkgs.length
-
-    console.log('showProcess ==== pkgs.length', pkgLeng)
     setInterval(() => {
         let item = pkgs[index];
         if(time%3===0){
@@ -195,9 +201,7 @@ function showProcess(spinner,pkgs) {
         }else {
             value = text3
         }
-
         if(index<pkgLeng-1){
-            console.log(`[${pkgLeng}/${index}]Installing ${item.name} package ⬇️ ${value}`)
             spinner.text = `[${pkgLeng}/${index}]Installing ${item.name} package ⬇️ ${value}`
         }else {
             spinner.text = `[${pkgLeng}/${pkgLeng}]Installing ${pkgs[pkgLeng-1].name} package ⬇️ ${value}`

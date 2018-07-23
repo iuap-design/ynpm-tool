@@ -1,4 +1,4 @@
-
+'use strict';
 const chalk = require('chalk');
 const path = require('path');
 const fs = require('fs');
@@ -20,34 +20,35 @@ function countStrLeng(str,subStr){
     return count;
 }
 
-function setDependencies(package){
-    let dependencies = {};
-    package.forEach(data=>{
-        dependencies.name = data.name;
-        dependencies.version = data.version;
-    })
-    return dependencies;
+function console_log(ifHasLog,msg){
+    if(ifHasLog == 'dev') {
+        console.log(msg)
+    }
+    return
 }
 
-module.exports = (registry) => { 
+
+module.exports = (registry,ifHasLog) => {
     const argvs = process.argv;
     let _pack = [];
     
     let pkgJson = JSON.parse(fs.readFileSync(path.join(process.cwd(), 'package.json'),'utf-8'));
-
-    let package = [];
+    let _package;
     let commIndex = argvs.findIndex(comm=>comm == "--save");
     let devCommIndex = argvs.findIndex(comm=>comm == "--save-dev");
     let commLeng = argvs.length-1;
-    if(commIndex == commLeng || devCommIndex == commLeng){
-        package = argvs.slice(3,commLeng)
-        _pack  = getPackMsg(package)
-    }else if(commIndex == 3 || devCommIndex == 3){
-        package = argvs.slice(4,commLeng+1)
-        _pack  = getPackMsg(package)
-    }else if(argvs.length == 3 && argvs[2] == "install"){
+    if(commIndex == commLeng || devCommIndex == commLeng){//npm install   xx  --save        
+        console_log(ifHasLog, 'npm install   xx  --save ')
+        _package = argvs.slice(3,commLeng)
+        _pack  = getPackMsg(_package)
+    }else if(commIndex == 3 || devCommIndex == 3){//npm install --save  xx 
+        console_log(ifHasLog, 'npm install --save  xx')
+        _package = argvs.slice(4,commLeng+1)
+        _pack  = getPackMsg(_package)
+    }else if(argvs.length == 3 && argvs[2] == "install"){//npm install
         //ynpm install 命令
         try {
+            console_log(ifHasLog, 'npm install')
             let dependencies = {};
             dependencies = Object.assign(pkgJson.dependencies,pkgJson.devDependencies);
             Object.keys(dependencies).forEach(name => {
@@ -68,9 +69,12 @@ module.exports = (registry) => {
         const argv_part = argvs.slice(2).join(' ');
         let arg_install = npm_registry + argv_part;
         let packTotal = pkgs.length;
-        console.time(`updated ${packTotal} packages in`);
+        // console.time(`updated ${packTotal} packages in`);
+        let startTime = new Date()
         showProcess(spinner,pkgs);//进度
+        console_log(ifHasLog, arg_install)
         let status = yield npminstall(arg_install);
+
         //如果报错就不进行下去
         if(!status){
             stop(spinner);
@@ -83,6 +87,7 @@ module.exports = (registry) => {
                 tempPkgs[pkg.name] = pkg.version
             }
             pkgJson.dependencies = Object.assign(pkgJson.dependencies,tempPkgs)
+            console_log(ifHasLog, pkgJson)
             //更新package.json
             updateDependencies(pkgJson);
             // --save-dev 时候写入package.json
@@ -91,13 +96,15 @@ module.exports = (registry) => {
                 tempPkgs[pkg.name] = pkg.version
             }
             pkgJson.devDependencies = Object.assign(pkgJson.devDependencies,tempPkgs)
+            console_log(ifHasLog, pkgJson)
             //更新package.json
             updateDependencies(pkgJson);
         }
         addDownloadNum({installPackMap:JSON.stringify(pkgs)})
 
         console.log('\n')
-        console.timeEnd(`updated ${packTotal} packages in`);
+        let endTime = new Date()
+        console.log(`updated ${packTotal} packages in ${(endTime-startTime)/1000}s`);
         console.log('\n')
         console.log(chalk.green(`√ Finish, Happy enjoy coding!`));
         setTimeout(()=>{
@@ -111,7 +118,7 @@ module.exports = (registry) => {
 }
 
 function getPackMsg(_pack) {
-    let package = [];
+    let _package = [];
     _pack.forEach(pa=>{
         let count = countStrLeng(pa,"@");
         let obj ={name:"",version:"latest"};
@@ -128,9 +135,9 @@ function getPackMsg(_pack) {
                 obj.version =  ind==0?"latest":_pas[1];
             }
         }
-        package.push(obj)
+        _package.push(obj)
     })
-    return package
+    return _package
 }
 
 function stop(spinner){
@@ -156,7 +163,6 @@ function installValidate(pkgs, spinner) {
 function npminstall(arg_install){
     return co(function* (){
         try {
-            // console.log('===',arg_process)
             yield Exec(arg_install);
             return true;
         } catch (err) {

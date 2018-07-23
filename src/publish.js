@@ -41,7 +41,7 @@ module.exports = (registry) => {
                     let publish_result = yield Exec(arg_publish_inner);
                 }catch(e){
                     console.error(e)
-                    console.error(chalk.red('\n' + '请检查一下package.json版本号!'));
+                    console.error(chalk.red('\n' + '请检查一下package.json包的版本号，如果多次还是不行请联系管理员chenpanf@yonyou.com!'));
                     spinner.stop();
                     process.exit(0);
                 }

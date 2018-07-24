@@ -118,6 +118,8 @@ module.exports = (registry,ifHasLog) => {
     
 }
 
+
+
 function getPackMsg(_pack) {
     let _package = [];
     _pack.forEach(pa=>{
@@ -160,6 +162,7 @@ function installValidate(pkgs, spinner) {
         return;
     }
 }
+
 
 function npminstall(arg_install){
     return co(function* (){

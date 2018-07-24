@@ -35,13 +35,14 @@ module.exports = (registry,ifHasLog) => {
     let pkgJson = JSON.parse(fs.readFileSync(path.join(process.cwd(), 'package.json'),'utf-8'));
     let _package;
     let commIndex = argvs.findIndex(comm=>comm == "--save");
+    let aliasCommIndex = argvs.findIndex(comm=>comm == "-S");
     let devCommIndex = argvs.findIndex(comm=>comm == "--save-dev");
     let commLeng = argvs.length-1;
-    if(commIndex == commLeng || devCommIndex == commLeng){//npm install   xx  --save        
+    if(commIndex == commLeng || devCommIndex == commLeng || aliasCommIndex == commLeng){//npm install   xx  --save        
         console_log(ifHasLog, 'npm install   xx  --save ')
         _package = argvs.slice(3,commLeng)
         _pack  = getPackMsg(_package)
-    }else if(commIndex == 3 || devCommIndex == 3){//npm install --save  xx 
+    }else if(commIndex == 3 || devCommIndex == 3 || aliasCommIndex == 3){//npm install --save  xx 
         console_log(ifHasLog, 'npm install --save  xx')
         _package = argvs.slice(4,commLeng+1)
         _pack  = getPackMsg(_package)
@@ -82,7 +83,7 @@ module.exports = (registry,ifHasLog) => {
         }
         let tempPkgs = {}
         // --save 时候写入package.json
-        if(commIndex > -1) {
+        if(commIndex > -1 || aliasCommIndex > -1) {
             for(let pkg of pkgs) {
                 tempPkgs[pkg.name] = pkg.version
             }

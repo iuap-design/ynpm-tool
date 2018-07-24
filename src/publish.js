@@ -23,6 +23,7 @@ module.exports = (registry) => {
 
     co(function* (){
         if(argvs[2] == 'publish'){
+            
             var ynpmConfig = JSON.parse(getRc("ynpm"));
             //validate user rolse
             let data = yield userInfo();
@@ -41,7 +42,7 @@ module.exports = (registry) => {
                     let publish_result = yield Exec(arg_publish_inner);
                 }catch(e){
                     console.error(e)
-                    console.error(chalk.red('\n' + 'please check the package.json\'s version, if has try a lot of time, please connect admin\'s email chenpanf@yonyou.com!'));
+                    console.error(chalk.red('\n' + 'please check the package.json\'s version, if has try a lot of time, \n please connect admin\'s email wangshih@yonyou.com or chenpanf@yonyou.com !'));
                     spinner.stop();
                     process.exit(0);
                 }

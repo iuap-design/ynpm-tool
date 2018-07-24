@@ -27,22 +27,53 @@
 npm install ynpm-tool -g
 ```
 
-
-
 #### 基本使用
+
+
+> 下载包
+
+```
+ ynpm install 
+  
+ ynpm install --save @yonyou/ac-button
+```
+
+> 发布包
+
+> 设置账户信息[登陆](https://package.yonyoucloud.com)
+
+```
+ ynpm set user=xx
+
+ ynpm set email=xx(友互通账号)
+ 
+ 复制sshk,登陆官网设置sshk
+ 
+ cd xx(project)
+
+ ynpm publish
+ 
+```
+
+ 
+#### 相关命令均支持
 
 ```
 # 安装(install相关命令均支持)
+
 $ ynpm install xxx --option
 
 # 正常发包[只发布用友内网包]
+
 $ ynpm publish
 
 # 设置用户名
-$ ynpm set user=jonyshi
 
-# 设置用email
-$ ynpm set email=jonyshi
+$ ynpm set user=xx
+
+# 设置用账户
+
+$ ynpm set email=xx(友互通账号)
 
 # 获取sshk
 $ ynpm set sshk
@@ -64,7 +95,7 @@ $ ynpm -v 或 ynpm --version
 
 - **内网发包用户**
 
-  > `0.2.0`版本起实现内网发包，可支持`@group/packageName`形式的私有包发送。
+  > `2.0.10`版本起实现内网发包，可支持`@group/packageName`形式的私有包发送。
 
   管理员会提供账号，可通过申请获得，简单配置即可实现内部发包。
 
@@ -80,3 +111,5 @@ $ ynpm -v 或 ynpm --version
   根据反馈，少数包会报错。原因是安装包依赖一个外链下载(可能是github或amazon等第三方地址)。因为众所周知的原因，你很有可能下载不到从而出现timeout(相同的问题cnpm也会存在）.
 
   解决办法：冷静点，再装一次
+
+

@@ -65,7 +65,7 @@ module.exports = (registry,ifHasLog) => {
     let allInner = installValidate(_pack, spinner);//内网缓存中下载
     let pkgs = _pack
     co(function* (){
-        const argvs = process.argv; 
+        const argvs = process.argv;
         let npm_registry = `npm --registry=${registry} `; 
         const argv_part = argvs.slice(2).join(' ');
         let arg_install = npm_registry + argv_part;
@@ -74,6 +74,16 @@ module.exports = (registry,ifHasLog) => {
         let startTime = new Date()
         showProcess(spinner,pkgs);//进度
         console_log(ifHasLog, arg_install)
+        
+        let unInstallPack = 'node-sass'
+        let thisIndex = Object.keys(pkgs).includes(unInstallPack)
+        if(thisIndex > -1){
+            let tempRegitstry = registry.split('repository/ynpm-all/')[0]
+            let sassCommon = `SASS_BINARY_SITE=${tempRegitstry}mirrors/node-sass/ npm install node-sass`
+            console_log(ifHasLog,sassCommon)
+            yield npminstall(sassCommon)
+        }
+        
         let status = yield npminstall(arg_install);
 
         //如果报错就不进行下去
@@ -114,10 +124,8 @@ module.exports = (registry,ifHasLog) => {
     }).catch(err => {
         console.error(chalk.red('\n' + err));
         stop(spinner);
-    });
-    
+    });    
 }
-
 
 
 function getPackMsg(_pack) {

@@ -73,17 +73,15 @@ module.exports = (registry,ifHasLog) => {
         // console.time(`updated ${packTotal} packages in`);
         let startTime = new Date()
         showProcess(spinner,pkgs);//进度
-        console_log(ifHasLog, arg_install)
-        
         let unInstallPack = 'node-sass'
-        let thisIndex = Object.keys(pkgs).includes(unInstallPack)
-        if(thisIndex > -1){
+        let ifFind = pkgs.findIndex(item=> item.name == unInstallPack)
+        if(ifFind > -1){
             let tempRegitstry = registry.split('repository/ynpm-all/')[0]
             let sassCommon = `SASS_BINARY_SITE=${tempRegitstry}mirrors/node-sass/ npm install node-sass`
             console_log(ifHasLog,sassCommon)
             yield npminstall(sassCommon)
         }
-        
+        console_log(ifHasLog, arg_install)
         let status = yield npminstall(arg_install);
 
         //如果报错就不进行下去

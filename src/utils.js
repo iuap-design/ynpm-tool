@@ -1,8 +1,8 @@
 'use strict';
 
 //  Nexus OSS 3.12 Info
-const IPCOMPANY = '172.20.27.204';//内网
-const YON_INNER_MIRROR = 'http://172.20.27.204:8081/repository/ynpm-all/';
+const IPCOMPANY = '172.20.23.233';//内网
+const YON_INNER_MIRROR = 'http://172.20.23.233:8081/repository/ynpm-all/';
 //外网
 const YON_MIRROR = 'http://123.103.9.196:8081/repository/ynpm-all/';
 const HOST_REGISTRY = 'http://123.103.9.196:8081/repository/ynpm-private/';

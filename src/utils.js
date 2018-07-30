@@ -17,12 +17,14 @@ const tcpp = require('tcp-ping');
 const thunkify = require("thunkify");
 const btoa = require('btoa');
 let objectAssign = require('object-assign');
+const propertiesParser = require('properties-parser')
 const exec = require('child_process').exec;
 const Ping = thunkify(tcpp.ping);
 
 const help = require('./help');
 const userPath = process.env.HOME;
 const fileName = "ynpm";
+
 
 /**
  * 根据数据源寻找属性是否存在
@@ -55,8 +57,7 @@ function getCommands(fileName){
   try{
       let attr
       if(argvs[2] == "set" && argvs[3].indexOf("email") > -1 ){
-        let data = fs.readFileSync(getRcFile(fileName),"utf-8");
-        data = JSON.parse(data);
+        let data = propertiesParser.read(getRcFile(fileName));
         attr = argvs[3].split("=");
         if(attr[1]===undefined){
           console.error('email 不能为空')
@@ -68,8 +69,7 @@ function getCommands(fileName){
         help.showSSHKMsg(sshk)
         config = data;
       }else if(argvs[2] == "set" && argvs[3] == "sshk"){
-        let data = fs.readFileSync(getRcFile(fileName),"utf-8");
-        data = JSON.parse(data);
+        let data = propertiesParser.read(getRcFile(fileName));
         data["sshk"] = btoa(data.user+":"+data.user);
         let sshk = data["sshk"];
         help.showSSHKMsg(sshk)
@@ -93,27 +93,35 @@ function getCommands(fileName){
           comm?fs.writeFileSync(path,JSON.stringify(comm)):"";
       }else{
         let comm = getCommands(fileName); 
-        let config = fs.readFileSync(path,"utf-8");
+        let config = propertiesParser.read(path);
         if(comm){
-          config = config?JSON.parse(config):{};
+          config = config||{};
           config = objectAssign(config,comm);
-          let set_npmrc_email_config = `npm config set email=${config.email}`;
-          let set_npmrc_auth_config = `npm config set _auth=${config.sshk}`;
-          config = JSON.stringify(config);
-          fs.writeFileSync(path,config);
           
-          exec(set_npmrc_email_config,(error, stdout, stderr)=>{
-            if(error) {
-              console.error('error: ' + error);
-              return;
-            }
-            exec(set_npmrc_auth_config,(error, stdout, stderr)=>{
+          // config = JSON.stringify(config);
+          // 转换为 a='a' 的格式
+          let editor = propertiesParser.createEditor();
+          for (var item in config) {
+            editor.set(item, config[item]);
+          }
+          fs.writeFileSync(path,editor.toString())
+
+          if(config.email && config.sshk) {
+            let set_npmrc_email_config = `npm config set email=${config.email}`;
+            let set_npmrc_auth_config = `npm config set _auth=${config.sshk}`;
+            exec(set_npmrc_email_config,(error, stdout, stderr)=>{
               if(error) {
                 console.error('error: ' + error);
                 return;
               }
+              exec(set_npmrc_auth_config,(error, stdout, stderr)=>{
+                if(error) {
+                  console.error('error: ' + error);
+                  return;
+                }
+              });
             });
-          });
+          }
         };
       }
     }catch(e){
@@ -129,7 +137,7 @@ function getCommands(fileName){
  */
 function getRc(fileName){
   if(getValidateRc(fileName)){ 
-     return fs.readFileSync(getRcFile(fileName),"utf-8");
+    return propertiesParser.read(getRcFile(fileName));
   }else{
     return null;
   }

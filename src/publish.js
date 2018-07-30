@@ -23,10 +23,11 @@ module.exports = (registry) => {
 
     co(function* (){
         if(argvs[2] == 'publish'){
-            
-            var ynpmConfig = JSON.parse(getRc("ynpm"));
+            var ynpmConfig = getRc("ynpm");
+            console.log('ynpmConfig',ynpmConfig)
             //validate user rolse
             let data = yield userInfo();
+            console.log('data',data)
             if(!data){
                 help.setConfig();
                 spinner.stop();

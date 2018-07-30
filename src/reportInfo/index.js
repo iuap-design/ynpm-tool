@@ -49,7 +49,7 @@ function isEmptyObject(obj){
 };
 
 function userInfo(){
-  let parame = JSON.parse(getRc("ynpm"));
+  let parame = getRc("ynpm");
   let config = getHttpConfig({
     path:"/user/getUserValidate",
   });

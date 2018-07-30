@@ -28,6 +28,15 @@ function console_log(ifHasLog,msg){
     return
 }
 
+function getResultPkgs(paramStr){
+    let obj={},paramArr=paramStr.split('+');
+    paramArr.forEach((item)=>{
+        let temp = item.trim()
+        let index = temp.indexOf('@')
+        obj[temp.slice(0,index)]='^'+temp.slice(index+1)
+    })
+    return obj;
+}
 
 module.exports = (registry,ifHasLog) => {
     const argvs = process.argv;
@@ -83,39 +92,41 @@ module.exports = (registry,ifHasLog) => {
             yield npminstall(sassCommon)
         }
         console_log(ifHasLog, arg_install)
-        let status = yield npminstall(arg_install);
+        let resultInstall = yield npminstall(arg_install);
 
         //如果报错就不进行下去
-        if(!status){
+        if(!resultInstall){
             stop(spinner);
             return
         }
+        //ynpm install时`up to date in 1.435s` 不处理
+        if(resultInstall.indexOf('@') > -1) {
+            resultInstall = resultInstall.slice(1)
+            resultInstall = resultInstall.slice(0,resultInstall.indexOf('updated'))
+            let formatResult = getResultPkgs(resultInstall)
+        }
+        console.log('\n\n',resultInstall)
         let tempPkgs = {}
         // --save 时候写入package.json
         if(commIndex > -1 || aliasCommIndex > -1) {
-            for(let pkg of pkgs) {
-                tempPkgs[pkg.name] = pkg.version
-            }
-            pkgJson.dependencies = Object.assign(pkgJson.dependencies,tempPkgs)
+            // for(let pkg of formatResult) {
+            //     tempPkgs[pkg.name] = pkg.version
+            // }
+            pkgJson.dependencies = Object.assign(pkgJson.dependencies,formatResult)
             console_log(ifHasLog, pkgJson)
             //更新package.json
             updateDependencies(pkgJson);
             // --save-dev 时候写入package.json
         } else if(devCommIndex > -1) {
-            for(let pkg of pkgs) {
-                tempPkgs[pkg.name] = pkg.version
-            }
-            pkgJson.devDependencies = Object.assign(pkgJson.devDependencies,tempPkgs)
+            // for(let pkg of formatResult) {
+            //     tempPkgs[pkg.name] = pkg.version
+            // }
+            pkgJson.devDependencies = Object.assign(pkgJson.devDependencies,formatResult)
             console_log(ifHasLog, pkgJson)
             //更新package.json
             updateDependencies(pkgJson);
         }
         addDownloadNum({installPackMap:JSON.stringify(pkgs)})
-
-        console.log('\n')
-        let endTime = new Date()
-        console.log(`updated ${packTotal} packages in ${(endTime-startTime)/1000}s`);
-        console.log('\n')
         console.log(chalk.green(`√ Finish, Happy enjoy coding!`));
         setTimeout(()=>{
             stop(spinner);
@@ -174,8 +185,8 @@ function installValidate(pkgs, spinner) {
 function npminstall(arg_install){
     return co(function* (){
         try {
-            yield Exec(arg_install);
-            return true;
+            let res = yield Exec(arg_install);
+            return eval(res)[0];
         } catch (err) {
             console.error(chalk.red('\n' + err));
             return false;

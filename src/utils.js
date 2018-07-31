@@ -106,22 +106,22 @@ function getCommands(fileName){
           }
           fs.writeFileSync(path,editor.toString())
 
-          if(config.email && config.sshk) {
-            let set_npmrc_email_config = `npm config set email=${config.email}`;
-            let set_npmrc_auth_config = `npm config set _auth=${config.sshk}`;
-            exec(set_npmrc_email_config,(error, stdout, stderr)=>{
-              if(error) {
-                console.error('error: ' + error);
-                return;
-              }
-              exec(set_npmrc_auth_config,(error, stdout, stderr)=>{
-                if(error) {
-                  console.error('error: ' + error);
-                  return;
-                }
-              });
-            });
-          }
+          // if(config.email && config.sshk) {
+          //   let set_npmrc_email_config = `npm config set email=${config.email}`;
+          //   let set_npmrc_auth_config = `npm config set _auth=${config.sshk}`;
+          //   exec(set_npmrc_email_config,(error, stdout, stderr)=>{
+          //     if(error) {
+          //       console.error('error: ' + error);
+          //       return;
+          //     }
+          //     exec(set_npmrc_auth_config,(error, stdout, stderr)=>{
+          //       if(error) {
+          //         console.error('error: ' + error);
+          //         return;
+          //       }
+          //     });
+          //   });
+          // }
         };
       }
     }catch(e){

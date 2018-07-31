@@ -9,7 +9,7 @@ const ora = require('ora');
 const co = require('co');
 const chalk = require('chalk');
 const {userInfo, setPackage} = require('./reportInfo/index');
-const {getRc,HOST_REGISTRY,getPckParams} = require('./utils');
+const {getRcFile,getRc,HOST_REGISTRY,getPckParams} = require('./utils');
 const help = require('./help');
 
 const IP_Req = thunkify(request);
@@ -24,10 +24,9 @@ module.exports = (registry) => {
     co(function* (){
         if(argvs[2] == 'publish'){
             var ynpmConfig = getRc("ynpm");
-            console.log('ynpmConfig',ynpmConfig)
+            ynpmConfig.sshk=ynpmConfig._auth
             //validate user rolse
             let data = yield userInfo();
-            console.log('data',data)
             if(!data){
                 help.setConfig();
                 spinner.stop();
@@ -37,7 +36,8 @@ module.exports = (registry) => {
 
             if(ynpmConfig.user && ynpmConfig.sshk && data){
                 console.log('Aviable: Pass Validation, Start to Publish...')
-                var arg_publish_inner = `npm --registry=${HOST_REGISTRY} publish`;
+                let userconfig = getRcFile('ynpm')
+                var arg_publish_inner = `npm --registry=${HOST_REGISTRY} --userconfig=${userconfig} publish`;
                 spinner.text = 'Publishing your package in Yonyou Local Area Net ---';
                 try{
                     let publish_result = yield Exec(arg_publish_inner);

@@ -90,12 +90,20 @@ function getCommands(fileName){
    let path = getRcFile(fileName);
     try{
       let valida = getValidateRc(fileName);
+      console.log('valida',valida)
       if(!valida){
           let comm = getCommands(fileName);
-          comm?fs.writeFileSync(path,JSON.stringify(comm)):"";
+          console.log('comm',comm)
+          let editor = propertiesParser.createEditor();
+          for (var item in comm) {
+            editor.set(item, comm[item]);
+          }
+          fs.writeFileSync(path,editor.toString())
+          // comm?fs.writeFileSync(path,JSON.stringify(comm)):"";
       }else{
         let comm = getCommands(fileName); 
         let config = propertiesParser.read(path);
+        console.log('config',config)
         if(comm){
           config = config||{};
           config = objectAssign(config,comm);
@@ -106,6 +114,8 @@ function getCommands(fileName){
           for (var item in config) {
             editor.set(item, config[item]);
           }
+          console.log('config',config)
+          console.log('editor',editor) 
           fs.writeFileSync(path,editor.toString())
 
           // if(config.email && config.sshk) {

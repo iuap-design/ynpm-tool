@@ -28,11 +28,11 @@ function console_log(ifHasLog,msg){
     return
 }
 
-function getResultPkgs(paramStr){
-    let obj={},paramArr=paramStr.split('+');
+function getResultPkgs(paramArr){
+    let obj={}
     paramArr.forEach((item)=>{
-        let temp = item.trim()
-        let index = temp.indexOf('@')
+        let temp = item.replace(/\+\s+/,'').trim()
+        let index = temp.lastIndexOf('@')
         obj[temp.slice(0,index)]='^'+temp.slice(index+1)
     })
     return obj;
@@ -99,13 +99,15 @@ module.exports = (registry,ifHasLog) => {
             stop(spinner);
             return
         }
+        console.log('\n\n',resultInstall)
+        let formatResult
         //ynpm install时`up to date in 1.435s` 不处理
         if(resultInstall.indexOf('@') > -1) {
-            resultInstall = resultInstall.slice(1)
-            resultInstall = resultInstall.slice(0,resultInstall.indexOf('updated'))
-            let formatResult = getResultPkgs(resultInstall)
+            resultInstall = resultInstall.match(/(\+.*@\d+(\.\d+)*)/g)
+            console_log(ifHasLog, resultInstall)
+            formatResult = getResultPkgs(resultInstall)
         }
-        console.log('\n\n',resultInstall)
+        console_log(ifHasLog, formatResult)
         let tempPkgs = {}
         // --save 时候写入package.json
         if(commIndex > -1 || aliasCommIndex > -1) {

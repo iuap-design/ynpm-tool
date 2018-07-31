@@ -50,7 +50,6 @@ function isEmptyObject(obj){
 
 function userInfo(){
   let parame = getRc("ynpm");
-  parame.sshk=parame._auth
   let config = getHttpConfig({
     path:"/user/getUserValidate",
   });

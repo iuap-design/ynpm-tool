@@ -5,7 +5,7 @@ const IPCOMPANY = '172.20.23.233';//内网
 const YON_INNER_MIRROR = 'http://172.20.23.233:8081/repository/ynpm-all/';
 //外网
 const YON_MIRROR = 'http://123.103.9.196:8081/repository/ynpm-all/';
-const HOST_REGISTRY = 'http://123.103.9.196:8081/repository/ynpm-private/';
+const HOST_REGISTRY = 'http://172.20.23.233:8081/repository/ynpm-private/';
 const YNPM_SERVER = "http://package.yonyoucloud.com/npm";
 // const YNPM_SERVER = "http://127.0.0.1:3001/npm";
 
@@ -65,12 +65,14 @@ function getCommands(fileName){
         }
         data[attr[0]] = attr[1];
         data["sshk"] = btoa(data.user+":"+data.user);
+        data["_auth"] = btoa(data.user+":"+data.user);
         let sshk = data["sshk"];
         help.showSSHKMsg(sshk)
         config = data;
       }else if(argvs[2] == "set" && argvs[3] == "sshk"){
         let data = propertiesParser.read(getRcFile(fileName));
         data["sshk"] = btoa(data.user+":"+data.user);
+        data["_auth"] = btoa(data.user+":"+data.user);
         let sshk = data["sshk"];
         help.showSSHKMsg(sshk)
       }else if(argvs[2] == "set"){

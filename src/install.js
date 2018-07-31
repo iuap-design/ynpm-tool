@@ -102,18 +102,20 @@ module.exports = (registry,ifHasLog) => {
         console.log('\n\n',resultInstall)
         let formatResult
         //ynpm install时`up to date in 1.435s` 不处理
-        if(resultInstall.indexOf('@') > -1) {
-            resultInstall = resultInstall.match(/(\+.*@\d+(\.\d+)*)/g)
-            console_log(ifHasLog, resultInstall)
-            formatResult = getResultPkgs(resultInstall)
-        }
-        console_log(ifHasLog, formatResult)
+        
         let tempPkgs = {}
         // --save 时候写入package.json
         if(commIndex > -1 || aliasCommIndex > -1) {
             // for(let pkg of formatResult) {
             //     tempPkgs[pkg.name] = pkg.version
             // }
+
+            if(resultInstall.indexOf('@') > -1) {
+                resultInstall = resultInstall.match(/(\+.*@\d+(\.\d+)*)/g)
+                console_log(ifHasLog, resultInstall)
+                formatResult = getResultPkgs(resultInstall)
+            }
+            console_log(ifHasLog, formatResult)
             pkgJson.dependencies = Object.assign(pkgJson.dependencies,formatResult)
             console_log(ifHasLog, pkgJson)
             //更新package.json
@@ -123,6 +125,12 @@ module.exports = (registry,ifHasLog) => {
             // for(let pkg of formatResult) {
             //     tempPkgs[pkg.name] = pkg.version
             // }
+            if(resultInstall.indexOf('@') > -1) {
+                resultInstall = resultInstall.match(/(\+.*@\d+(\.\d+)*)/g)
+                console_log(ifHasLog, resultInstall)
+                formatResult = getResultPkgs(resultInstall)
+            }
+            console_log(ifHasLog, formatResult)
             pkgJson.devDependencies = Object.assign(pkgJson.devDependencies,formatResult)
             console_log(ifHasLog, pkgJson)
             //更新package.json

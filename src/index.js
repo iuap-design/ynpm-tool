@@ -48,6 +48,15 @@ module.exports = {
         case "-version":
             help.version();
             break;
+        case "i":
+            process.argv[2] = 'install'
+            co(function* (){
+              // Ping内网;
+              install(yield getPing(),'');
+            }).catch(err => {
+              console.error(chalk.red('\n' + err));
+            });
+            break;
         case "install":
             co(function* (){
               // Ping内网;

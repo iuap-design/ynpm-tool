@@ -109,7 +109,6 @@ module.exports = (registry,ifHasLog) => {
             // for(let pkg of formatResult) {
             //     tempPkgs[pkg.name] = pkg.version
             // }
-
             if(resultInstall.indexOf('@') > -1) {
                 resultInstall = resultInstall.match(/(\+.*@\d+(\.\d+)*)/g)
                 console_log(ifHasLog, resultInstall)

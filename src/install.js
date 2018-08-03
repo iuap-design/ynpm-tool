@@ -61,6 +61,8 @@ module.exports = (registry,ifHasLog) => {
         try {
             console_log(ifHasLog, 'npm install')
             let dependencies = {};
+            pkgJson.dependencies = pkgJson.dependencies||{}
+            pkgJson.devDependencies = pkgJson.devDependencies||{}
             dependencies = Object.assign(pkgJson.dependencies,pkgJson.devDependencies);
             Object.keys(dependencies).forEach(name => {
                 _pack.push({ name: name, version: dependencies[name] })

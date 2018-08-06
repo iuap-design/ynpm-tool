@@ -117,10 +117,10 @@ module.exports = (registry,ifHasLog) => {
                 formatResult = getResultPkgs(resultInstall)
             }
             console_log(ifHasLog, formatResult)
-            pkgJson.dependencies = Object.assign(pkgJson.dependencies,formatResult)
-            console_log(ifHasLog, pkgJson)
-            //更新package.json
-            updateDependencies(pkgJson);
+            // pkgJson.dependencies = Object.assign(pkgJson.dependencies,formatResult)
+            // console_log(ifHasLog, pkgJson)
+            // //更新package.json
+            // updateDependencies(pkgJson);
             // --save-dev 时候写入package.json
         } else if(devCommIndex > -1) {
             // for(let pkg of formatResult) {
@@ -132,10 +132,10 @@ module.exports = (registry,ifHasLog) => {
                 formatResult = getResultPkgs(resultInstall)
             }
             console_log(ifHasLog, formatResult)
-            pkgJson.devDependencies = Object.assign(pkgJson.devDependencies,formatResult)
-            console_log(ifHasLog, pkgJson)
-            //更新package.json
-            updateDependencies(pkgJson);
+            // pkgJson.devDependencies = Object.assign(pkgJson.devDependencies,formatResult)
+            // console_log(ifHasLog, pkgJson)
+            // //更新package.json
+            // updateDependencies(pkgJson);
         }
         addDownloadNum({installPackMap:JSON.stringify(pkgs)})
         console.log(chalk.green(`√ Finish, Happy enjoy coding!`));
@@ -186,7 +186,7 @@ function stop(spinner){
 
 function installValidate(pkgs, spinner) {
     if(pkgs && pkgs.length < 1){
-        console.error(chalk.red('\n sorry,package is null !'));
+        console.error(chalk.red('\n sorry,error options or package is null !'));
         stop(spinner);
         return;
     }

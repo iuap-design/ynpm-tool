@@ -117,10 +117,10 @@ module.exports = (registry,ifHasLog) => {
                 formatResult = getResultPkgs(resultInstall)
             }
             console_log(ifHasLog, formatResult)
-            // pkgJson.dependencies = Object.assign(pkgJson.dependencies,formatResult)
-            // console_log(ifHasLog, pkgJson)
-            // //更新package.json
-            // updateDependencies(pkgJson);
+            pkgJson.dependencies = Object.assign(pkgJson.dependencies||{},formatResult)
+            console_log(ifHasLog, pkgJson)
+            //更新package.json
+            updateDependencies(pkgJson);
             // --save-dev 时候写入package.json
         } else if(devCommIndex > -1) {
             // for(let pkg of formatResult) {
@@ -132,16 +132,16 @@ module.exports = (registry,ifHasLog) => {
                 formatResult = getResultPkgs(resultInstall)
             }
             console_log(ifHasLog, formatResult)
-            // pkgJson.devDependencies = Object.assign(pkgJson.devDependencies,formatResult)
-            // console_log(ifHasLog, pkgJson)
-            // //更新package.json
-            // updateDependencies(pkgJson);
+            pkgJson.devDependencies = Object.assign(pkgJson.devDependencies||{},formatResult)
+            console_log(ifHasLog, pkgJson)
+            //更新package.json
+            updateDependencies(pkgJson);
         }
         addDownloadNum({installPackMap:JSON.stringify(pkgs)})
         console.log(chalk.green(`√ Finish, Happy enjoy coding!`));
         setTimeout(()=>{
             stop(spinner);
-        },30)
+        },400)
     }).catch(err => {
         console.error(chalk.red('\n' + err));
         stop(spinner);

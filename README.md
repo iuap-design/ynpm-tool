@@ -136,11 +136,5 @@ $ cd xx_component && ynpm publish
 <center>
   <img src="http://iuap-design-cdn.oss-cn-beijing.aliyuncs.com/static/ynpm/image/team2001.png" width="300" hegiht="100" align=center /></center>
 
-</br>
 
-#### <center>您的点赞是我们前进的动力</center></br>
-
-
-<center>
-  <img src="http://iuap-design-cdn.oss-cn-beijing.aliyuncs.com/static/ynpm/image/team1001.png" align=center /></center>
 

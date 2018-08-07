@@ -1,82 +1,146 @@
-# ynpm - 内部镜像
 
-#### 概述
+<h2 id="link1"> 概述 </h2>
 
-`ynpm`为`npm`在公司内部的镜像仓库配套的命令行工具，根据镜像代理，嵌套`npm`，关于镜像和命令行工具说明如下：
-
-- 镜像
-  - 使用`Nexus Repository OSS`搭建`npm`镜像
-  - 镜像源使用淘宝`cnpm`镜像库
-  - 镜像无需同步，下载即缓存，实现一次下载，全员共享
-- 命令行
-  - 实现自动根据IP选择下载源
-    - 内网自动使用公司镜像
-    - 外网自动使用淘宝镜像
-    - 不对`npm`的镜像源入侵
-
-总体实现
-
-- 公司内通过使用`ynpm`,实现快速下载包，减少下载等待时间
-- 支持内网发布私有包
+&nbsp;&nbsp;`ynpm`是一款基于用友内部的镜像库，为用友内部打造一个优质的代码共享平台、业务组件的多样性、组件能力最大化的输出。把各种组件、工具的能力快速输出到各个项目中，提高项目的开发速度、节省项目成本、从而实现组件价值最大化、利益的最大化。
+  
+&nbsp;&nbsp;`ynpm`还提供组件的上传、下载的以及热门组件的统计。进行有针对性的进行组件优化和能力的持续集成。
 
 
+### ynpm 功能特性
 
-#### 安装
+ 1. 根据用户网络进行自动匹配、自动切换、内网快速下载
+ 2. 镜像无需同步，下载即缓存，实现一次下载，全员共享
+ 3. 安全可靠，友互通域账号权限校验
+ 4. 内网发包配置简单、融合`github`设置`sshk`模式
+ 5. 提供强大的`cli`工具、模块化的实现、快速融合其他cli工具
+ 6. 不对`npm`的镜像源入侵
+  
+### 基本原理
 
-```
-npm install ynpm-tool -g
-```
+ 1. 使用 Nexus Repository OSS 构建镜像
+ 2. 使用自己独立的数据存储、资源包做统计
+ 3. 使用`koa+node`做中间层做请求转发和校验机制
+ 4. react开发独立的官网站点
 
+## 开始使用
 
+<h3 id="link2"> 安装 </h3>
 
-#### 基本使用
+>请确认你在本地全局安装了`Node.js`，然后使用`npm`将`ynpm`全局安装：
 
 ```
-# 安装(install相关命令均支持)
-$ ynpm install xxx --option
-
-# 正常发包[只发布用友内网包]
-$ ynpm publish
-
-# 设置用户名
-$ ynpm set user=jonyshi
-
-# 设置用email
-$ ynpm set email=jonyshi
-
-# 获取sshk
-$ ynpm set sshk
-
-# 帮助
-$ ynpm 或 ynpm -h 或 ynpm --help
-
-# 版本
-$ ynpm -v 或 ynpm --version
+$ npm install ynpm-tool -g	
 ```
 
+<h3 id="link3"> 下载 package </h3>
+
+```
+# 安装到dependencies依赖的包 
+$ ynpm install @yonyou/xxx --save
+# 安装到devDependencies依赖的包 
+$ ynpm install xxx --save-dev
+```
+
+>也可以直接使用简写:
+
+```
+$ ynpm i @yonyou/xxx -S
+```
+
+>显示ynpm的帮助信息；
+
+```
+$ ynpm -h
+```
+
+## 发包私有包到 ynpm
+
+2. 设置 ynpm
+
+>用户名必须是登录友互通的用户名
+
+```
+$ ynpm set user=xxx
+```
+
+>邮箱必须是登录友互通的邮箱或者手机号
+
+```
+$ ynpm set email=xxx
+
+```
+>显示sshk(不显示sshk见QA)
+
+2.&nbsp;复制sshk[登陆官网](https://package.yonyoucloud.com/)-->选择头像-->选择设置sshk (如图)
+
+![新增sshk](http://iuap-design-cdn.oss-cn-beijing.aliyuncs.com/static/ynpm/image/8194969-cda1b44fc7272cab.jpeg)
+
+3.&nbsp;发布
+
+```
+$ cd xx_component && ynpm publish
+```
+
+>显示finish xx_component 表示成功
+
+ [官网搜索包名](https://package.yonyoucloud.com)
+
+ 
+<h3 id="link4"> 发包规范 </h3>
+  
+  > package.json 必填项
+
+1. name ：模块名称，内部包统一用(@yonyou/xx)作为前缀
+
+2. homepage ：组件主页url，eg: http://xx.git#redme
+
+3. author ：作者
+
+3. repository ：指定一个代码存放地址。string or {}
+
+  ```
+  repository:'https://xxx.git' 
+  repository:{'url' : 'https://xxx.git'}
+  ```
+[更多npm规范](https://docs.npmjs.com/files/package.json)   &nbsp;&nbsp; [例子](https://github.com/tinper-acs/ac-button/blob/master/package.json)
 
 
-#### 权限说明
-
-- **默认内网发包**
-
-  所有下载安装工具的，均可使用`ynpm install`功能下载安装包或`ynpm publish`内网发包
-
-- **内网发包用户**
-
-  > `0.2.0`版本起实现内网发包，可支持`@group/packageName`形式的私有包发送。
-
-  管理员会提供账号，可通过申请获得，简单配置即可实现内部发包。
-
-  内部发包使用说明，可参考此[官网新手文档](https://package.yonyoucloud.com/)
-
-  ​
+	 
+<h2 id="link5"> Q&A常见问题 </h2>
 
 
-#### Q&A
+1. <strong>下载包极慢，报错timeout</strong>
+    
+    根据反馈，少数包会报错。原因是安装包依赖一个外链下载(可能是github或amazon等第三方地址)。因为众所周知的原因，你很有可能下载不到从而出现timeout(相同的问题cnpm也会存在）.
 
-* 下载包极慢，报错timeout
+2. <strong>install 的时候出现 401 权限问题</strong>
+  
+  >请执行   
+  
+  ```
+   rm -rf ~/.ynpmrc
+  ```
+3. <strong>发包出现 400、401 的情况</strong>
 
-  根据反馈，少数包会报错。原因是安装包依赖一个外链下载(可能是github或amazon等第三方地址)。因为众所周知的原因，你很有可能下载不到从而出现timeout(相同的问题cnpm也会存在）.
+    请重新 set 用户名、密码以及设置sshk
+   
+4. <strong>windows电脑sshk不显示</strong>
+    > window电脑请使用`git bash`窗口模式,执行
+    
+    ```
+    cat ~/.ynpmrc  # _auth后面的就是sshk
+    ```
+<strong>如果您尝试多次，自己无法解决的问题请反馈给我们 &nbsp; 
+[问题反馈](https://github.com/iuap-design/ynpm-tool/issues) 、联系我们解决问题</strong> 
 
-  解决办法：冷静点，再装一次
+<center>
+  <img src="http://iuap-design-cdn.oss-cn-beijing.aliyuncs.com/static/ynpm/image/team2001.png" width="300" hegiht="100" align=center /></center>
+
+</br>
+
+#### <center>您的点赞是我们前进的动力</center></br>
+
+
+<center>
+  <img src="http://iuap-design-cdn.oss-cn-beijing.aliyuncs.com/static/ynpm/image/team1001.png" align=center /></center>
+

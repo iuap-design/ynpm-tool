@@ -10,7 +10,6 @@ const YNPM_SERVER = "http://package.yonyoucloud.com/npm";
 // const YNPM_SERVER = "http://127.0.0.1:3001/npm";
 
 const chalk = require('chalk');
-const path = require('path');
 const fs = require('fs');
 const co = require('co');
 const tcpp = require('tcp-ping');
@@ -18,7 +17,6 @@ const thunkify = require("thunkify");
 const btoa = require('btoa');
 let objectAssign = require('object-assign');
 const propertiesParser = require('properties-parser')
-const exec = require('child_process').exec;
 const Ping = thunkify(tcpp.ping);
 
 const help = require('./help');

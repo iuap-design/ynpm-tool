@@ -67,12 +67,6 @@ function getCommands(fileName){
         let sshk = data["sshk"];
         help.showSSHKMsg(sshk)
         config = data;
-      }else if(argvs[2] == "set" && argvs[3] == "sshk"){
-        let data = propertiesParser.read(getRcFile(fileName));
-        data["sshk"] = btoa(data.user+":"+data.user);
-        data["_auth"] = btoa(data.user+":"+data.user);
-        let sshk = data["sshk"];
-        help.showSSHKMsg(sshk)
       }else if(argvs[2] == "set"){
         attr = argvs[3].split("=");
         config[attr[0]] = attr[1];
@@ -83,6 +77,7 @@ function getCommands(fileName){
   }
 
 }
+
 
  function setRc(fileName){
    let path = getRcFile(fileName);
@@ -179,6 +174,14 @@ function getPckParams(jsonParams){
 }
 
 
+// 过滤敏感 ip地址
+function replaceErrMsg(err,key) {
+  if(typeof err !== 'string') {
+      err = err+''
+  }
+  return err.replace(new RegExp(key,'g'),"").replace(/npm \-\-registry\=/,'ynpm');
+}
+
 module.exports = {
   registry:"",
   IPCOMPANY,
@@ -193,6 +196,7 @@ module.exports = {
   getByAtrrBool,
   getPckParams,
   getRcFile,
+  replaceErrMsg,
   getPing: () => {
     return co(function* (){
       // Ping内网

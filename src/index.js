@@ -10,9 +10,7 @@ const publish = require('./publish');
 
 function getHelp() {
   console.log(chalk.green(" Usage : "));
-  console.log();
   console.log(chalk.green(" ac sample init sample"));
-  console.log();
   process.exit(0);
 }
 
@@ -86,6 +84,10 @@ module.exports = {
           break;
         case "set":
           let config = setRc("ynpm"); 
+          break;
+        case "sshk":
+          let ynpmrcCon = getRc("ynpm"); 
+          help.showSSHKMsg(ynpmrcCon.sshk)
           break;
         default:
           help.help();

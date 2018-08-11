@@ -9,7 +9,7 @@ const ora = require('ora');
 const co = require('co');
 const chalk = require('chalk');
 const {userInfo, setPackage} = require('./reportInfo/index');
-const {getRcFile,getRc,HOST_REGISTRY,getPckParams} = require('./utils');
+const {getRcFile,getRc,HOST_REGISTRY,getPckParams,replaceErrMsg} = require('./utils');
 const help = require('./help');
 
 const IP_Req = thunkify(request);
@@ -42,7 +42,7 @@ module.exports = (registry) => {
                 try{
                     let publish_result = yield Exec(arg_publish_inner);
                 }catch(e){
-                    console.error(e)
+                    console.error(replaceErrMsg(e,HOST_REGISTRY))
                     console.error(chalk.red('\n' + 'please check the package.json\'s version, if had try many time, \n please connect admin\'s email wangshih@yonyou.com or chenpanf@yonyou.com !'));
                     spinner.stop();
                     process.exit(0);
@@ -64,7 +64,7 @@ module.exports = (registry) => {
         spinner.stop();
         process.exit(0);
     }).catch(err => {
-      console.error(chalk.red('\n' + err));
+      console.error(chalk.red('\n' + replaceErrMsg(err,HOST_REGISTRY)));
     });
 }
  

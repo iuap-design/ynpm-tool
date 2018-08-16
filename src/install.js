@@ -40,7 +40,6 @@ function getResultPkgs(paramArr){
 }
 
 
-
 module.exports = (registry,ifHasLog) => {
     const argvs = process.argv;
     let _pack = [];

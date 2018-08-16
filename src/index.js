@@ -7,7 +7,6 @@ const {getRc,setRc,getPing,getByAtrrBool,consoleLog} = require('./utils');
 const help = require('./help');
 const install = require('./install');
 const publish = require('./publish');
-
 function getHelp() {
   console.log(chalk.green(" Usage : "));
   console.log(chalk.green(" ac sample init sample"));

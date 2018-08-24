@@ -4,10 +4,12 @@ const path = require('path');
 const fs = require('fs');
 const co = require('co');
 const ora = require('ora');
-const exec = require('child_process').exec;
+const childProcess = require('child_process')
+const exec = childProcess.exec;
 const thunkify = require("thunkify");
 const Exec = thunkify(exec);
-const {addDownloadNum} = require('./reportInfo/index');
+const { replaceErrMsg } = require('./utils');
+const { addDownloadNum } = require('./reportInfo/index');
 
 function countStrLeng(str,subStr){
     let strs = str.split('');
@@ -27,6 +29,16 @@ function console_log(ifHasLog,msg){
     return
 }
 
+function getResultPkgs(paramArr){
+    let obj={}
+    paramArr.forEach((item)=>{
+        let temp = item.replace(/\+\s+/,'').trim()
+        let index = temp.lastIndexOf('@')
+        obj[temp.slice(0,index)]='^'+temp.slice(index+1)
+    })
+    return obj;
+}
+
 
 module.exports = (registry,ifHasLog) => {
     const argvs = process.argv;
@@ -37,12 +49,14 @@ module.exports = (registry,ifHasLog) => {
     let commIndex = argvs.findIndex(comm=>comm == "--save");
     let aliasCommIndex = argvs.findIndex(comm=>comm == "-S");
     let devCommIndex = argvs.findIndex(comm=>comm == "--save-dev");
+    let aliasDevCommIndex = argvs.findIndex(comm=>comm == "-D");
+    let globalCommIndex = argvs.findIndex(comm=>comm == "-g");
     let commLeng = argvs.length-1;
-    if(commIndex == commLeng || devCommIndex == commLeng || aliasCommIndex == commLeng){//npm install   xx  --save        
+    if(commIndex == commLeng || devCommIndex == commLeng || aliasCommIndex == commLeng || aliasDevCommIndex == commLeng || globalCommIndex == commLeng){//npm install   xx  --save        
         console_log(ifHasLog, 'npm install   xx  --save ')
         _package = argvs.slice(3,commLeng)
         _pack  = getPackMsg(_package)
-    }else if(commIndex == 3 || devCommIndex == 3 || aliasCommIndex == 3){//npm install --save  xx 
+    }else if(commIndex == 3 || devCommIndex == 3 || aliasCommIndex == 3 || aliasDevCommIndex == 3 || globalCommIndex == 3){//npm install --save  xx 
         console_log(ifHasLog, 'npm install --save  xx')
         _package = argvs.slice(4,commLeng+1)
         _pack  = getPackMsg(_package)
@@ -51,6 +65,8 @@ module.exports = (registry,ifHasLog) => {
         try {
             console_log(ifHasLog, 'npm install')
             let dependencies = {};
+            pkgJson.dependencies = pkgJson.dependencies||{}
+            pkgJson.devDependencies = pkgJson.devDependencies||{}
             dependencies = Object.assign(pkgJson.dependencies,pkgJson.devDependencies);
             Object.keys(dependencies).forEach(name => {
                 _pack.push({ name: name, version: dependencies[name] })
@@ -65,7 +81,7 @@ module.exports = (registry,ifHasLog) => {
     let allInner = installValidate(_pack, spinner);//内网缓存中下载
     let pkgs = _pack
     co(function* (){
-        const argvs = process.argv; 
+        const argvs = process.argv;
         let npm_registry = `npm --registry=${registry} `; 
         const argv_part = argvs.slice(2).join(' ');
         let arg_install = npm_registry + argv_part;
@@ -73,50 +89,69 @@ module.exports = (registry,ifHasLog) => {
         // console.time(`updated ${packTotal} packages in`);
         let startTime = new Date()
         showProcess(spinner,pkgs);//进度
+        let unInstallPack = 'node-sass'
+        let ifFind = pkgs.findIndex(item=> item.name == unInstallPack)
+        if(ifFind > -1){
+            let tempRegitstry = registry.split('repository/ynpm-all/')[0]
+            let sassCommon = `SASS_BINARY_SITE=${tempRegitstry}mirrors/node-sass/ npm install node-sass`
+            console_log(ifHasLog,sassCommon)
+            yield npminstall(sassCommon, registry)
+        }
         console_log(ifHasLog, arg_install)
-        let status = yield npminstall(arg_install);
+        let resultInstall = yield npminstall(arg_install, registry);
 
         //如果报错就不进行下去
-        if(!status){
+        if(!resultInstall){
             stop(spinner);
             return
         }
+        console.log('\n\n',resultInstall)
+        let formatResult
+        //ynpm install时`up to date in 1.435s` 不处理
+        
         let tempPkgs = {}
         // --save 时候写入package.json
         if(commIndex > -1 || aliasCommIndex > -1) {
-            for(let pkg of pkgs) {
-                tempPkgs[pkg.name] = pkg.version
+            // for(let pkg of formatResult) {
+            //     tempPkgs[pkg.name] = pkg.version
+            // }
+            if(resultInstall.indexOf('@') > -1) {
+                resultInstall = resultInstall.match(/(\+.*@\d+(\.\d+)*)/g)
+                console_log(ifHasLog, resultInstall)
+                formatResult = getResultPkgs(resultInstall)
             }
-            pkgJson.dependencies = Object.assign(pkgJson.dependencies,tempPkgs)
+            console_log(ifHasLog, formatResult)
+            pkgJson.dependencies = Object.assign(pkgJson.dependencies||{},formatResult)
             console_log(ifHasLog, pkgJson)
             //更新package.json
             updateDependencies(pkgJson);
             // --save-dev 时候写入package.json
-        } else if(devCommIndex > -1) {
-            for(let pkg of pkgs) {
-                tempPkgs[pkg.name] = pkg.version
-            }
-            pkgJson.devDependencies = Object.assign(pkgJson.devDependencies,tempPkgs)
+        } else if(devCommIndex > -1 || aliasDevCommIndex > -1) {
+            // for(let pkg of formatResult) {
+            //     tempPkgs[pkg.name] = pkg.version
+            // }
+            if(resultInstall.indexOf('@') > -1) {
+                resultInstall = resultInstall.match(/(\+.*@\d+(\.\d+)*)/g)
+                console_log(ifHasLog, resultInstall)
+                formatResult = getResultPkgs(resultInstall)
+            } 
+            console_log(ifHasLog, formatResult)
+            pkgJson.devDependencies = Object.assign(pkgJson.devDependencies||{},formatResult)
             console_log(ifHasLog, pkgJson)
             //更新package.json
             updateDependencies(pkgJson);
         }
         addDownloadNum({installPackMap:JSON.stringify(pkgs)})
-
-        console.log('\n')
-        let endTime = new Date()
-        console.log(`updated ${packTotal} packages in ${(endTime-startTime)/1000}s`);
-        console.log('\n')
         console.log(chalk.green(`√ Finish, Happy enjoy coding!`));
         setTimeout(()=>{
             stop(spinner);
-        },30)
+        },400)
     }).catch(err => {
-        console.error(chalk.red('\n' + err));
+        console.error(chalk.red('\n' + replaceErrMsg(err,registry)));
         stop(spinner);
-    });
-    
+    });    
 }
+
 
 function getPackMsg(_pack) {
     let _package = [];
@@ -155,23 +190,24 @@ function stop(spinner){
 
 function installValidate(pkgs, spinner) {
     if(pkgs && pkgs.length < 1){
-        console.error(chalk.red('\n sorry,package is null !'));
+        console.error(chalk.red('\n sorry,error options or package is null !'));
         stop(spinner);
         return;
     }
 }
 
-function npminstall(arg_install){
+
+function npminstall(arg_install, registry){
     return co(function* (){
         try {
-            yield Exec(arg_install);
-            return true;
+            let res = yield Exec(arg_install);
+            return eval(res)[0];
         } catch (err) {
-            console.error(chalk.red('\n' + err));
+            console.error(chalk.red('\n' + replaceErrMsg(err, registry)));
             return false;
         }
     }).catch(err => {
-        console.error(chalk.red('\n' + err));
+        console.error(chalk.red('\n' + replaceErrMsg(err, registry)));
         return false;
     });
 }

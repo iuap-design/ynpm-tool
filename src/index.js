@@ -7,12 +7,9 @@ const {getRc,setRc,getPing,getByAtrrBool,consoleLog} = require('./utils');
 const help = require('./help');
 const install = require('./install');
 const publish = require('./publish');
-
 function getHelp() {
   console.log(chalk.green(" Usage : "));
-  console.log();
   console.log(chalk.green(" ac sample init sample"));
-  console.log();
   process.exit(0);
 }
 
@@ -48,6 +45,15 @@ module.exports = {
         case "-version":
             help.version();
             break;
+        case "i":
+            process.argv[2] = 'install'
+            co(function* (){
+              // Ping内网;
+              install(yield getPing(),'');
+            }).catch(err => {
+              console.error(chalk.red('\n' + err));
+            });
+            break;
         case "install":
             co(function* (){
               // Ping内网;
@@ -77,6 +83,10 @@ module.exports = {
           break;
         case "set":
           let config = setRc("ynpm"); 
+          break;
+        case "sshk":
+          let ynpmrcCon = getRc("ynpm"); 
+          help.showSSHKMsg(ynpmrcCon.sshk)
           break;
         default:
           help.help();

@@ -25,7 +25,6 @@ function get(options,params) {
     par += _att;
   };
   url += par;
-  console.log(url)
   return fetch(url)
   .then(res => res.text())
   .then(body =>{

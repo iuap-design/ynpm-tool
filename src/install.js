@@ -9,7 +9,7 @@ const exec = childProcess.exec;
 const thunkify = require("thunkify");
 const Exec = thunkify(exec);
 const { replaceErrMsg } = require('./utils');
-const { addDownloadNum } = require('./reportInfo/index');
+const { addDownloadNum, packageDownloadDetail } = require('./reportInfo/index');
 
 function countStrLeng(str,subStr){
     let strs = str.split('');
@@ -86,7 +86,6 @@ module.exports = (registry,ifHasLog) => {
         const argv_part = argvs.slice(2).join(' ');
         let arg_install = npm_registry + argv_part;
         let packTotal = pkgs.length;
-        // console.time(`updated ${packTotal} packages in`);
         let startTime = new Date()
         showProcess(spinner,pkgs);//进度
         let unInstallPack = 'node-sass'
@@ -131,21 +130,21 @@ module.exports = (registry,ifHasLog) => {
             //     tempPkgs[pkg.name] = pkg.version
             // }
             if(resultInstall.indexOf('@') > -1) {
-                resultInstall = resultInstall.match(/(\+.*@\d+(\.\d+)*)/g)
+                resultInstall = resultInstall.match(/((\+\-).*@\d+(\.\d+)*)/g)
                 console_log(ifHasLog, resultInstall)
                 formatResult = getResultPkgs(resultInstall)
-            } 
+            }
             console_log(ifHasLog, formatResult)
-            pkgJson.devDependencies = Object.assign(pkgJson.devDependencies||{},formatResult)
+            pkgJson.devDependencies = Object.assign({},pkgJson.devDependencies,formatResult)
             console_log(ifHasLog, pkgJson)
             //更新package.json
             updateDependencies(pkgJson);
         }
-        addDownloadNum({installPackMap:JSON.stringify(pkgs)})
+        yield addDownloadNum({installPackMap:JSON.stringify(pkgs)})
+        yield packageDownloadDetail(JSON.stringify(formatResult))
+        console.log('\n')
         console.log(chalk.green(`√ Finish, Happy enjoy coding!`));
-        setTimeout(()=>{
-            stop(spinner);
-        },400)
+        stop(spinner);
     }).catch(err => {
         console.error(chalk.red('\n' + replaceErrMsg(err,registry)));
         stop(spinner);

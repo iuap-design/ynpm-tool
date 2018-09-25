@@ -25,6 +25,7 @@ function get(options,params) {
     par += _att;
   };
   url += par;
+  console.log(url)
   return fetch(url)
   .then(res => res.text())
   .then(body =>{
@@ -63,6 +64,15 @@ function addDownloadNum(params){
   return get(config,params);
 }
 
+function packageDownloadDetail(pkg) {
+  let params = getRc("ynpm");
+  params.package_name = pkg
+  let config = getHttpConfig({
+    path:"/package/packageDownloadDetail",
+  });
+  return get(config,params);
+}
+
 function setPackage(params){
   let config = getHttpConfig({
     path:"/package/set",
@@ -73,6 +83,7 @@ function setPackage(params){
 module.exports = {
    userInfo,
    setPackage,
-   addDownloadNum
+   addDownloadNum,
+   packageDownloadDetail
 }
 

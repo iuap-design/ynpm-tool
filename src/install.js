@@ -104,7 +104,8 @@ module.exports = (registry,ifHasLog) => {
             stop(spinner);
             return
         }
-        console.log('\n\n',resultInstall)
+        const printResultInstall = resultInstall
+        
         let formatResult
         //ynpm install时`up to date in 1.435s` 不处理
         
@@ -142,7 +143,7 @@ module.exports = (registry,ifHasLog) => {
         }
         yield addDownloadNum({installPackMap:JSON.stringify(pkgs)})
         yield packageDownloadDetail(JSON.stringify(formatResult))
-        console.log('\n')
+        console.log('\n\n',printResultInstall)
         console.log(chalk.green(`√ Finish, Happy enjoy coding!`));
         stop(spinner);
     }).catch(err => {

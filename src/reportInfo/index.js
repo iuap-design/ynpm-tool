@@ -64,7 +64,7 @@ function addDownloadNum(params){
 }
 
 function packageDownloadDetail(pkg) {
-  let params = getRc("ynpm");
+  let params = getRc("ynpm") || {};
   params.package_name = pkg
   let config = getHttpConfig({
     path:"/package/packageDownloadDetail",

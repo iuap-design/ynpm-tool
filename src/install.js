@@ -92,7 +92,8 @@ module.exports = (registry,ifHasLog) => {
         let ifFind = pkgs.findIndex(item=> item.name == unInstallPack)
         if(ifFind > -1){
             let tempRegitstry = registry.split('repository/ynpm-all/')[0]
-            let sassCommon = `SASS_BINARY_SITE=${tempRegitstry}mirrors/node-sass/ npm install node-sass`
+            // let sassCommon = `SASS_BINARY_SITE=${tempRegitstry}mirrors/node-sass/ npm install node-sass`
+            let sassCommon = `SASS_BINARY_SITE=${tempRegitstry}repository/ynpm-all/ npm install node-sass`;
             console_log(ifHasLog,sassCommon)
             yield npminstall(sassCommon, registry)
         }

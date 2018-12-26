@@ -39,3 +39,4 @@ jspm_packages
 node_modules
 
 package-lock.json
+.vscode

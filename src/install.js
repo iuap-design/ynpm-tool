@@ -8,6 +8,7 @@ const childProcess = require('child_process')
 const exec = childProcess.exec;
 const thunkify = require("thunkify");
 const Exec = thunkify(exec);
+var spawn = require('cross-spawn')
 const { replaceErrMsg } = require('./utils');
 const { addDownloadNum, packageDownloadDetail } = require('./reportInfo/index');
 
@@ -82,26 +83,26 @@ module.exports = (registry,ifHasLog) => {
     let pkgs = _pack
     co(function* (){
         const argvs = process.argv;
-        let npm_registry = `npm --registry=${registry} `; 
+        // let npm_registry = `npm --registry=${registry} `; 
         const argv_part = argvs.slice(2).join(' ');
-        let arg_install = npm_registry + argv_part;
-        let packTotal = pkgs.length;
-        let startTime = new Date()
-        showProcess(spinner,pkgs);//进度
-        let unInstallPack = 'node-sass'
-        let ifFind = pkgs.findIndex(item=> item.name == unInstallPack)
-        if(ifFind > -1){
-            let tempRegitstry = registry.split('repository/ynpm-all/')[0]
-            // let sassCommon = `SASS_BINARY_SITE=${tempRegitstry}mirrors/node-sass/ npm install node-sass`
-            let sassCommon = `SASS_BINARY_SITE=${tempRegitstry}repository/ynpm-all/ npm install node-sass`;
-            console_log(ifHasLog,sassCommon)
-            yield npminstall(sassCommon, registry)
-        }
-        console_log(ifHasLog, arg_install)
-        let resultInstall = yield npminstall(arg_install, registry);
-
+        // let arg_install = npm_registry + argv_part;
+        // let packTotal = pkgs.length;
+        // let startTime = new Date()
+        // showProcess(spinner,pkgs);//进度
+        // let unInstallPack = 'node-sass'
+        // let ifFind = pkgs.findIndex(item=> item.name == unInstallPack)
+        // if(ifFind > -1){
+        //     let tempRegitstry = registry.split('repository/ynpm-all/')[0]
+        //     // let sassCommon = `SASS_BINARY_SITE=${tempRegitstry}mirrors/node-sass/ npm install node-sass`
+        //     let sassCommon = `SASS_BINARY_SITE=${tempRegitstry}repository/ynpm-all/ npm install node-sass`;
+        //     console_log(ifHasLog,sassCommon)
+        //     yield npminstall(sassCommon, registry)
+        // }
+        console_log(ifHasLog, 'process.argv', process.argv)
+        console_log(ifHasLog, 'arg_install')
+        let resultInstall = yield npminstall(argv_part, registry);
         //如果报错就不进行下去
-        if(!resultInstall){
+        if(resultInstall.status !== 0){
             stop(spinner);
             return
         }
@@ -112,39 +113,40 @@ module.exports = (registry,ifHasLog) => {
         
         let tempPkgs = {}
         // --save 时候写入package.json
-        if(commIndex > -1 || aliasCommIndex > -1) {
-            // for(let pkg of formatResult) {
-            //     tempPkgs[pkg.name] = pkg.version
-            // }
-            if(resultInstall.indexOf('@') > -1) {
-                resultInstall = resultInstall.match(/(\+.*@\d+(\.\d+)*)/g)
-                console_log(ifHasLog, resultInstall)
-                formatResult = getResultPkgs(resultInstall)
-            }
-            console_log(ifHasLog, formatResult)
-            pkgJson.dependencies = Object.assign(pkgJson.dependencies||{},formatResult)
-            console_log(ifHasLog, pkgJson)
-            //更新package.json
-            updateDependencies(pkgJson);
-            // --save-dev 时候写入package.json
-        } else if(devCommIndex > -1 || aliasDevCommIndex > -1) {
-            // for(let pkg of formatResult) {
-            //     tempPkgs[pkg.name] = pkg.version
-            // }
-            if(resultInstall.indexOf('@') > -1) {
-                resultInstall = resultInstall.match(/(\+.*@\d+(\.\d+)*)/g)
-                console_log(ifHasLog, resultInstall)
-                formatResult = getResultPkgs(resultInstall)
-            }
-            console_log(ifHasLog, formatResult)
-            pkgJson.devDependencies = Object.assign({},pkgJson.devDependencies,formatResult)
-            console_log(ifHasLog, pkgJson)
-            //更新package.json
-            updateDependencies(pkgJson);
-        }
+        // if(commIndex > -1 || aliasCommIndex > -1) {
+        //     // for(let pkg of formatResult) {
+        //     //     tempPkgs[pkg.name] = pkg.version
+        //     // }
+        //     if(resultInstall.indexOf('@') > -1) {
+        //         resultInstall = resultInstall.match(/(\+.*@\d+(\.\d+)*)/g)
+        //         console_log(ifHasLog, resultInstall)
+        //         formatResult = getResultPkgs(resultInstall)
+        //     }
+        //     console_log(ifHasLog, formatResult)
+        //     pkgJson.dependencies = Object.assign(pkgJson.dependencies||{},formatResult)
+        //     console_log(ifHasLog, pkgJson)
+        //     //更新package.json
+        //     updateDependencies(pkgJson);
+        //     // --save-dev 时候写入package.json
+        // } else if(devCommIndex > -1 || aliasDevCommIndex > -1) {
+        //     // for(let pkg of formatResult) {
+        //     //     tempPkgs[pkg.name] = pkg.version
+        //     // }
+        //     if(resultInstall.indexOf('@') > -1) {
+        //         resultInstall = resultInstall.match(/(\+.*@\d+(\.\d+)*)/g)
+        //         console_log(ifHasLog, resultInstall)
+        //         formatResult = getResultPkgs(resultInstall)
+        //     }
+        //     console_log(ifHasLog, formatResult)
+        //     pkgJson.devDependencies = Object.assign({},pkgJson.devDependencies,formatResult)
+        //     console_log(ifHasLog, pkgJson)
+        //     //更新package.json
+        //     updateDependencies(pkgJson);
+        // }
         yield addDownloadNum({installPackMap:JSON.stringify(pkgs)})
         yield packageDownloadDetail(JSON.stringify(formatResult))
-        console.log('\n\n',printResultInstall)
+        // console.log('\n\n',printResultInstall)
+        console.log('\n')
         console.log(chalk.green(`√ Finish, Happy enjoy coding!`));
         stop(spinner);
     }).catch(err => {
@@ -201,8 +203,30 @@ function installValidate(pkgs, spinner) {
 function npminstall(arg_install, registry){
     return co(function* (){
         try {
-            let res = yield Exec(arg_install);
-            return eval(res)[0];
+            // let res = yield Exec(arg_install, {
+            //     // env: parsedArgs.env,
+            //     cwd: process.cwd(),
+            //     stdio: [
+            //         process.stdin,
+            //         process.stdout,
+            //         process.stderr
+            //     ]
+            // });
+            // return eval(res)[0];
+            const argvs = process.argv;
+            let command = argvs.splice(2)
+            command.concat(['--registry', registry])
+            // console.log('command', command.concat(['--registry', registry]))
+            var child = yield spawn.sync('npm', command.concat(['--registry', registry]), {
+                // env: parsedArgs.env,
+                cwd: process.cwd(),
+                stdio: [
+                    process.stdin,
+                    process.stdout,
+                    process.stderr
+                ]
+            })
+            return child
         } catch (err) {
             console.error(chalk.red('\n' + replaceErrMsg(err, registry)));
             return false;

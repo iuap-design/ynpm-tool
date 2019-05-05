@@ -1,0 +1,173 @@
+#!/usr/bin/env node
+
+'use strict';
+
+const co = require('co');
+const chalk = require('chalk');
+const execSync = require('child_process').execSync;
+const exec = require('child_process').exec;
+const pkgFile = require('../package.json');
+const thunkify = require("thunkify");
+const tcpp = require('tcp-ping');
+const request = require('request');
+const ora = require('ora');
+const fs = require('fs');
+const path = require('path');
+const http = require('http');
+const ini = require('ini');
+
+
+/*
+// Nexus OSS 2.x Info
+// Npm official mirror: https://registry.npmjs.org
+const IPCOMPANY = '172.16.51.12';
+const YON_MIRROR = 'http://maven.yonyou.com/nexus/content/groups/NPM-Yonyou-Repository/';
+*/
+
+//  Nexus OSS 3.3 Info
+const IPCOMPANY = '172.20.27.204';
+const YON_MIRROR = 'http://172.20.27.204:8081/repository/ynpm-all/';
+const DEAFAULT_MIRROR = 'https://registry.npm.taobao.org';
+const HOST_REGISTRY = 'http://172.20.27.204:8081/repository/ynpm-private/';
+const CDNJSON = 'http://iuap-design-cdn.oss-cn-beijing.aliyuncs.com/static/ynpm/ynpm.json'
+
+/**
+ * ynpm --version || ynpm -v
+ */
+const opt = process.argv[2];
+if(opt == '-v' || opt == '--version') {
+    console.log( 'Yonyou Package Manager(ynpm) : v' + pkgFile.version );
+    process.exit(0);
+}
+
+/**
+ * ynpm --help || ynpm -h
+ */
+ if(opt == '-h' || opt == '--help' || opt == undefined) {
+     console.log(
+   `
+   Usage:
+   ----------------------------------------------------
+     ynpm install
+     ynpm install <pkg>
+     ynpm install <pkg>@<tag>
+     ynpm install <pkg>@<version>
+     ynpm install <pkg>@<version range>
+     ynpm install <folder>
+     ynpm install <tarball file>
+     ynpm install <tarball url>
+     ynpm install <git:// url>
+     ynpm install <github username>/<github project>
+
+   Options:
+   ----------------------------------------------------
+     --save, -S, --save-dev, -D: save installed dependencies into package.json
+     -g, --global: install devDependencies to global directory
+
+   Others:
+   ----------------------------------------------------
+     ynpm --registry: change default mirror address
+
+   `
+     );
+     process.exit(0);
+ }
+
+const IP_Req = thunkify(request);
+const Ping = thunkify(tcpp.ping);
+const Exec = thunkify(exec);
+
+co(function* (){
+    //IP判断 - 耗时暂取消
+    /*
+    const IP_Response = yield IP_Req('https://api.ipify.org?format=json')
+    const IP_Body = IP_Response[IP_Response.length - 1]
+    const IP_ADDRESS = JSON.parse(IP_Body)['ip'];
+    const IP_REG = new RegExp(/^123\.103/);
+    if(IP_REG.test(IP_ADDRESS)){
+        console.log('内网')
+    }
+    */
+
+    // Ping内网
+    const Ping_Response = yield Ping({
+        address: IPCOMPANY,
+        port: 8081,
+        timeout: 50,
+        attempts: 1
+    })
+    let registry = Ping_Response.avg ? YON_MIRROR : DEAFAULT_MIRROR;
+
+    const argvs = process.argv;
+    const spinner = ora().start();
+    spinner.color = 'green';
+
+    let arg_install = `npm --registry=${registry} `;
+    if(argvs[2] == 'i' || argvs[2] == 'install'){
+        if(Ping_Response.avg) {
+            console.log(chalk.dim('Yonyou Mirror Downloading...\n'));
+        } else {
+            console.log(chalk.dim('CNPM Mirror Downloading...\n'));
+        }
+
+        const argv_part = argvs.slice(2).join(' ');
+        arg_install += argv_part;
+
+        // execSync(arg_install);
+        spinner.text = 'Installing package ⬇️...';
+        var data = yield Exec(arg_install);
+        console.log(chalk.bold('\n\nInstall Info:\n' + data[0]));
+        console.log(chalk.yellow('Warn Info:\n' + data[1]));
+        console.log(chalk.green(`√ Finish, Happy enjoy coding!`));
+
+    } else if (argvs[2] == 'publish' && argvs[3] == 'inner'){
+        // Get Publish Package Info
+        var packOrigin = JSON.parse(fs.readFileSync(path.join(process.cwd(),'package.json'))).name;
+        var packName = packOrigin.split('/')[0].replace("@","");
+        
+        // Get Data
+        var cdnRes = yield IP_Req(CDNJSON);
+        var jsonRes = JSON.parse(cdnRes[cdnRes.length - 1]);
+        console.log("=====jsonRes=====",jsonRes);
+        // Get User Info - using offical method - ini
+        var _auth;
+        var npmConfigReturn = yield Exec('npm get userconfig');
+        // npmConfigReturn: [ '/Users/AYA/.npmrc\n', '' ]
+        var npmUserConfig = npmConfigReturn[0].trim();
+        console.log("=====npmUserConfig=====",npmUserConfig);
+        var iniConfig = ini.parse(fs.readFileSync(npmUserConfig, 'utf-8'))
+        var parseAuth = new Buffer(iniConfig._auth, 'base64').toString().split(":")[0];
+
+        //  Verify Publish Scoped
+        console.log(parseAuth+"==========");
+        if(jsonRes[parseAuth] && jsonRes[parseAuth].includes(packName)){
+            console.log('Aviable: Pass Validation, Start to Publish...')
+            var arg_publish_inner = `npm --registry=${HOST_REGISTRY} publish`;
+            console.log("--arg_publish_inner-- : "+arg_publish_inner);
+            spinner.text = 'Publishing your package in Yonyou Local Area Net';
+            console.log("arg_publish_inner:"+arg_publish_inner);
+            // var data = yield Exec(arg_publish_inner);
+        } else if(jsonRes[parseAuth]) {
+            console.error(`Error: Overflow User Privilege, Publish Package Scoped with "@${jsonRes[parseAuth]}" or Contact Admin to Extend Privilege!`);
+        } else {
+            console.error("Error: Cant Find User, Please Use `npm config set _auth=base64String` or Contact Admin to Create User!");
+        }
+
+    } else if ( argvs[2] == 'publish' && !argvs[3]){
+        var arg_publish = `npm publish`;
+        spinner.text = 'Publishing your package on NPM Official Repos';
+        var data = yield Exec(arg_publish);
+
+    }
+    spinner.stop();
+    process.exit(0);
+
+
+
+}).catch(err => {
+    console.error(chalk.red('\n' + err));
+    // console.error(chalk.red(err.stack));
+    console.error(chalk.yellow('ynpm version: %s'), pkgFile.version);
+    console.error(chalk.yellow('ynpm args: %s'), process.argv.slice(2).join(' '));
+    process.exit(1);
+});

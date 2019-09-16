@@ -44,7 +44,7 @@ function getResultPkgs(paramArr){
 module.exports = (registry,ifHasLog) => {
     const argvs = process.argv;
     let _pack = [];
-    
+
     let pkgJson = JSON.parse(fs.readFileSync(path.join(process.cwd(), 'package.json'),'utf-8'));
     let _package;
     let commIndex = argvs.findIndex(comm=>comm == "--save");
@@ -53,11 +53,16 @@ module.exports = (registry,ifHasLog) => {
     let aliasDevCommIndex = argvs.findIndex(comm=>comm == "-D");
     let globalCommIndex = argvs.findIndex(comm=>comm == "-g");
     let commLeng = argvs.length-1;
-    if(commIndex == commLeng || devCommIndex == commLeng || aliasCommIndex == commLeng || aliasDevCommIndex == commLeng || globalCommIndex == commLeng){//npm install   xx  --save        
+    if(!~commIndex && !~devCommIndex && !~aliasCommIndex && !~aliasDevCommIndex && !~globalCommIndex) {
+        //no --save -S --save-dev -D -g
+        console_log(ifHasLog, 'npm install xx');
+        _package = argvs.slice(3, commLeng + 1);
+        _pack  = getPackMsg(_package);
+    } else if(commIndex == commLeng || devCommIndex == commLeng || aliasCommIndex == commLeng || aliasDevCommIndex == commLeng || globalCommIndex == commLeng){//npm install   xx  --save
         console_log(ifHasLog, 'npm install   xx  --save ')
         _package = argvs.slice(3,commLeng)
         _pack  = getPackMsg(_package)
-    }else if(commIndex == 3 || devCommIndex == 3 || aliasCommIndex == 3 || aliasDevCommIndex == 3 || globalCommIndex == 3){//npm install --save  xx 
+    }else if(commIndex == 3 || devCommIndex == 3 || aliasCommIndex == 3 || aliasDevCommIndex == 3 || globalCommIndex == 3){//npm install --save  xx
         console_log(ifHasLog, 'npm install --save  xx')
         _package = argvs.slice(4,commLeng+1)
         _pack  = getPackMsg(_package)
@@ -83,7 +88,7 @@ module.exports = (registry,ifHasLog) => {
     let pkgs = _pack
     co(function* (){
         const argvs = process.argv;
-        // let npm_registry = `npm --registry=${registry} `; 
+        // let npm_registry = `npm --registry=${registry} `;
         const argv_part = argvs.slice(2).join(' ');
         // let arg_install = npm_registry + argv_part;
         // let packTotal = pkgs.length;
@@ -107,10 +112,10 @@ module.exports = (registry,ifHasLog) => {
             return
         }
         const printResultInstall = resultInstall
-        
+
         let formatResult
         //ynpm install时`up to date in 1.435s` 不处理
-        
+
         let tempPkgs = {}
         // --save 时候写入package.json
         // if(commIndex > -1 || aliasCommIndex > -1) {
@@ -152,7 +157,7 @@ module.exports = (registry,ifHasLog) => {
     }).catch(err => {
         console.error(chalk.red('\n' + replaceErrMsg(err,registry)));
         stop(spinner);
-    });    
+    });
 }
 
 
@@ -187,7 +192,7 @@ function stop(spinner){
 
 /**
  * npm install validate after
- * @param {*} pkgs  package object 
+ * @param {*} pkgs  package object
  * @param {*} registry  url
  */
 
@@ -239,9 +244,9 @@ function npminstall(arg_install, registry){
 
 /**
  * 修改dependencies文件
- * @param {*} packJson 
- * @param {*} dependencies 
- * @param {*} type 
+ * @param {*} packJson
+ * @param {*} dependencies
+ * @param {*} type
  */
 function updateDependencies(packJson) {
     let root = process.cwd();

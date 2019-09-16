@@ -2,11 +2,12 @@
 const chalk = require('chalk');
 const path = require('path');
 const fs = require('fs');
-const co = require('co'); 
+const co = require('co');
 const {getRc,setRc,getPing,getByAtrrBool,consoleLog} = require('./utils');
 const help = require('./help');
 const install = require('./install');
 const publish = require('./publish');
+const npm = require('./npm');
 function getHelp() {
   console.log(chalk.green(" Usage : "));
   console.log(chalk.green(" ac sample init sample"));
@@ -18,17 +19,17 @@ function getVersion() {
   process.exit(0);
 }
 
-function init(fun){ 
+function init(fun){
   // Ping内网
   const {Ping_Response,registry} = getPing();
   // const spinner = ora().start();
-  
+
   if(Ping_Response.avg) {
       console.log(chalk.dim('Yonyou Mirror Downloading...\n'));
   } else {
       console.log(chalk.dim('CNPM Mirror Downloading...\n'));
   }
-  return fun(registry); 
+  return fun(registry);
 }
 
 
@@ -82,14 +83,15 @@ module.exports = {
           });
           break;
         case "set":
-          let config = setRc("ynpm"); 
+          let config = setRc("ynpm");
           break;
         case "sshk":
-          let ynpmrcCon = getRc("ynpm"); 
+          let ynpmrcCon = getRc("ynpm");
           help.showSSHKMsg(ynpmrcCon.sshk)
           break;
         default:
-          help.help();
+          // help.help();
+            npm();
     }
   }
 }

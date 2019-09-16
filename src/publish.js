@@ -9,7 +9,7 @@ const ora = require('ora');
 const co = require('co');
 const chalk = require('chalk');
 const {userInfo, setPackage} = require('./reportInfo/index');
-const {getRcFile,getRc,HOST_REGISTRY,getPckParams,replaceErrMsg} = require('./utils');
+const {getRcFile,getRc,HOST_REGISTRY,getPckParams,replaceErrMsg,getIPAdress,uploadReadme} = require('./utils');
 const help = require('./help');
 
 const IP_Req = thunkify(request);
@@ -17,10 +17,9 @@ const Exec = thunkify(exec);
 
 module.exports = (registry) => {
     const argvs = process.argv;
-    
+    const ip = getIPAdress();
     const spinner = ora().start();
     spinner.color = 'green';
-
     co(function* (){
         if(argvs[2] == 'publish'){
             var ynpmConfig = getRc("ynpm");
@@ -48,7 +47,8 @@ module.exports = (registry) => {
                     process.exit(0);
                 }
                 let params = getPckParams(packOrigin)
-                let pckMsg = yield setPackage({userId: data.user_id, name:params.name, author: ynpmConfig.user, version:params.version, packageInfo:escape(JSON.stringify(params))})
+                let pckMsg = yield setPackage({ip, userId: data.user_id, name:params.name, author: ynpmConfig.email, version:params.version, packageInfo:escape(JSON.stringify(params))})
+                let upload = yield uploadReadme({ip, userId: data.user_id, name:params.name, author: ynpmConfig.email, version:params.version, packageInfo:escape(JSON.stringify(params))})
                 console.log('\n')
                 console.log(chalk.green(`√ Finish, Happy enjoy coding!`));
             } else {
@@ -61,4 +61,4 @@ module.exports = (registry) => {
       console.error(chalk.red('\n' + replaceErrMsg(err,HOST_REGISTRY)));
     });
 }
- 
+

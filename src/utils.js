@@ -207,6 +207,8 @@ function uploadReadme() {
             .then((res) => {
                 if(res.success) {
                     console.log(chalk.green('README.md file upload success!'));
+                } else {
+                    console.log(res.msg);
                 }
             })
     } catch (err) {

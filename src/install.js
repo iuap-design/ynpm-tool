@@ -43,9 +43,12 @@ function getResultPkgs(paramArr){
 
 module.exports = (registry,ifHasLog) => {
     const argvs = process.argv;
+    const pkgPath = path.join(process.cwd(), 'package.json');
     let _pack = [];
-
-    let pkgJson = JSON.parse(fs.readFileSync(path.join(process.cwd(), 'package.json'),'utf-8'));
+    let pkgJson = {};
+    if( fs.existsSync(pkgPath)) {
+        pkgJson = JSON.parse(fs.readFileSync(pkgPath,'utf-8'));
+    }
     let _package;
     let commIndex = argvs.findIndex(comm=>comm == "--save");
     let aliasCommIndex = argvs.findIndex(comm=>comm == "-S");

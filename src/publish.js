@@ -48,7 +48,7 @@ module.exports = (registry) => {
                 }
                 let params = getPckParams(packOrigin)
                 let pckMsg = yield setPackage({ip, userId: data.user_id, name:params.name, author: ynpmConfig.email, version:params.version, packageInfo:escape(JSON.stringify(params))})
-                let upload = yield uploadReadme({ip, userId: data.user_id, name:params.name, author: ynpmConfig.email, version:params.version, packageInfo:escape(JSON.stringify(params))})
+                let upload = yield uploadReadme();
                 console.log('\n')
                 console.log(chalk.green(`√ Finish, Happy enjoy coding!`));
             } else {

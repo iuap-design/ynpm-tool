@@ -201,19 +201,16 @@ function uploadReadme() {
     try {
         let readmeFilePath = path.join(process.cwd(), 'README.md');
         let form = new formData();
-        form.append("readme", fs.createReadStream(readmeFilePath))
-        console.log(form)
+        form.append("readme", fs.createReadStream(readmeFilePath));
         return fetch(getHttpConfig().host + '/readmeUpload', {method: 'post', body: form})
             .then(res => res.json())
             .then((res) => {
-                console.log(res);
                 if(res.success) {
                     console.log(chalk.green('README.md file upload success!'));
                 }
             })
     } catch (err) {
-        console.log(err)
-        // console.log(chalk.dim(`Please add readme file ...\n`));
+        console.log(chalk.dim(`Please add readme file ...\n`));
     }
 }
 module.exports = {

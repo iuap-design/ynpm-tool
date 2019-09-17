@@ -23,15 +23,15 @@ module.exports = (registry) => {
     co(function* (){
         if(argvs[2] == 'publish'){
             var ynpmConfig = getRc("ynpm");
-            ynpmConfig.sshk=ynpmConfig._auth
+            ynpmConfig.sshk=ynpmConfig._auth;
+            var packOrigin = JSON.parse(fs.readFileSync(path.join(process.cwd(),'package.json')));
             //validate user rolse
-            let data = yield userInfo();
+            let data = yield userInfo(packOrigin.name);
             if(!data){
                 help.setConfig();
                 spinner.stop();
                 process.exit(0);
             }
-            var packOrigin = JSON.parse(fs.readFileSync(path.join(process.cwd(),'package.json')));
 
             if(ynpmConfig.user && ynpmConfig.sshk && data){
                 console.log('Aviable: Pass Validation, Start to Publish...')
@@ -47,7 +47,7 @@ module.exports = (registry) => {
                     process.exit(0);
                 }
                 let params = getPckParams(packOrigin)
-                let pckMsg = yield setPackage({ip, userId: data.user_id, name:params.name, author: ynpmConfig.email, version:params.version, packageInfo:escape(JSON.stringify(params))})
+                let pckMsg = yield setPackage({ip, userId: data.user_id, name:params.name, author: ynpmConfig.author, version:params.version, packageInfo:escape(JSON.stringify(params))})
                 let upload = yield uploadReadme();
                 console.log('\n')
                 console.log(chalk.green(`√ Finish, Happy enjoy coding!`));

@@ -13,7 +13,7 @@ module.exports = () => {
         spinner.stop();
         process.exit(0);
     }).catch(err => {
-      console.error(chalk.red('\n' + replaceErrMsg(err,HOST_REGISTRY)));
+      console.error(chalk.red('\n' + err));
     });
 }
 

@@ -8,7 +8,7 @@ const help = require('./help');
 const install = require('./install');
 const publish = require('./publish');
 const npm = require('./npm');
-const sync = require('./npm');
+const sync = require('./sync');
 function getHelp() {
   console.log(chalk.green(" Usage : "));
   console.log(chalk.green(" ac sample init sample"));

@@ -5,7 +5,6 @@ const co = require('co');
 const chalk = require('chalk');
 const {sync} = require('./utils');
 module.exports = () => {
-    console.log(333444)
     const spinner = ora().start();
     spinner.color = 'green';
     co(function* (){

@@ -7,8 +7,8 @@ const YON_INNER_MIRROR = 'http://'+IPCOMPANY+':8081/repository/ynpm-all/';
 const YON_MIRROR = 'http://ynpm.yonyoucloud.com/repository/ynpm-all/';
 const HOST_REGISTRY = 'http://'+IPCOMPANY+':8081/repository/ynpm-private/';
 // const HOST_REGISTRY = 'http://172.20.53.74:8081/repository/ynpm-private/';
-// const YNPM_SERVER = "http://package.yonyoucloud.com/npm";
-const YNPM_SERVER = "http://127.0.0.1:3001/npm";
+const YNPM_SERVER = "http://package.yonyoucloud.com/npm";
+// const YNPM_SERVER = "http://127.0.0.1:3001/npm";
 
 const chalk = require('chalk');
 const fs = require('fs');

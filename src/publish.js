@@ -21,7 +21,6 @@ module.exports = (registry) => {
     const ip = getIPAdress();
     const spinner = ora().start();
     spinner.color = 'green';
-
     co(function* (){
         if(argvs[2] == 'publish'){
             var ynpmConfig = getRc("ynpm");
@@ -40,7 +39,6 @@ module.exports = (registry) => {
                 spinner.stop();
                 process.exit(0);
             }
-            var packOrigin = JSON.parse(fs.readFileSync(path.join(process.cwd(),'package.json')));
 
             if(ynpmConfig.user && ynpmConfig.sshk && data){
                 console.log('Aviable: Pass Validation, Start to Publish...')

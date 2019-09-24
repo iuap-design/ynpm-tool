@@ -56,7 +56,7 @@ module.exports = (registry,ifHasLog) => {
     let aliasDevCommIndex = argvs.findIndex(comm=>comm == "-D");
     let globalCommIndex = argvs.findIndex(comm=>comm == "-g");
     let commLeng = argvs.length-1;
-    if(!~commIndex && !~devCommIndex && !~aliasCommIndex && !~aliasDevCommIndex && !~globalCommIndex) {
+    if(argvs.length !== 3 && !~commIndex && !~devCommIndex && !~aliasCommIndex && !~aliasDevCommIndex && !~globalCommIndex) {
         //no --save -S --save-dev -D -g
         console_log(ifHasLog, 'npm install xx');
         _package = argvs.slice(3, commLeng + 1);

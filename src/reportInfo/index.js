@@ -57,6 +57,14 @@ function userInfo(packageName){
   return get(config,parame);
 }
 
+function getAuth(){
+  let parame = getRc("ynpm");
+  let config = getHttpConfig({
+    path:"/user/getUserValidate",
+  });
+  return get(config,parame);
+}
+
 function addDownloadNum(params){
   let config = getHttpConfig({
     path:"/package/addDownloadNum",

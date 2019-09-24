@@ -7,8 +7,8 @@ const YON_INNER_MIRROR = 'http://'+IPCOMPANY+':8081/repository/ynpm-all/';
 const YON_MIRROR = 'http://ynpm.yonyoucloud.com/repository/ynpm-all/';
 const HOST_REGISTRY = 'http://'+IPCOMPANY+':8081/repository/ynpm-private/';
 // const HOST_REGISTRY = 'http://172.20.53.74:8081/repository/ynpm-private/';
-const YNPM_SERVER = "http://package.yonyoucloud.com/npm";
-// const YNPM_SERVER = "http://127.0.0.1:3001/npm";
+// const YNPM_SERVER = "http://package.yonyoucloud.com/npm";
+const YNPM_SERVER = "http://127.0.0.1:3001/npm";
 
 const chalk = require('chalk');
 const fs = require('fs');
@@ -227,6 +227,26 @@ function uploadReadme(name) {
     }
 }
 
+// sync
+function sync() {
+    try {
+        return fetch(getHttpConfig().host + '/package/readmeUpload', {method: 'get'})
+            .then(res => res.json())
+            .then((res) => {
+                if(res.success) {
+                    console.log('\n');
+                    console.log(chalk.green('synchronization success!'));
+                } else {
+                    console.log('\n');
+                    console.log(res.msg);
+                }
+            })
+    } catch (err) {
+        console.log(chalk.dim(err));
+        return new Promise();
+    }
+}
+
 module.exports = {
   registry:"",
   IPCOMPANY,
@@ -241,6 +261,7 @@ module.exports = {
   getByAtrrBool,
   getPckParams,
   getRcFile,
+    sync,
   replaceErrMsg,
     getIPAdress,
     uploadReadme,

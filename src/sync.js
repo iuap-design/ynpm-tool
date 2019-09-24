@@ -9,7 +9,6 @@ module.exports = () => {
     spinner.color = 'green';
     co(function* (){
         let result = yield sync();
-        console.log(result);
         spinner.stop();
         process.exit(0);
     }).catch(err => {

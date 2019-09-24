@@ -9,7 +9,7 @@ const co = require('co');
 const  URLSearchParams =require('url').URLSearchParams;
 
 const {getRc,setRc,getHttpConfig} = require('../utils');
- 
+
 function get(options,params) {
   let url = options.host?options.host:"127.0.0.1";
   url += options.port?":"+options.port:"";
@@ -36,7 +36,7 @@ function get(options,params) {
       }
     }catch(err){};
     return data;
-  }); 
+  });
 }
 
 
@@ -48,7 +48,16 @@ function isEmptyObject(obj){
   return true
 };
 
-function userInfo(){
+function userInfo(packageName){
+  let parame = getRc("ynpm");
+  parame.packageName = packageName
+  let config = getHttpConfig({
+    path:"/user/getUserValidate",
+  });
+  return get(config,parame);
+}
+
+function getAuth(){
   let parame = getRc("ynpm");
   let config = getHttpConfig({
     path:"/user/getUserValidate",

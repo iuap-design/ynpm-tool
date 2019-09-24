@@ -7,10 +7,14 @@ const YON_INNER_MIRROR = 'http://'+IPCOMPANY+':8081/repository/ynpm-all/';
 const YON_MIRROR = 'http://ynpm.yonyoucloud.com/repository/ynpm-all/';
 const HOST_REGISTRY = 'http://'+IPCOMPANY+':8081/repository/ynpm-private/';
 // const HOST_REGISTRY = 'http://172.20.53.74:8081/repository/ynpm-private/';
-const YNPM_SERVER = "http://package.yonyoucloud.com/npm";
+// const YNPM_SERVER = "http://package.yonyoucloud.com/npm";
+const YNPM_SERVER = "http://127.0.0.1:3001/npm";
 
 const chalk = require('chalk');
 const fs = require('fs');
+const path = require('path');
+const fetch = require('node-fetch');
+const formData = require('form-data');
 const co = require('co');
 const tcpp = require('tcp-ping');
 const thunkify = require("thunkify");
@@ -32,7 +36,7 @@ const fileName = "ynpm";
 function getByAtrrBool(array,attr){
   let b = false;
   for(let index = 0; index < array.length; index++) {
-    const element = array[index]; 
+    const element = array[index];
     element == attr?b = true:"";
   }
   return b;
@@ -78,6 +82,18 @@ function getCommands(fileName){
 
 }
 
+function getIPAdress(){
+    var interfaces = require('os').networkInterfaces();
+    for(var devName in interfaces){
+        var iface = interfaces[devName];
+        for(var i=0;i<iface.length;i++){
+            var alias = iface[i];
+            if(alias.family === 'IPv4' && alias.address !== '127.0.0.1' && !alias.internal){
+                return alias.address;
+            }
+        }
+    }
+}
 
  function setRc(fileName){
    let path = getRcFile(fileName);
@@ -92,12 +108,12 @@ function getCommands(fileName){
           fs.writeFileSync(path,editor.toString())
           // comm?fs.writeFileSync(path,JSON.stringify(comm)):"";
       }else{
-        let comm = getCommands(fileName); 
+        let comm = getCommands(fileName);
         let config = propertiesParser.read(path);
         if(comm){
           config = config||{};
           config = objectAssign(config,comm);
-          
+
           // config = JSON.stringify(config);
           // 转换为 a='a' 的格式
           let editor = propertiesParser.createEditor();
@@ -125,18 +141,18 @@ function getCommands(fileName){
         };
       }
     }catch(e){
-      
+
     }
 }
 
 
 /**
  * 获取文件
- * @param {any} fileName 
- * @returns 
+ * @param {any} fileName
+ * @returns
  */
 function getRc(fileName){
-  if(getValidateRc(fileName)){ 
+  if(getValidateRc(fileName)){
     return propertiesParser.read(getRcFile(fileName));
   }else{
     return null;
@@ -144,7 +160,7 @@ function getRc(fileName){
 }
 /**
  * 判断是否有Rc文件
- * @param {any} fileName 
+ * @param {any} fileName
  * @returns  true、false
  */
 function getValidateRc(fileName){
@@ -162,7 +178,7 @@ function getRcFile(fileName){
 }
 /**
  * package.json中信息抽取有用信息
- * @param {any} jsonParams 
+ * @param {any} jsonParams
  * @returns  json
  */
 
@@ -181,6 +197,35 @@ function replaceErrMsg(err,key) {
   }
   return err.replace(new RegExp(key,'g'),"").replace(/npm \-\-registry\=/,'ynpm');
 }
+// upload
+function uploadReadme(name) {
+    try {
+        let readmeFilePath = path.join(process.cwd(), 'README.md');
+        let form = new formData();
+        if (fs.existsSync(readmeFilePath)) {
+            form.append("readme", fs.createReadStream(readmeFilePath));
+            form.append("name", name);
+            return  fetch(getHttpConfig().host + '/package/readmeUpload', {method: 'post', body: form})
+            .then(res => res.json())
+            .then((res) => {
+                if(res.success) {
+                    console.log('\n')
+                    console.log(chalk.green('README.md file upload success!'));
+                } else {
+                    console.log('\n')
+                    console.log(res.msg);
+                }
+            })
+        } else {
+            console.log('\n')
+            console.log(chalk.yellow('[WARN]:NO README.md file, Please add README.md!'));
+            return new Promise((reslove) => reslove());
+        }
+    } catch (err) {
+        console.log(chalk.dim(err));
+        return new Promise();
+    }
+}
 
 module.exports = {
   registry:"",
@@ -197,6 +242,8 @@ module.exports = {
   getPckParams,
   getRcFile,
   replaceErrMsg,
+    getIPAdress,
+    uploadReadme,
   getPing: () => {
     return co(function* (){
       // Ping内网
@@ -212,7 +259,7 @@ module.exports = {
           console.log(chalk.dim(`Yonyou Mirror Downloading...\n`));
       }
      let registry = Ping_Response.avg ? YON_INNER_MIRROR : YON_MIRROR;
-     
+
      this.registry = registry;
      return registry;
    }).catch(err => {

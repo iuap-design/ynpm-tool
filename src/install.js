@@ -43,9 +43,12 @@ function getResultPkgs(paramArr){
 
 module.exports = (registry,ifHasLog) => {
     const argvs = process.argv;
+    const pkgPath = path.join(process.cwd(), 'package.json');
     let _pack = [];
-
-    let pkgJson = JSON.parse(fs.readFileSync(path.join(process.cwd(), 'package.json'),'utf-8'));
+    let pkgJson = {};
+    if( fs.existsSync(pkgPath)) {
+        pkgJson = JSON.parse(fs.readFileSync(pkgPath,'utf-8'));
+    }
     let _package;
     let commIndex = argvs.findIndex(comm=>comm == "--save");
     let aliasCommIndex = argvs.findIndex(comm=>comm == "-S");
@@ -54,10 +57,10 @@ module.exports = (registry,ifHasLog) => {
     let globalCommIndex = argvs.findIndex(comm=>comm == "-g");
     let commLeng = argvs.length-1;
     if(!~commIndex && !~devCommIndex && !~aliasCommIndex && !~aliasDevCommIndex && !~globalCommIndex) {
-      //no --save -S --save-dev -D -g
-      console_log(ifHasLog, 'npm install xx');
-      _package = argvs.slice(3, commLeng + 1);
-      _pack  = getPackMsg(_package);
+        //no --save -S --save-dev -D -g
+        console_log(ifHasLog, 'npm install xx');
+        _package = argvs.slice(3, commLeng + 1);
+        _pack  = getPackMsg(_package);
     } else if(commIndex == commLeng || devCommIndex == commLeng || aliasCommIndex == commLeng || aliasDevCommIndex == commLeng || globalCommIndex == commLeng){//npm install   xx  --save
         console_log(ifHasLog, 'npm install   xx  --save ')
         _package = argvs.slice(3,commLeng)

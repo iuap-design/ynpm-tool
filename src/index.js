@@ -91,7 +91,7 @@ module.exports = {
           break;
         default:
           // help.help();
-            npm()
+            npm();
     }
   }
 }

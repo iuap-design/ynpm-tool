@@ -203,7 +203,7 @@ function uploadReadme(name) {
         let readmeFilePath = path.join(process.cwd(), 'README.md');
         let form = new formData();
         if (fs.existsSync(readmeFilePath)) {
-            form.append("readme", fs.createReadStream(readmeFilePath));
+            form.append("readme", fs.readFileSync(readmeFilePath, 'utf-8'));
             form.append("name", name);
             return  fetch(getHttpConfig().host + '/package/readmeUpload', {method: 'post', body: form})
             .then(res => res.json())

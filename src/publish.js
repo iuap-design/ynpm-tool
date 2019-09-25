@@ -61,7 +61,7 @@ module.exports = (registry) => {
                     author: ynpmConfig.user,
                     version:params.version,
                     last_auth: ynpmConfig.user,
-                    last_time: moment().format('YYYY-MM-DD'),
+                    last_time: moment().format('YYYY-MM-DD hh:mm:ss'),
                     packageInfo:escape(JSON.stringify(params))})
                 let result = yield uploadReadme(params.name);
                 console.log('\n')

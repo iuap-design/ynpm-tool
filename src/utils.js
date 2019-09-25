@@ -1,13 +1,14 @@
 'use strict';
 
 //  Nexus OSS 3.12 Info
-const IPCOMPANY = '10.3.15.79';//内网
-const YON_INNER_MIRROR = 'http://'+IPCOMPANY+':80/repository/ynpm-all/';
+const IPCOMPANY = '10.3.15.212';//内网
+const YON_INNER_MIRROR = 'http://'+IPCOMPANY+':8081/repository/ynpm-all/';
 //外网
 const YON_MIRROR = 'http://ynpm.yonyoucloud.com/repository/ynpm-all/';
-const HOST_REGISTRY = 'http://'+IPCOMPANY+':80/repository/ynpm-private/';
+const HOST_REGISTRY = 'http://'+IPCOMPANY+':8081/repository/ynpm-private/';
 // const HOST_REGISTRY = 'http://172.20.53.74:8081/repository/ynpm-private/';
 const YNPM_SERVER = "http://package.yonyoucloud.com/npm";
+// const YNPM_SERVER = "http://127.0.0.1:3001/npm";
 
 const chalk = require('chalk');
 const fs = require('fs');

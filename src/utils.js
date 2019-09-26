@@ -207,10 +207,7 @@ function uploadReadme(name) {
             form.append("name", name);
             return  fetch(getHttpConfig().host + '/package/readmeUpload', {
                 method: 'post',
-                body: form,
-                headers:{
-                    "Content-Type":"application/json"
-                }
+                body: form
             })
             .then(res => res.json())
             .then((res) => {

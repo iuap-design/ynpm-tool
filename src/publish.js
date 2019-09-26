@@ -67,6 +67,7 @@ module.exports = (registry) => {
                     let result = yield uploadReadme(params.name);
                 }
                 catch(e) {
+                    console.log('\n')
                     console.log(chalk.yellow(`[WARN]publish success, but upload README.md file fail`));
                 }
                 console.log('\n')

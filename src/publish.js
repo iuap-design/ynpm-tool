@@ -63,7 +63,12 @@ module.exports = (registry) => {
                     last_auth: ynpmConfig.user,
                     last_time: moment().format('YYYY-MM-DD hh:mm:ss'),
                     packageInfo:escape(JSON.stringify(params))})
-                let result = yield uploadReadme(params.name);
+                try {
+                    let result = yield uploadReadme(params.name);
+                }
+                catch(e) {
+                    console.log(chalk.yellow(`[WARN]publish success, but upload README.md file fail`));
+                }
                 console.log('\n')
                 console.log(chalk.green(`√ Finish, Happy enjoy coding!`));
             } else {

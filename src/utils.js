@@ -7,7 +7,7 @@ const YON_INNER_MIRROR = 'http://'+IPCOMPANY+':8081/repository/ynpm-all/';
 const YON_MIRROR = 'http://ynpm.yonyoucloud.com/repository/ynpm-all/';
 const HOST_REGISTRY = 'http://'+IPCOMPANY+':8081/repository/ynpm-private/';
 // const HOST_REGISTRY = 'http://172.20.53.74:8081/repository/ynpm-private/';
-const YNPM_SERVER = "http://package.yonyoucloud.com/npm";
+const YNPM_SERVER = "https://package.yonyoucloud.com/npm";
 // const YNPM_SERVER = "http://127.0.0.1:3001/npm";
 
 const chalk = require('chalk');
@@ -205,7 +205,13 @@ function uploadReadme(name) {
         if (fs.existsSync(readmeFilePath)) {
             form.append("readme", fs.readFileSync(readmeFilePath, 'utf-8'));
             form.append("name", name);
-            return  fetch(getHttpConfig().host + '/package/readmeUpload', {method: 'post', body: form})
+            return  fetch(getHttpConfig().host + '/package/readmeUpload', {
+                method: 'post',
+                body: form,
+                headers:{
+                    "Content-Type":"application/json"
+                }
+            })
             .then(res => res.json())
             .then((res) => {
                 if(res.success) {

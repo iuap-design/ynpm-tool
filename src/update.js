@@ -19,7 +19,7 @@ module.exports = (registry) => {
 	co(function* () {
 		const argv = argvs.slice(2);
 		argv.push(`--registry=${registry}`);
-		if (!~argv.indexOf('--save') || !~argv.indexOf('--save-dev')) {
+		if (!~argv.indexOf('--save') && !~argv.indexOf('--save-dev')) {
 			argv.push('--no-save');
 		}
 		const child = spawn(npmBin, argv, {
@@ -30,8 +30,6 @@ module.exports = (registry) => {
 		child.on('exit', code => {
 			process.exit(code);
 		});
-		spinner.stop();
-		process.exit(0);
 	}).catch(err => {
 		console.error(chalk.red('\n' + err));
 	});

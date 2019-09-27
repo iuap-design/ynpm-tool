@@ -7,25 +7,25 @@ const CWD = process.cwd();
 const {YON_INNER_MIRROR} = require('./utils');
 const co = require('co');
 const stdio = [
-    process.stdin,
-    process.stdout,
-    process.stderr,
+	process.stdin,
+	process.stdout,
+	process.stderr,
 ];
 
 module.exports = () => {
-    co(function* () {
-        const argv = argvs.slice(2);
-        argv.push(`--registry=${YON_INNER_MIRROR}`);
-        const child = spawn(npmBin, argv, {
-            env,
-            cwd: CWD,
-            stdio,
-        });
-        child.on('exit', code => {
-            process.exit(code);
-        });
-    }).catch(err => {
-        console.error(chalk.red('\n' + err));
-    });
+	co(function* () {
+		const argv = argvs.slice(2);
+		argv.push(`--registry=${YON_INNER_MIRROR}`);
+		const child = spawn(npmBin, argv, {
+			env,
+			cwd: CWD,
+			stdio,
+		});
+		child.on('exit', code => {
+			process.exit(code);
+		});
+	}).catch(err => {
+		console.error(chalk.red('\n' + err));
+	});
 }
 

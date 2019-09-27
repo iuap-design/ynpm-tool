@@ -8,46 +8,49 @@
     <link rel="stylesheet" href="source/highlight.min.css">
 </head>
 <body>
-<a id="skippy" class="sr-only sr-only-focusable" href="#content"><div class="container"><span class="skiplink-text">Skip to main content</span></div></a>
+<a id="skippy" class="sr-only sr-only-focusable" href="#content">
+    <div class="container"><span class="skiplink-text">Skip to main content</span></div>
+</a>
 
 
 <!-- Docs master nav -->
 <header class="navbar navbar-static-top docs-nav" id="top" role="banner">
     <div class="container">
         <div class="navbar-header">
-            <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#bs-navbar" aria-controls="bs-navbar" aria-expanded="false">
+            <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#bs-navbar"
+                    aria-controls="bs-navbar" aria-expanded="false">
                 <span class="sr-only">Toggle navigation</span>
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            
+
             <a href="http://tinper.org/" class="navbar-brand">tinper</a>
-            
+
         </div>
         <nav id="bs-navbar" class="collapse navbar-collapse">
             <ul class="nav navbar-nav navbar-left">
-                
-                    
-                    <li class="">
-                        
-                        <a href="index.html">开始</a>
-                        
-                    </li>
-                    
-                    <li class="">
-                        
-                        <a href="progress.html">进度</a>
-                        
-                    </li>
-                    
-                    <li class="active">
-                        
-                        <a href="release.html">版本</a>
-                        
-                    </li>
-                    
-                
+
+
+                <li class="">
+
+                    <a href="index.html">开始</a>
+
+                </li>
+
+                <li class="">
+
+                    <a href="progress.html">进度</a>
+
+                </li>
+
+                <li class="active">
+
+                    <a href="release.html">版本</a>
+
+                </li>
+
+
             </ul>
         </nav>
     </div>
@@ -63,52 +66,56 @@
 </div>
 
 
-
 <header style="height:20px"></header>
 
 
 <div class="container docs-container">
-    
-    
+
+
     <div class="row">
         <div class="col-md-9 markdown-body" role="main">
-            
-            <h2 id="开发说明">开发说明</h2><p><strong>夭折的v0.0.1版本</strong> <em>pub分支</em></p>
-<ul>
-<li>前期对安装命令行工具工作量评估不足，导致入源码坑太深</li>
-<li>依赖<code>npminstall</code>完成,内网<code>Nexus Repository OSS</code>搭建的镜像，存在部分下载<code>404</code>的问题(<code>latest</code>,<code>&gt;=v1 &lt;v2</code>)，此部分原因为<code>npminstall</code>工具对下载机制做了调整，镜像在<code>npm</code>环境测试没有问题</li>
-</ul>
-<p><strong>v0.0.2版本</strong></p>
-<p>上一版当天无法修复的情况下，无法短时间从<code>npm</code>等工具源码中构建项目。遂修改策略，短时间撸出的一个试用版本：在<code>npm</code>上套壳，确保:能使用内网镜像，能自动切换镜像，不侵入`npm</p>
-<p><strong>v0.0.3-0.0.4</strong></p>
-<ul>
-<li>版本调整，仓库迁移测试</li>
-</ul>
-<p><strong>v0.0.6</strong></p>
-<ul>
-<li>增加显示镜像地址</li>
-<li>增加不支持命令的error提示</li>
-</ul>
+
+            <h2 id="开发说明">开发说明</h2>
+            <p><strong>夭折的v0.0.1版本</strong> <em>pub分支</em></p>
+            <ul>
+                <li>前期对安装命令行工具工作量评估不足，导致入源码坑太深</li>
+                <li>依赖<code>npminstall</code>完成,内网<code>Nexus Repository
+                    OSS</code>搭建的镜像，存在部分下载<code>404</code>的问题(<code>latest</code>,<code>&gt;=v1
+                    &lt;v2</code>)，此部分原因为<code>npminstall</code>工具对下载机制做了调整，镜像在<code>npm</code>环境测试没有问题
+                </li>
+            </ul>
+            <p><strong>v0.0.2版本</strong></p>
+            <p>上一版当天无法修复的情况下，无法短时间从<code>npm</code>等工具源码中构建项目。遂修改策略，短时间撸出的一个试用版本：在<code>npm</code>上套壳，确保:能使用内网镜像，能自动切换镜像，不侵入`npm
+            </p>
+            <p><strong>v0.0.3-0.0.4</strong></p>
+            <ul>
+                <li>版本调整，仓库迁移测试</li>
+            </ul>
+            <p><strong>v0.0.6</strong></p>
+            <ul>
+                <li>增加显示镜像地址</li>
+                <li>增加不支持命令的error提示</li>
+            </ul>
 
         </div>
         <div class="col-md-3" role="complementary">
             <nav class="docs-sidebar hidden-print hidden-xs hidden-sm">
                 <ul class="nav docs-sidenav">
-                    
-                    
+
+
                     <li>
-                        
-                        <a href="#开发说明" >开发说明</a>
-                        
+
+                        <a href="#开发说明">开发说明</a>
+
                     </li>
-                    
-                    
+
+
                 </ul>
             </nav>
         </div>
     </div>
-    
-    
+
+
 </div>
 
 <!-- Footer
@@ -124,60 +131,62 @@
 <script src="source/docs.min.js"></script>
 <script src="source/highlight.min.js"></script>
 <script>
-    $(document).ready(function() {
-        $('code').each(function(i, block) {
-            if (block.innerHTML.indexOf('\n') != -1) {
-                var pn = block.parentNode;
-                if (pn.tagName.toUpperCase() == 'PRE') {
-                    try {
-                        hljs.highlightBlock(block);
-                    } catch(e) {}
-                } else {
-                    pn.innerHTML = '<pre><code>' + block.innerHTML + '</code></pre>';
-                    try {
-                        hljs.highlightBlock(pn.childNodes[0].childNodes[0]);
-                    } catch(e) {}
-                }
-            }
-        });
+	$(document).ready(function () {
+		$('code').each(function (i, block) {
+			if (block.innerHTML.indexOf('\n') != -1) {
+				var pn = block.parentNode;
+				if (pn.tagName.toUpperCase() == 'PRE') {
+					try {
+						hljs.highlightBlock(block);
+					} catch (e) {
+					}
+				} else {
+					pn.innerHTML = '<pre><code>' + block.innerHTML + '</code></pre>';
+					try {
+						hljs.highlightBlock(pn.childNodes[0].childNodes[0]);
+					} catch (e) {
+					}
+				}
+			}
+		});
 
-        var winHeight = $(window).height() - 40,
-            sidebar = $('.docs-sidebar');
+		var winHeight = $(window).height() - 40,
+			sidebar = $('.docs-sidebar');
 
-        if (sidebar.height() > winHeight) {
+		if (sidebar.height() > winHeight) {
 
-            sidebar.css('max-height', winHeight + 'px');
-            sidebar.css('overflow', 'scroll');
+			sidebar.css('max-height', winHeight + 'px');
+			sidebar.css('overflow', 'scroll');
 
-            var activeMenu,
-                barScroll = false;
+			var activeMenu,
+				barScroll = false;
 
-            sidebar.on('mouseover', function() {
-                barScroll = true;
-            });
+			sidebar.on('mouseover', function () {
+				barScroll = true;
+			});
 
-            sidebar.on('mouseout', function() {
-                barScroll = false;
-            });
+			sidebar.on('mouseout', function () {
+				barScroll = false;
+			});
 
-            $(window).on('scroll', function(e) {
-                if (!barScroll) {
-                    var activeItem = $('.docs-sidebar li.active a');
-                    if (activeItem.length) {
-                        if (!activeMenu || (activeMenu.attr('href') != activeItem.attr('href'))) {
-                            activeMenu = activeItem;
-                            var top = activeMenu.offset().top - sidebar.offset().top;
-                            if (top < 0) {
-                                sidebar.scrollTop(sidebar.scrollTop() + top);
-                            } else if (top > winHeight - 30) {
-                                sidebar.scrollTop(sidebar.scrollTop() + top - winHeight + 30);
-                            }
-                        }
-                    }
-                }
-            });
-        }
-    });
+			$(window).on('scroll', function (e) {
+				if (!barScroll) {
+					var activeItem = $('.docs-sidebar li.active a');
+					if (activeItem.length) {
+						if (!activeMenu || (activeMenu.attr('href') != activeItem.attr('href'))) {
+							activeMenu = activeItem;
+							var top = activeMenu.offset().top - sidebar.offset().top;
+							if (top < 0) {
+								sidebar.scrollTop(sidebar.scrollTop() + top);
+							} else if (top > winHeight - 30) {
+								sidebar.scrollTop(sidebar.scrollTop() + top - winHeight + 30);
+							}
+						}
+					}
+				}
+			});
+		}
+	});
 </script>
 </body>
 </html>

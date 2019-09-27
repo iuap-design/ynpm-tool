@@ -11,9 +11,9 @@ let {userInfo} = require('../src/reportInfo/index');
 let global = require('../src/utils');
 
 var opts = {
-  cmd: process.argv[2],
-  // argv: argv,
-  name: "init"
+	cmd: process.argv[2],
+	// argv: argv,
+	name: "init"
 };
 
-require("../src").plugin(opts,global);
+require("../src").plugin(opts, global);

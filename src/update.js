@@ -1,5 +1,7 @@
 const path = require('path');
 const spawn = require('cross-spawn');
+const ora = require('ora');
+const co = require('co');
 const npmBin = path.join(__dirname, '..', 'node_modules', '.bin', 'npm');
 const argvs = process.argv;
 const env = Object.assign({}, process.env);
@@ -17,8 +19,8 @@ module.exports = (registry) => {
     co(function* (){
         const argv =  argvs.slice(2);
         argv.push(`--registry=${registry}`);
-        if(argv.length <= 4) {
-            argv.push('--no-save')
+        if(!~argv.indexOf('--save') || !~argv.indexOf('--save-dev')) {
+            argv.push('--no-save');
         }
         const child = spawn(npmBin, argv, {
             env,

@@ -2,16 +2,14 @@
 
 const path = require('path');
 const fs = require('fs');
-const exec = require('child_process').exec;
-const co = require('co');
 const moment = require('moment');
+const ora = require('ora');
+const co = require('co');
 const chalk = require('chalk');
 const {userInfo, setPackage} = require('./reportInfo/index');
 const {getRc, HOST_REGISTRY, getPckParams, replaceErrMsg, getIPAdress, uploadReadme} = require('./utils');
 const help = require('./help');
 
-const IP_Req = thunkify(request);
-const Exec = thunkify(exec);
 
 module.exports = (registry) => {
 	const argvs = process.argv;

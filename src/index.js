@@ -66,14 +66,14 @@ module.exports = {
                 console.error(chalk.red('\n' + err));
             });
             break;
-        case "update":
-            co(function* () {
-                // Ping内网;
-                update(yield getPing(), '');
-            }).catch(err => {
-                console.error(chalk.red('\n' + err));
-            });
-            break;
+        // case "update":
+        //     co(function* () {
+        //         // Ping内网;
+        //         update(yield getPing(), '');
+        //     }).catch(err => {
+        //         console.error(chalk.red('\n' + err));
+        //     });
+        //     break;
         case "install":
             co(function* () {
                 // Ping内网;

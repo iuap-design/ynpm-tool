@@ -278,9 +278,11 @@ module.exports = {
          attempts: 1
      })
      if(Ping_Response.avg) {
-          console.log(chalk.dim('Yonyou Inner Mirror Downloading...\n'));
+          // console.log(chalk.dim('Yonyou Inner Mirror Downloading...\n'));
+          console.log(chalk.dim('Yonyou Intranet\n'));
       } else {
-          console.log(chalk.dim(`Yonyou Mirror Downloading...\n`));
+          // console.log(chalk.dim(`Yonyou Mirror Downloading...\n`));
+          console.log(chalk.dim(`Web Internet\n`));
       }
      let registry = Ping_Response.avg ? YON_INNER_MIRROR : YON_MIRROR;
 

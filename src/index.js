@@ -37,10 +37,10 @@ function init(fun){
 
 
 module.exports = {
-  plugin: function(options,global) {
-    let commands = options.cmd;
-    const argvs = process.argv;
-    switch (commands) {
+    plugin: function (options, global) {
+        let commands = options.cmd;
+        const argvs = process.argv;
+        switch (commands) {
         case "-h":
         case "-help":
             help.help();
@@ -51,41 +51,41 @@ module.exports = {
             break;
         case "i":
             process.argv[2] = 'install'
-            co(function* (){
-              // Ping内网;
-              install(yield getPing(),'');
+            co(function* () {
+                // Ping内网;
+                install(yield getPing(), '');
             }).catch(err => {
-              console.error(chalk.red('\n' + err));
+                console.error(chalk.red('\n' + err));
             });
             break;
         case "readme":
-            co(function* (){
+            co(function* () {
                 // Ping内网;
-                readme(yield getPing(),'');
+                readme(yield getPing(), '');
             }).catch(err => {
                 console.error(chalk.red('\n' + err));
             });
             break;
         case "update":
-            co(function* (){
+            co(function* () {
                 // Ping内网;
-                update(yield getPing(),'');
+                update(yield getPing(), '');
             }).catch(err => {
                 console.error(chalk.red('\n' + err));
             });
             break;
         case "install":
-            co(function* (){
-              // Ping内网;
-              install(yield getPing(),'');
+            co(function* () {
+                // Ping内网;
+                install(yield getPing(), '');
             }).catch(err => {
-              console.error(chalk.red('\n' + err));
+                console.error(chalk.red('\n' + err));
             });
             break;
         case "sync":
-            co(function* (){
+            co(function* () {
                 // Ping内网;
-                sync(yield getPing(),'');
+                sync(yield getPing(), '');
             }).catch(err => {
                 console.error(chalk.red('\n' + err));
             });
@@ -94,31 +94,35 @@ module.exports = {
             console.log(process.argv)
             //替换 installdev 成 install
             process.argv[2] = 'install'
-            co(function* (){
-              // Ping内网;
-              install(yield getPing(),'dev');
+            co(function* () {
+                // Ping内网;
+                install(yield getPing(), 'dev');
             }).catch(err => {
-              console.error(chalk.red('\n' + err));
+                console.error(chalk.red('\n' + err));
             });
             break;
         case "publish":
-          co(function* (){
-            // Ping内网;
-            publish(yield getPing());
-          }).catch(err => {
-            console.error(chalk.red('\n' + err));
-          });
-          break;
+            co(function* () {
+                // Ping内网;
+                publish(yield getPing());
+            }).catch(err => {
+                console.error(chalk.red('\n' + err));
+            });
+            break;
         case "set":
-          let config = setRc("ynpm");
-          break;
+            let config = setRc("ynpm");
+            break;
         case "sshk":
-          let ynpmrcCon = getRc("ynpm");
-          help.showSSHKMsg(ynpmrcCon.sshk)
-          break;
+            let ynpmrcCon = getRc("ynpm");
+            help.showSSHKMsg(ynpmrcCon.sshk);
+            break;
         default:
-          // help.help();
-            npm();
+            co(function* () {
+                // Ping内网;
+                npm(yield getPing());
+            }).catch(err => {
+                console.error(chalk.red('\n' + err));
+            });
+        }
     }
-  }
 }

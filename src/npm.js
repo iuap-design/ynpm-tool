@@ -4,7 +4,7 @@ const npmBin = path.join(__dirname, '..', 'node_modules', '.bin', 'npm');
 const argvs = process.argv;
 const env = Object.assign({}, process.env);
 const CWD = process.cwd();
-const {HOST_REGISTRY} = require('./utils');
+const {YON_INNER_MIRROR} = require('./utils');
 
 const stdio = [
     process.stdin,
@@ -12,9 +12,9 @@ const stdio = [
     process.stderr,
 ];
 
-module.exports = () => {
+module.exports = (registry) => {
     const argv =  argvs.slice(2);
-    argv.push(`--registry=${HOST_REGISTRY}`);
+    argv.push(`--registry=${registry}`);
     const child = spawn(npmBin, argv, {
         env,
         cwd: CWD,

@@ -9,6 +9,8 @@ const install = require('./install');
 const publish = require('./publish');
 const npm = require('./npm');
 const sync = require('./sync');
+const readme = require('./readme');
+const update = require('./update');
 function getHelp() {
   console.log(chalk.green(" Usage : "));
   console.log(chalk.green(" ac sample init sample"));
@@ -54,6 +56,22 @@ module.exports = {
               install(yield getPing(),'');
             }).catch(err => {
               console.error(chalk.red('\n' + err));
+            });
+            break;
+        case "readme":
+            co(function* (){
+                // Ping内网;
+                readme(yield getPing(),'');
+            }).catch(err => {
+                console.error(chalk.red('\n' + err));
+            });
+            break;
+        case "update":
+            co(function* (){
+                // Ping内网;
+                update(yield getPing(),'');
+            }).catch(err => {
+                console.error(chalk.red('\n' + err));
             });
             break;
         case "install":

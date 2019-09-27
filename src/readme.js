@@ -18,15 +18,13 @@ const Exec = thunkify(exec);
 
 module.exports = (registry) => {
     const argvs = process.argv;
-    const ip = getIPAdress();
     const spinner = ora().start();
     spinner.color = 'green';
     co(function* (){
-        if(argvs[2] == 'publish'){
+        if(argvs[2] == 'readme'){
             var ynpmConfig = getRc("ynpm");
             ynpmConfig.sshk=ynpmConfig._auth;
             var packOrigin = JSON.parse(fs.readFileSync(path.join(process.cwd(),'package.json')));
-            //validate user rolse
             let data = yield userInfo(packOrigin.name);
             if(!data){
                 help.setConfig();
@@ -39,39 +37,16 @@ module.exports = (registry) => {
                 spinner.stop();
                 process.exit(0);
             }
-
             if(ynpmConfig.user && ynpmConfig.sshk && data){
-                console.log('Aviable: Pass Validation, Start to Publish...')
-                let userconfig = getRcFile('ynpm')
-                var arg_publish_inner = `npm --registry=${HOST_REGISTRY} --userconfig=${userconfig} publish`;
                 spinner.text = 'Publishing your package in Yonyou Local Area Net';
-                try{
-                    let publish_result = yield Exec(arg_publish_inner);
-                }catch(e){
-                    console.error(replaceErrMsg(e,HOST_REGISTRY))
-                    console.error(chalk.red('\n' + 'please check the package.json\'s version, if had try many time, \n please connect admin\'s email wangshih@yonyou.com or chenpanf@yonyou.com !'));
-                    spinner.stop();
-                    process.exit(0);
-                }
                 let params = getPckParams(packOrigin);
-                let pckMsg = yield setPackage({
-                    ip,
-                    userId: data.user_id,
-                    name:params.name,
-                    author: ynpmConfig.user,
-                    version:params.version,
-                    last_auth: ynpmConfig.user,
-                    last_time: moment().format('YYYY-MM-DD hh:mm:ss'),
-                    packageInfo:escape(JSON.stringify(params))})
                 try {
                     let result = yield uploadReadme(params.name);
                 }
                 catch(e) {
                     console.log('\n')
-                    console.log(chalk.yellow(`[WARN]publish success, but upload README.md file fail`));
+                    console.log(chalk.yellow(`[ERROR]upload README.md file fail`));
                 }
-                console.log('\n')
-                console.log(chalk.green(`√ Finish, Happy enjoy coding!`));
             } else {
                 console.error("Error: Cant Find User, Please Use `npm set user=xxx && npm set email=xxx` or Contact Admin to Create User!");
             }

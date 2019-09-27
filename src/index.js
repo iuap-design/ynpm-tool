@@ -9,7 +9,7 @@ const install = require('./install');
 const publish = require('./publish');
 const npm = require('./npm');
 const sync = require('./sync');
-const readme = require('./readme');
+const updateInfo = require('./updateInfo');
 const update = require('./update');
 function getHelp() {
   console.log(chalk.green(" Usage : "));
@@ -58,10 +58,10 @@ module.exports = {
                 console.error(chalk.red('\n' + err));
             });
             break;
-        case "readme":
+        case "updateInfo":
             co(function* () {
                 // Ping内网;
-                readme(yield getPing(), '');
+                updateInfo(yield getPing(), '');
             }).catch(err => {
                 console.error(chalk.red('\n' + err));
             });

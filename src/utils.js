@@ -1,7 +1,8 @@
 'use strict';
 
 //  Nexus OSS 3.12 Info
-const IPCOMPANY = '10.3.15.212';//内网
+// const IPCOMPANY = '10.3.15.212';//内网
+const IPCOMPANY = '10.3.15.79';//内网
 const YON_INNER_MIRROR = 'http://'+IPCOMPANY+':8081/repository/ynpm-all/';
 //外网
 const YON_MIRROR = 'http://ynpm.yonyoucloud.com/repository/ynpm-all/';

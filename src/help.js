@@ -51,8 +51,9 @@ module.exports = {
       `));
 	},
 	version: () => {
+		const cVesion = require("../package.json").version;
 		console.log();
-		console.log(chalk.green('Yonyou Package Manager(ynpm) Version : ' + require('../package.json').version));
+		console.log(chalk.green('Yonyou Package Manager(ynpm) Version : ' + cVesion.split('-')[0]));
 		console.log();
 		process.exit();
 	},

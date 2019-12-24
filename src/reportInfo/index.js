@@ -51,7 +51,18 @@ function isEmptyObject(obj) {
 	;
 	return true
 };
-
+function version() {
+	let config = getHttpConfig({
+		path: "/package/getToolVersion",
+	});
+	return get(config, {});
+}
+function getLastVersion() {
+	let config = getHttpConfig({
+		path: "/package/getLastToolVersion",
+	});
+	return get(config, {});
+}
 function userInfo(packageName) {
 	let parame = getRc("ynpm");
 	parame.packageName = packageName
@@ -100,7 +111,8 @@ function setPackage(params) {
 module.exports = {
 	userInfo,
 	setPackage,
+	version,
+	getLastVersion,
 	addDownloadNum,
 	packageDownloadDetail
 }
-

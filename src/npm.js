@@ -1,4 +1,5 @@
 const path = require('path');
+const chalk = require('chalk');
 const spawn = require('cross-spawn');
 const npmBin = path.join(__dirname, '..', 'node_modules', '.bin', 'npm');
 const argvs = process.argv;

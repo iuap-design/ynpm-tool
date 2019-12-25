@@ -51,12 +51,6 @@ function isEmptyObject(obj) {
 	;
 	return true
 };
-function version() {
-	let config = getHttpConfig({
-		path: "/package/getToolVersion",
-	});
-	return get(config, {});
-}
 function getLastVersion() {
 	let config = getHttpConfig({
 		path: "/package/getLastToolVersion",
@@ -111,7 +105,6 @@ function setPackage(params) {
 module.exports = {
 	userInfo,
 	setPackage,
-	version,
 	getLastVersion,
 	addDownloadNum,
 	packageDownloadDetail

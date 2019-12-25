@@ -35,13 +35,15 @@ function checkVersion() {
 	}
 	const mastVesion = cVesion.split('-')[0];
 	return getLastVersion().then(res => {
-		if(res && !~cVesion.indexOf(res)) {
-			console.log('\n');
-			console.log(chalk.yellow(`YNPM-[WARNING]:Current version is ${mastVesion}, but the latest version is ${res}\n`));
-			console.log(chalk.yellow(`YNPM-[WARNING]:Please use the following command to update\n`));
-			console.log(chalk.green(`--------------------------------------\n`));
-			console.log(chalk.green(`          npm i ynpm-tool -g\n`));
-			console.log(chalk.green(`--------------------------------------\n`));
+		if(res) {
+			if(!~cVesion.indexOf(res)) {
+				console.log('\n');
+				console.log(chalk.yellow(`YNPM-[WARNING]:Current version is ${mastVesion}, but the latest version is ${res}\n`));
+				console.log(chalk.yellow(`YNPM-[WARNING]:Please use the following command to update\n`));
+				console.log(chalk.green(`--------------------------------------\n`));
+				console.log(chalk.green(`          npm i ynpm-tool -g\n`));
+				console.log(chalk.green(`--------------------------------------\n`));
+			}
 		} else {
 			consoleNoVersion(mastVesion)
 		}
@@ -111,13 +113,12 @@ module.exports = {
 					});
 					break;
 				case "sync":
-					console.error(chalk.red('\n' + '"sync" has been removed'));
-					// co(function* () {
-					// 	// Ping内网;
-					// 	sync(yield getPing(), '');
-					// }).catch(err => {
-					// 	console.error(chalk.red('\n' + err));
-					// });
+					co(function* () {
+						// Ping内网;
+						sync(yield getPing(), '');
+					}).catch(err => {
+						console.error(chalk.red('\n' + err));
+					});
 					break;
 				case "installdev":
 					console.log(process.argv)

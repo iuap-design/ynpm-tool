@@ -1,4 +1,5 @@
 const path = require('path');
+const chalk = require('chalk');
 const spawn = require('cross-spawn');
 const ora = require('ora');
 const co = require('co');
@@ -28,6 +29,9 @@ module.exports = (registry) => {
 			stdio,
 		});
 		child.on('exit', code => {
+			if(code === 0) {
+				console.log(chalk.green('Update Success!'))
+			}
 			process.exit(code);
 		});
 	}).catch(err => {

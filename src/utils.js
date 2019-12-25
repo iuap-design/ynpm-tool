@@ -232,14 +232,16 @@ function uploadReadme(name) {
 }
 
 // sync
-function sync() {
+function sync(name) {
     try {
-        return fetch(getHttpConfig().host + '/package/extdirect', {method: 'get'})
+		let form = new formData();
+		form.append("name", name);
+        return fetch(getHttpConfig().host + '/package/syncPackage', {method: 'post', body: form})
             .then(res => res.json())
             .then((res) => {
                 if(res.success) {
                     console.log('\n');
-                    console.log(chalk.green('synchronization success!'));
+                    console.log(chalk.green(`package ${name} synchronization success!`));
                 } else {
                     console.log('\n');
                     console.log(res.msg);

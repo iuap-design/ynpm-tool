@@ -8,11 +8,22 @@ module.exports = () => {
 	const spinner = ora().start();
 	spinner.color = 'green';
 	co(function* () {
-		let result = yield sync();
-		spinner.stop();
+		const argvs = process.argv;
+		const name = argvs.slice(3);
+		if(name) {
+			let result = yield sync(name);
+			if(result) {
+				console.log('sync ' + name + ' success!')
+			}
+			spinner.stop();
+		} else {
+			console.error(chalk.red('\n' + 'Please enter the package name'));
+		}
 		process.exit(0);
 	}).catch(err => {
+		spinner.stop();
 		console.error(chalk.red('\n' + err));
+		process.exit(0);
 	});
 }
 

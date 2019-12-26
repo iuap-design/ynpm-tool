@@ -244,7 +244,7 @@ function sync(name) {
                     console.log(chalk.green(`package ${name} synchronization success!`));
                 } else {
                     console.log('\n');
-                    console.log(res.msg);
+					console.error(chalk.red('\n' + res.message));
                 }
             })
     } catch (err) {

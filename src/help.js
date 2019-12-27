@@ -32,7 +32,7 @@ module.exports = {
           Others:
           ----------------------------------------------------
             ynpm --registry: change default mirror address
-       
+            ynpm sync <pkg>: Synchronize npm to ynpm
           `
 		));
 		console.log();

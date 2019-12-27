@@ -10,8 +10,8 @@ module.exports = () => {
 	co(function* () {
 		const argvs = process.argv;
 		const name = argvs.slice(3);
-		if(name) {
-			yield sync(name);
+		if(name[0]) {
+			yield sync(name[0]);
 			spinner.stop();
 		} else {
 			console.error(chalk.red('\n' + 'Please enter the package name'));

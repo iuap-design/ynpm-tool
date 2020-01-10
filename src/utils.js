@@ -206,10 +206,7 @@ function uploadReadme(name) {
         if (fs.existsSync(readmeFilePath)) {
             form.append("readme", fs.readFileSync(readmeFilePath, 'utf-8'));
             form.append("name", name);
-            return  fetch(getHttpConfig().host + '/package/readmeUpload', {
-                method: 'post',
-                body: form
-            })
+			return fetch(getHttpConfig().host + '/package/readmeUpload', {method: 'post', body: form})
                 .then(res => res.json())
                 .then((res) => {
                     if(res.success) {
@@ -219,7 +216,10 @@ function uploadReadme(name) {
                         console.log('\n')
                         console.log(res.msg);
                     }
-                })
+                }).catch(err => {
+					console.log('\n');
+					console.log(err);
+				})
         } else {
             console.log('\n')
             console.log(chalk.yellow('[WARN]:NO README.md file, Please add README.md!'));

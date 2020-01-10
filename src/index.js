@@ -7,6 +7,7 @@ const {getRc, setRc, getPing, getByAtrrBool, consoleLog} = require('./utils');
 const { getLastVersion} = require('./reportInfo/index');
 const help = require('./help');
 const install = require('./install');
+const reinstall = require('./reinstall');
 const publish = require('./publish');
 const npm = require('./npm');
 const sync = require('./sync');
@@ -80,7 +81,7 @@ module.exports = {
 					help.version();
 					break;
 				case "i":
-					process.argv[2] = 'install'
+					process.argv[2] = 'install';
 					co(function* () {
 						// Ping内网;
 						install(yield getPing('install'), '');
@@ -104,6 +105,15 @@ module.exports = {
 						console.error(chalk.red('\n' + err));
 					});
 					break;
+				case "reinstall":
+				case "rei":
+					co(function* () {
+						// Ping内网;
+						reinstall(yield getPing(), '');
+					}).catch(err => {
+						console.error(chalk.red('\n' + err));
+					});
+					break;
 				case "install":
 					co(function* () {
 						// Ping内网;
@@ -121,7 +131,6 @@ module.exports = {
 					});
 					break;
 				case "installdev":
-					console.log(process.argv)
 					//替换 installdev 成 install
 					process.argv[2] = 'install'
 					co(function* () {

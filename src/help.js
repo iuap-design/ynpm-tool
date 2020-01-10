@@ -23,6 +23,8 @@ module.exports = {
             ynpm install <tarball url>
             ynpm install <git:// url>
             ynpm install <github username>/<github project>
+            ynpm reinstall
+            ynpm reinstall <pkg>
        
           Options:
           ----------------------------------------------------
@@ -53,7 +55,7 @@ module.exports = {
 	version: () => {
 		const cVesion = require("../package.json").version;
 		console.log();
-		console.log(chalk.green('Yonyou Package Manager(ynpm) Version : ' + cVesion.split('-')[0]));
+		console.log(chalk.green('Yonyou Package Manager(ynpm) Version : ' + cVesion));
 		console.log();
 		process.exit();
 	},

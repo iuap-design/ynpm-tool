@@ -107,7 +107,21 @@ $ cd xx_component && ynpm publish
   ```
 [更多npm规范](https://docs.npmjs.com/files/package.json)   &nbsp;&nbsp; [例子](https://github.com/tinper-acs/ac-button/blob/master/package.json)
 
-
+<h2 id="link5"> 常用命令 </h2>
+   
+   |命令|说明|使用|
+   |:--|:---|:--|
+   install / i    |安装包             |ynpm install|
+   update         |更新包             |ynpm update|
+   show           |显示包信息          |ynpm show <pkg>|
+   list           |显示当前安装报的版本 |ynpm list|
+   reinstall / rei|重装包             |ynpm rei|
+   sync           |同步npm包到ynpm    |ynpm sync|
+   publish        |发布包到ynpm       |ynpm publish|
+   set            |设置ynpm的用户名    |ynpm set user/email|
+   version        |查看ynpm版本       |ynpm -v|
+   help           |查看帮助           |ynpm -h|
+   sshk           |查看sshk           |ynpm sshk|
 	 
 <h2 id="link5"> Q&A常见问题 </h2>
 
@@ -133,11 +147,8 @@ $ cd xx_component && ynpm publish
     ```
     cat ~/.ynpmrc  # _auth后面的就是sshk
     ```
-<strong>如果您尝试多次，自己无法解决的问题请反馈给我们 &nbsp; 
-[问题反馈](https://github.com/iuap-design/ynpm-tool/issues) 、联系我们解决问题</strong> 
+   
 
-<center>
-  <img src="http://iuap-design-cdn.oss-cn-beijing.aliyuncs.com/static/ynpm/image/team2001.png" width="300" hegiht="100" align=center /></center>
-
+  
 
 

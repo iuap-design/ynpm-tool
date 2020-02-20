@@ -14,19 +14,23 @@ const stdio = [
 	process.stderr,
 ];
 
-function deleteFolder(path) {
-	let files = [];
-	if (fs.existsSync(path)) {
-		files = fs.readdirSync(path);
-		files.forEach(function (file, index) {
-			let curPath = path + "/" + file;
-			if (fs.statSync(curPath).isDirectory()) {
-				deleteFolder(curPath);
-			} else {
-				fs.unlinkSync(curPath);
-			}
-		});
-		fs.rmdirSync(path);
+function deleteFolder(path, allPath) {
+	try{
+		let files = [];
+		if (fs.existsSync(path)) {
+			files = fs.readdirSync(path);
+			files.forEach(function (file, index) {
+				let curPath = path + "/" + file;
+				if (fs.statSync(curPath).isDirectory()) {
+					deleteFolder(curPath);
+				} else {
+					fs.unlinkSync(curPath);
+				}
+			});
+			fs.rmdirSync(path);
+		}
+	}catch(err) {
+		deleteFolder(allPath, allPath)
 	}
 }
 module.exports = () => {
@@ -57,10 +61,10 @@ module.exports = () => {
 		});
 		if(pkg) {
 			console.log(chalk.green(`node_modules/${pkg} need to be deleted before reloading, please wait!`));
-			deleteFolder(node_modules + '/' + pkg)
+			deleteFolder(node_modules + '/' + pkg, node_modules + '/' + pkg)
 		} else {
 			console.log(chalk.green(`node_modules need to be deleted before reloading, please wait!`));
-			deleteFolder(node_modules)
+			deleteFolder(node_modules, node_modules)
 		}
 		let argv = argvs.slice(3);
 		argv.push(`--registry=${YON_INNER_MIRROR}`);

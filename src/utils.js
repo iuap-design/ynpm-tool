@@ -1,16 +1,4 @@
 'use strict';
-
-//  Nexus OSS 3.12 Info
-// const IPCOMPANY = '10.3.15.212';//内网
-const IPCOMPANY = '10.3.15.79';//内网
-const YON_INNER_MIRROR = 'http://'+IPCOMPANY+':80/repository/ynpm-all/';
-//外网
-const YON_MIRROR = 'http://ynpm.yonyoucloud.com/repository/ynpm-all/';
-const HOST_REGISTRY = 'http://'+IPCOMPANY+':80/repository/ynpm-private/';
-// const HOST_REGISTRY = 'http://172.20.53.74:8081/repository/ynpm-private/';
-const YNPM_SERVER = "https://package.yonyoucloud.com/npm";
-// const YNPM_SERVER = "http://127.0.0.1:3001/npm";
-
 const chalk = require('chalk');
 const fs = require('fs');
 const path = require('path');
@@ -25,8 +13,28 @@ const propertiesParser = require('properties-parser')
 const Ping = thunkify(tcpp.ping);
 
 const help = require('./help');
-const userPath = process.env.HOME;
+const userPath = process.env.HOME || process.env.USERPROFILE;
 const fileName = "ynpm";
+
+
+//  Nexus OSS 3.12 Info
+// const IPCOMPANY = '10.3.15.212';//内网
+const IPCOMPANY = '10.3.15.79';//内网
+// const YON_INNER_MIRROR = 'http://'+IPCOMPANY+':80/repository/ynpm-all/';
+let YON_INNER_MIRROR;
+if(getRc(fileName) && getRc(fileName).nexus === 'new') {
+    YON_INNER_MIRROR = 'http://maven.yonyou.com/repository/NPM-Yonyou-Repository';
+} else {
+    YON_INNER_MIRROR = 'http://'+IPCOMPANY+':80/repository/ynpm-all/';
+}
+// const YON_MIRROR = 'http://ynpm.yonyoucloud.com/repository/ynpm-all/';
+const YON_MIRROR = 'http://maven.yonyou.com/repository/';
+const HOST_REGISTRY = 'http://'+IPCOMPANY+':80/repository/ynpm-private/';
+// const HOST_REGISTRY = 'http://172.20.53.74:8081/repository/ynpm-private/';
+const YNPM_SERVER = "https://package.yonyoucloud.com/npm";
+// const YNPM_SERVER = "http://127.0.0.1:3001/npm";
+
+
 
 
 /**
@@ -206,7 +214,7 @@ function uploadReadme(name) {
         if (fs.existsSync(readmeFilePath)) {
             form.append("readme", fs.readFileSync(readmeFilePath, 'utf-8'));
             form.append("name", name);
-			return fetch(getHttpConfig().host + '/package/readmeUpload', {method: 'post', body: form})
+            return fetch(getHttpConfig().host + '/package/readmeUpload', {method: 'post', body: form})
                 .then(res => res.json())
                 .then((res) => {
                     if(res.success) {
@@ -217,9 +225,9 @@ function uploadReadme(name) {
                         console.log(res.msg);
                     }
                 }).catch(err => {
-					console.log('\n');
-					console.log(err);
-				})
+                    console.log('\n');
+                    console.log(err);
+                })
         } else {
             console.log('\n')
             console.log(chalk.yellow('[WARN]:NO README.md file, Please add README.md!'));
@@ -234,8 +242,8 @@ function uploadReadme(name) {
 // sync
 function sync(name) {
     try {
-		let form = new formData();
-		form.append("name", name);
+        let form = new formData();
+        form.append("name", name);
         return fetch(getHttpConfig().host + '/package/syncPackage', {method: 'post', body: form})
             .then(res => res.json())
             .then((res) => {
@@ -244,7 +252,7 @@ function sync(name) {
                     console.log(chalk.green(`package ${name} synchronization success!`));
                 } else {
                     console.log('\n');
-					console.error(chalk.red('\n' + res.message));
+                    console.error(chalk.red('\n' + res.message));
                 }
             })
     } catch (err) {
@@ -281,6 +289,9 @@ module.exports = {
                 attempts: 1
             })
             if(action === 'install' || action === 'i') { // 只在安装的时候给提示语
+                if(getRc(fileName) && getRc(fileName).nexus === 'new') {
+                    console.log('You are using the test address')
+                }
                 if(Ping_Response.avg) {
                     console.log(chalk.dim('Yonyou Inner Mirror Downloading...\n'));
                 } else {

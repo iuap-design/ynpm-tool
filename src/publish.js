@@ -40,16 +40,16 @@ module.exports = (registry) => {
 				process.exit(0);
 			}
 
-			if (ynpmConfig.user && ynpmConfig.sshk && data) {
-				console.log('Aviable: Pass Validation, Start to Publish...')
-				let userconfig = getRcFile('ynpm')
+			if ((ynpmConfig.user || (ynpmConfig.ynpmUser && ynpmConfig.ynpmPassword)) && ynpmConfig.sshk && data) {
+				console.log('Available: Pass Validation, Start to Publish...');
+				let userconfig = getRcFile('ynpm');
 				const arg_publish_inner = `npm --registry=${HOST_REGISTRY} --userconfig=${userconfig} publish ` + argvs.slice(3).join(' ');
 				spinner.text = 'Publishing your package in Yonyou Local Area Net';
 				try {
 					let publish_result = yield Exec(arg_publish_inner);
 				} catch (e) {
 					console.error(replaceErrMsg(e, HOST_REGISTRY))
-					console.error(chalk.red('\n' + 'please check the package.json\'s version, if had try many time, \n please connect admin\'s email wangshih@yonyou.com or chenpanf@yonyou.com !'));
+					console.error(chalk.red('\n' + 'please check the package.json\'s version, if had try many time, \n please connect admin\'s email liushld@yonyou.com!'));
 					spinner.stop();
 					process.exit(0);
 				}

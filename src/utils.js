@@ -18,18 +18,21 @@ const fileName = "ynpm";
 
 
 //  Nexus OSS 3.12 Info
-// const IPCOMPANY = '10.3.15.212';//内网
 const IPCOMPANY = '10.3.15.79';//内网
-// const YON_INNER_MIRROR = 'http://'+IPCOMPANY+':80/repository/ynpm-all/';
-let YON_INNER_MIRROR;
-if(getRc(fileName) && getRc(fileName).nexus === 'new') {
-    YON_INNER_MIRROR = 'http://maven.yonyou.com/repository/NPM-Yonyou-Repository';
+let YON_INNER_MIRROR, HOST_REGISTRY, YON_MIRROR;
+if(getRc(fileName) && getRc(fileName).nexus !== 'old') {
+YON_INNER_MIRROR = 'http://maven.yonyou.com/repository/NPM-Yonyou-Repository'; //
+YON_MIRROR = 'http://maven.yonyou.com/repository/NPM-Yonyou-Repository';
+HOST_REGISTRY = 'http://maven.yonyou.com/nexus/repository/npm-yonyou-release/';
 } else {
     YON_INNER_MIRROR = 'http://'+IPCOMPANY+':80/repository/ynpm-all/';
+    YON_MIRROR = 'http://ynpm.yonyoucloud.com/repository/ynpm-all/';
+    HOST_REGISTRY = 'http://'+IPCOMPANY+':80/repository/ynpm-private/';
 }
+
 // const YON_MIRROR = 'http://ynpm.yonyoucloud.com/repository/ynpm-all/';
-const YON_MIRROR = 'http://maven.yonyou.com/repository/';
-const HOST_REGISTRY = 'http://'+IPCOMPANY+':80/repository/ynpm-private/';
+// const YON_MIRROR = 'http://maven.yonyou.com/repository/';
+// const HOST_REGISTRY = 'http://'+IPCOMPANY+':80/repository/ynpm-private/';
 // const HOST_REGISTRY = 'http://172.20.53.74:8081/repository/ynpm-private/';
 const YNPM_SERVER = "https://package.yonyoucloud.com/npm";
 // const YNPM_SERVER = "http://127.0.0.1:3001/npm";
@@ -67,23 +70,28 @@ function getCommands(fileName){
     let argvs = process.argv;
     try{
         let attr
-        if(argvs[2] == "set" && argvs[3].indexOf("email") > -1 ){
-            let data = propertiesParser.read(getRcFile(fileName));
-            attr = argvs[3].split("=");
-            if(attr[1]===undefined){
-                console.error('email 不能为空')
-                return
-            }
-            data[attr[0]] = attr[1];
-            data["sshk"] = btoa(data.user+":"+data.user);
-            data["_auth"] = btoa(data.user+":"+data.user);
-            let sshk = data["sshk"];
-            help.showSSHKMsg(sshk)
+        if(argvs[2] == "set"){
+			let data = propertiesParser.read(getRcFile(fileName));
+			attr = argvs[3].split("=");
+			data[attr[0]] = attr[1];
+        	if((argvs[3].indexOf("ynpmPassword") > -1 && data.ynpmUser)
+			|| (argvs[3].indexOf("ynpmUser") > -1 && data.ynpmPassword)
+			) {// 新账号将使用账号密码生成sshk
+
+				data["sshk"] = btoa(data.ynpmUser + ":" + data.ynpmPassword);
+				data["_auth"] = btoa(data.ynpmUser + ":" + data.ynpmPassword);
+			}
+			if(data.user && !data.ynpmUser && !ynpmPassword) { // 旧账号将使用user生成sshk
+				data["sshk"] = btoa(data.user+":"+data.user);
+				data["_auth"] = btoa(data.user+":"+data.user);
+			}
+			if(data["sshk"]) {
+				help.showSSHKMsg(data["sshk"]);
+			}
             config = data;
-        }else if(argvs[2] == "set"){
-            attr = argvs[3].split("=");
-            config[attr[0]] = attr[1];
-        }else{return null;}
+        } else {
+        	return null;
+        }
         return config;
     }catch(e){
         return null;
@@ -122,31 +130,11 @@ function setRc(fileName){
             if(comm){
                 config = config||{};
                 config = objectAssign(config,comm);
-
-                // config = JSON.stringify(config);
-                // 转换为 a='a' 的格式
                 let editor = propertiesParser.createEditor();
                 for (var item in config) {
                     editor.set(item, config[item]);
                 }
                 fs.writeFileSync(path,editor.toString())
-
-                // if(config.email && config.sshk) {
-                //   let set_npmrc_email_config = `npm config set email=${config.email}`;
-                //   let set_npmrc_auth_config = `npm config set _auth=${config.sshk}`;
-                //   exec(set_npmrc_email_config,(error, stdout, stderr)=>{
-                //     if(error) {
-                //       console.error('error: ' + error);
-                //       return;
-                //     }
-                //     exec(set_npmrc_auth_config,(error, stdout, stderr)=>{
-                //       if(error) {
-                //         console.error('error: ' + error);
-                //         return;
-                //       }
-                //     });
-                //   });
-                // }
             };
         }
     }catch(e){

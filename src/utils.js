@@ -81,11 +81,11 @@ function getCommands(fileName){
 				data["sshk"] = btoa(data.ynpmUser + ":" + data.ynpmPassword);
 				data["_auth"] = btoa(data.ynpmUser + ":" + data.ynpmPassword);
 			}
-			if(data.user && !data.ynpmUser && !ynpmPassword) { // 旧账号将使用user生成sshk
+			if(data.user && !data.ynpmUser && !data.ynpmPassword) { // 旧账号将使用user生成sshk
 				data["sshk"] = btoa(data.user+":"+data.user);
 				data["_auth"] = btoa(data.user+":"+data.user);
 			}
-			if(data["sshk"]) {
+			if(data["sshk"] && data.ynpmUser && data.ynpmPassword) {
 				help.showSSHKMsg(data["sshk"]);
 			}
             config = data;

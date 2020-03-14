@@ -21,9 +21,9 @@ const fileName = "ynpm";
 const IPCOMPANY = '10.3.15.79';//内网
 let YON_INNER_MIRROR, HOST_REGISTRY, YON_MIRROR;
 if(getRc(fileName) && getRc(fileName).nexus !== 'old') {
-YON_INNER_MIRROR = 'http://maven.yonyou.com/repository/NPM-Yonyou-Repository'; //
-YON_MIRROR = 'http://maven.yonyou.com/repository/NPM-Yonyou-Repository';
-HOST_REGISTRY = 'http://maven.yonyou.com/nexus/repository/npm-yonyou-release/';
+	YON_INNER_MIRROR = 'http://maven.yonyou.com/nexus/repository/ynpm-all/'; //
+	YON_MIRROR = 'http://maven.yonyou.com/nexus/repository/ynpm-all/';
+	HOST_REGISTRY = 'http://maven.yonyou.com/nexus/repository/ynpm-private/';
 } else {
     YON_INNER_MIRROR = 'http://'+IPCOMPANY+':80/repository/ynpm-all/';
     YON_MIRROR = 'http://ynpm.yonyoucloud.com/repository/ynpm-all/';

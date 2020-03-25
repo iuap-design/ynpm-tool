@@ -45,8 +45,10 @@ module.exports = (registry) => {
 				let userconfig = getRcFile('ynpm');
 				const arg_publish_inner = `npm --registry=${HOST_REGISTRY} --userconfig=${userconfig} publish ` + argvs.slice(3).join(' ');
 				spinner.text = 'Publishing your package in Yonyou Local Area Net';
+				console.log(arg_publish_inner)
 				try {
 					let publish_result = yield Exec(arg_publish_inner);
+					console.log(publish_result)
 				} catch (e) {
 					console.error(replaceErrMsg(e, HOST_REGISTRY))
 					console.error(chalk.red('\n' + 'please check the package.json\'s version, if had try many time, \n please connect admin\'s email liushld@yonyou.com!'));

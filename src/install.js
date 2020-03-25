@@ -9,7 +9,7 @@ const exec = childProcess.exec;
 const thunkify = require("thunkify");
 const Exec = thunkify(exec);
 var spawn = require('cross-spawn')
-const {replaceErrMsg} = require('./utils');
+const {replaceErrMsg, YON_OUTSIDE_MIRROR} = require('./utils');
 const {addDownloadNum, packageDownloadDetail} = require('./reportInfo/index');
 
 function countStrLeng(str, subStr) {
@@ -43,6 +43,10 @@ function getResultPkgs(paramArr) {
 
 module.exports = (registry, ifHasLog) => {
 	const argvs = process.argv;
+	let outside = false
+	if(argvs.indexOf('-outside') > -1 || argvs.indexOf('--outside') > -1) {
+		outside = true
+	}
 	const pkgPath = path.join(process.cwd(), 'package.json');
 	let _pack = [];
 	let pkgJson = {};
@@ -94,7 +98,8 @@ module.exports = (registry, ifHasLog) => {
 		const argv_part = argvs.slice(2).join(' ');
 		console_log(ifHasLog, 'process.argv', process.argv)
 		console_log(ifHasLog, 'arg_install')
-		let resultInstall = yield npminstall(argv_part, registry);
+		console.log(outside ? YON_OUTSIDE_MIRROR : registry)
+		let resultInstall = yield npminstall(argv_part, outside ? YON_OUTSIDE_MIRROR : registry);
 		//如果报错就不进行下去
 		if (resultInstall.status !== 0) {
 			stop(spinner, resultInstall.status);

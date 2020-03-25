@@ -19,14 +19,16 @@ const fileName = "ynpm";
 
 //  Nexus OSS 3.12 Info
 const IPCOMPANY = '10.3.15.79';//内网
-let YON_INNER_MIRROR, HOST_REGISTRY, YON_MIRROR;
+let YON_INNER_MIRROR, HOST_REGISTRY, YON_MIRROR, YON_OUTSIDE_MIRROR;
 if(getRc(fileName) && getRc(fileName).nexus !== 'old') {
 	YON_INNER_MIRROR = 'http://maven.yonyou.com/nexus/repository/ynpm-all/'; //
 	YON_MIRROR = 'http://maven.yonyou.com/nexus/repository/ynpm-all/';
+	YON_OUTSIDE_MIRROR = 'http://10.16.224.243:8080/repository/ynpm-outside/';
 	HOST_REGISTRY = 'http://maven.yonyou.com/nexus/repository/ynpm-private/';
 } else {
     YON_INNER_MIRROR = 'http://'+IPCOMPANY+':80/repository/ynpm-all/';
     YON_MIRROR = 'http://ynpm.yonyoucloud.com/repository/ynpm-all/';
+	YON_OUTSIDE_MIRROR = 'http://10.16.224.243:8080/repository/ynpm-outside/'
     HOST_REGISTRY = 'http://'+IPCOMPANY+':80/repository/ynpm-private/';
 }
 
@@ -34,8 +36,8 @@ if(getRc(fileName) && getRc(fileName).nexus !== 'old') {
 // const YON_MIRROR = 'http://maven.yonyou.com/repository/';
 // const HOST_REGISTRY = 'http://'+IPCOMPANY+':80/repository/ynpm-private/';
 // const HOST_REGISTRY = 'http://172.20.53.74:8081/repository/ynpm-private/';
-const YNPM_SERVER = "https://package.yonyoucloud.com/npm";
-// const YNPM_SERVER = "http://127.0.0.1:3001/npm";
+// const YNPM_SERVER = "https://package.yonyoucloud.com/npm";
+const YNPM_SERVER = "http://127.0.0.1:3001/npm";
 
 
 
@@ -248,12 +250,34 @@ function sync(name) {
         return new Promise();
     }
 }
+// rules
+function rules(version) {
+	try {
+		let form = new formData();
+		form.append("version", version);
+		return fetch(getHttpConfig().host + '/package/addRoutingRules', {method: 'put', body: form})
+			.then(res => res.json())
+			.then((res) => {
+				if(res.success) {
+					console.log('\n');
+					console.log(chalk.green(`${res.message}!`));
+				} else {
+					console.log('\n');
+					console.error(chalk.red('\n' + res.message));
+				}
+			})
+	} catch (err) {
+		console.log(chalk.dim(err));
+		return new Promise();
+	}
+}
 
 module.exports = {
     registry:"",
     IPCOMPANY,
     YON_MIRROR,
     YON_INNER_MIRROR,
+	YON_OUTSIDE_MIRROR,
     // DEAFAULT_MIRROR,
     HOST_REGISTRY,
     // CDNJSON,
@@ -264,6 +288,7 @@ module.exports = {
     getPckParams,
     getRcFile,
     sync,
+	rules,
     replaceErrMsg,
     getIPAdress,
     uploadReadme,

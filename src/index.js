@@ -11,6 +11,7 @@ const reinstall = require('./reinstall');
 const publish = require('./publish');
 const npm = require('./npm');
 const sync = require('./sync');
+const addRouteRules = require('./addRoutingRules');
 const updateInfo = require('./updateInfo');
 const update = require('./update');
 
@@ -126,6 +127,14 @@ module.exports = {
 					co(function* () {
 						// Ping内网;
 						sync(yield getPing(), '');
+					}).catch(err => {
+						console.error(chalk.red('\n' + err));
+					});
+					break;
+				case "rules":
+					co(function* () {
+						// Ping内网;
+						addRouteRules(yield getPing(), '');
 					}).catch(err => {
 						console.error(chalk.red('\n' + err));
 					});

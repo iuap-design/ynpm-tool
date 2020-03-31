@@ -36,8 +36,8 @@ if(getRc(fileName) && getRc(fileName).nexus !== 'old') {
 // const YON_MIRROR = 'http://maven.yonyou.com/repository/';
 // const HOST_REGISTRY = 'http://'+IPCOMPANY+':80/repository/ynpm-private/';
 // const HOST_REGISTRY = 'http://172.20.53.74:8081/repository/ynpm-private/';
-// const YNPM_SERVER = "https://package.yonyoucloud.com/npm";
-const YNPM_SERVER = "http://127.0.0.1:3001/npm";
+const YNPM_SERVER = "https://package.yonyoucloud.com/npm";
+// const YNPM_SERVER = "http://127.0.0.1:3001/npm";
 
 
 

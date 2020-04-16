@@ -19,16 +19,18 @@ const fileName = "ynpm";
 
 //  Nexus OSS 3.12 Info
 const IPCOMPANY = '10.3.15.79';//内网
-let YON_INNER_MIRROR, HOST_REGISTRY, YON_MIRROR, YON_OUTSIDE_MIRROR;
+let YON_INNER_MIRROR, HOST_REGISTRY, YON_MIRROR,YON_FAST_MIRROR, YON_OUTSIDE_MIRROR;
 if(getRc(fileName) && getRc(fileName).nexus !== 'old') {
 	YON_INNER_MIRROR = 'http://maven.yonyou.com/nexus/repository/ynpm-all/'; //
 	YON_MIRROR = 'http://maven.yonyou.com/nexus/repository/ynpm-all/';
 	YON_OUTSIDE_MIRROR = 'http://10.16.224.243/repository/ynpm-group/';
+	YON_FAST_MIRROR = 'http://maven.yonyou.com/nexus/repository/ynpm-all/';
 	HOST_REGISTRY = 'http://maven.yonyou.com/nexus/repository/ynpm-private/';
 } else {
     YON_INNER_MIRROR = 'http://'+IPCOMPANY+':80/repository/ynpm-all/';
     YON_MIRROR = 'http://ynpm.yonyoucloud.com/repository/ynpm-all/';
 	YON_OUTSIDE_MIRROR = 'http://10.16.224.243/repository/ynpm-group/'
+	YON_FAST_MIRROR = 'http://maven.yonyou.com/nexus/repository/ynpm-all/'
     HOST_REGISTRY = 'http://'+IPCOMPANY+':80/repository/ynpm-private/';
 }
 

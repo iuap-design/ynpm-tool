@@ -49,6 +49,7 @@ module.exports = (registry, ifHasLog) => {
 		outside = true
 	}
 	if(argvs.indexOf('-q') > -1 || argvs.indexOf('--q') > -1) {
+		console.log(chalk.yellow('YNPM-INFO: We are using a special line to download, please try to change to a normal line if you encounter a download exception'))
 		quick = true
 	}
 	const pkgPath = path.join(process.cwd(), 'package.json');

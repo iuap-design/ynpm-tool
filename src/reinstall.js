@@ -40,6 +40,12 @@ module.exports = () => {
 		const lockFile = './package-lock.json';
 		const node_modules = './node_modules';
 		const packageJson = require(CWD + '/package.json');
+		let q = false
+		if(~argvs.indexOf('-q') || ~argvs.indexOf('--q')) {
+			const index = argvs.indexOf('-q') > -1 ? argvs.indexOf('-q') : argvs.indexOf('--q')
+			q = true;
+			argvs.splice(index, 1)
+		}
 		const pkg = argvs[3];
 		let result = false;
 		if(packageJson){ //获取更新大包
@@ -72,6 +78,10 @@ module.exports = () => {
 		argv.unshift(`install`);
 		if(result) { // 更新@mdf
 			argv = ['install', `--registry=${YON_INNER_MIRROR}`, '--no-save']
+		}
+		if(q) {
+			argv.push('-q');
+			argv = ['install', `-q`, '--no-save']
 		}
 		spinner.stop();
 

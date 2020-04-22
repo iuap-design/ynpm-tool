@@ -24,16 +24,18 @@ if(getRc(fileName) && getRc(fileName).nexus !== 'old') {
 	YON_INNER_MIRROR = 'http://maven.yonyou.com/nexus/repository/ynpm-all/'; //
 	YON_MIRROR = 'http://maven.yonyou.com/nexus/repository/ynpm-all/';
 	YON_OUTSIDE_MIRROR = 'http://10.16.224.243/repository/ynpm-group/';
-	YON_FAST_MIRROR = 'http://maven.yonyou.com/nexus/repository/ynpm-all/';
+	YON_FAST_MIRROR = 'http://maven.yonyou.com/nexus/repository/ynpm-fast/';
 	HOST_REGISTRY = 'http://maven.yonyou.com/nexus/repository/ynpm-private/';
 } else {
     YON_INNER_MIRROR = 'http://'+IPCOMPANY+':80/repository/ynpm-all/';
     YON_MIRROR = 'http://ynpm.yonyoucloud.com/repository/ynpm-all/';
 	YON_OUTSIDE_MIRROR = 'http://10.16.224.243/repository/ynpm-group/'
-	YON_FAST_MIRROR = 'http://maven.yonyou.com/nexus/repository/ynpm-all/'
+	YON_FAST_MIRROR = 'http://maven.yonyou.com/nexus/repository/ynpm-fast/'
     HOST_REGISTRY = 'http://'+IPCOMPANY+':80/repository/ynpm-private/';
 }
-
+if(getRc(fileName) && getRc(fileName).quick === 'using') {
+	YON_INNER_MIRROR = YON_MIRROR = YON_FAST_MIRROR;
+}
 // const YON_MIRROR = 'http://ynpm.yonyoucloud.com/repository/ynpm-all/';
 // const YON_MIRROR = 'http://maven.yonyou.com/repository/';
 // const HOST_REGISTRY = 'http://'+IPCOMPANY+':80/repository/ynpm-private/';
@@ -280,6 +282,7 @@ module.exports = {
     YON_MIRROR,
     YON_INNER_MIRROR,
 	YON_OUTSIDE_MIRROR,
+	YON_FAST_MIRROR,
     // DEAFAULT_MIRROR,
     HOST_REGISTRY,
     // CDNJSON,

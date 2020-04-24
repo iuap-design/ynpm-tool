@@ -1,6 +1,8 @@
 const path = require('path');
 const chalk = require('chalk');
+const fs = require('fs');
 const request = require('request');
+const ora = require('ora');
 const spawn = require('cross-spawn');
 const npmBin = path.join(__dirname, '..', 'node_modules', '.bin', 'npm');
 const argvs = process.argv;
@@ -18,7 +20,7 @@ module.exports = () => {
 	co(function* () {
 		const spinner = ora().start();
 		spinner.color = 'green';
-		const pkg = argvs.slice(3)
+		const pkg = argvs[3]
 		const arr = pkg.split('@');
 		let str = "";
 		let file = "";
@@ -35,8 +37,8 @@ module.exports = () => {
 			if(err) {
 				return console.error(chalk.red('\n' + err));
 			}
-			console.log(chalk.green(`node_modules/${pkg} will be deleted, please wait!`));
 		})
+		spinner.stop()
 	}).catch(err => {
 		console.error(chalk.red('\n' + err));
 	});

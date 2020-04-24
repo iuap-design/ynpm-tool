@@ -1,17 +1,9 @@
-const path = require('path');
 const chalk = require('chalk');
-const spawn = require('cross-spawn');
-const npmBin = path.join(__dirname, '..', 'node_modules', '.bin', 'npm');
+const fs = require('fs');
 const argvs = process.argv;
-const env = Object.assign({}, process.env);
-const CWD = process.cwd();
-const {YON_INNER_MIRROR} = require('./utils');
+const ora = require('ora');
+const {deleteFolder} = require('./utils');
 const co = require('co');
-const stdio = [
-	process.stdin,
-	process.stdout,
-	process.stderr,
-];
 
 module.exports = () => {
 	co(function* () {
@@ -19,32 +11,28 @@ module.exports = () => {
 		spinner.color = 'green';
 		const lockFile = './package-lock.json';
 		const node_modules = './node_modules';
-		const packageJson = require(CWD + '/package.json');
 		const pkg = argvs[3];
-		let result = false;
-		if(packageJson){ //获取更新大包
-			const test = (obj) => {
-				for(let i in obj) {
-					const strArr = i.split('/')
-					if(strArr[0] === pkg) {
-						result = true
-					}
-				}
-			};
-			test(packageJson.dependencies);
-			test(packageJson.devDependencies);
-		}
 		fs.exists(lockFile, (exists) => {
 			if(exists) {
 				fs.unlinkSync(lockFile);
 			}
 		});
 		if(pkg) {
-			console.log(chalk.green(`node_modules/${pkg} will be deleted, please wait!`));
-			deleteFolder(node_modules + '/' + pkg, node_modules + '/' + pkg)
+			if(fs.existsSync(node_modules + '/' + pkg)) {
+				console.log('\n')
+				console.log(chalk.green(`YNPM-[INFO]:node_modules/${pkg} to be deleted, please wait!`));
+				deleteFolder(node_modules + '/' + pkg, node_modules + '/' + pkg)
+			}
+			spinner.stop();
+			console.log(chalk.green(`YNPM-[INFO]:node_modules/${pkg} has been deleted!`));
 		} else {
-			console.log(chalk.green(`node_modules will be deleted, please wait!`));
-			deleteFolder(node_modules, node_modules)
+			if(fs.existsSync(node_modules)) {
+				console.log('\n')
+				console.log(chalk.green(`YNPM-[INFO]:node_modules to be deleted, please wait!`));
+				deleteFolder(node_modules, node_modules)
+			}
+			spinner.stop();
+			console.log(chalk.green(`YNPM-[INFO]:node_modules has been deleted!`));
 		}
 	}).catch(err => {
 		console.error(chalk.red('\n' + err));

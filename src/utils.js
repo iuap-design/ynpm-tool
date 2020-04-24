@@ -23,13 +23,13 @@ let YON_INNER_MIRROR, HOST_REGISTRY, YON_MIRROR,YON_FAST_MIRROR, YON_OUTSIDE_MIR
 if(getRc(fileName) && getRc(fileName).nexus !== 'old') {
 	YON_INNER_MIRROR = 'http://maven.yonyou.com/nexus/repository/ynpm-all/'; //
 	YON_MIRROR = 'http://maven.yonyou.com/nexus/repository/ynpm-all/';
-	YON_OUTSIDE_MIRROR = 'http://10.16.224.243/repository/ynpm-group/';
+	YON_OUTSIDE_MIRROR = 'http://125.35.5.158:9000/repository/ynpm-group/';
 	YON_FAST_MIRROR = 'http://maven.yonyou.com/nexus/repository/ynpm-fast/';
 	HOST_REGISTRY = 'http://maven.yonyou.com/nexus/repository/ynpm-private/';
 } else {
     YON_INNER_MIRROR = 'http://'+IPCOMPANY+':80/repository/ynpm-all/';
     YON_MIRROR = 'http://ynpm.yonyoucloud.com/repository/ynpm-all/';
-	YON_OUTSIDE_MIRROR = 'http://10.16.224.243/repository/ynpm-group/'
+	YON_OUTSIDE_MIRROR = 'http://125.35.5.158:9000/repository/ynpm-group/'
 	YON_FAST_MIRROR = 'http://maven.yonyou.com/nexus/repository/ynpm-fast/'
     HOST_REGISTRY = 'http://'+IPCOMPANY+':80/repository/ynpm-private/';
 }
@@ -254,27 +254,6 @@ function sync(name) {
         return new Promise();
     }
 }
-// rules
-function download(version) {
-	try {
-		let form = new formData();
-		form.append("version", version);
-		return fetch(getHttpConfig().host + '/package/addRoutingRules', {method: 'put', body: form})
-			.then(res => res.json())
-			.then((res) => {
-				if(res.success) {
-					console.log('\n');
-					console.log(chalk.green(`${res.message}!`));
-				} else {
-					console.log('\n');
-					console.error(chalk.red('\n' + res.message));
-				}
-			})
-	} catch (err) {
-		console.log(chalk.dim(err));
-		return new Promise();
-	}
-}
 
 function deleteFolder(path, allPath) {
 	try{
@@ -291,7 +270,7 @@ function deleteFolder(path, allPath) {
 			});
 			fs.rmdirSync(path);
 		}
-	}catch(err) {
+	} catch (err) {
 		deleteFolder(allPath, allPath)
 	}
 }
@@ -314,7 +293,6 @@ module.exports = {
     getRcFile,
 	deleteFolder,
     sync,
-	rules,
     replaceErrMsg,
     getIPAdress,
     uploadReadme,
@@ -328,13 +306,10 @@ module.exports = {
                 attempts: 1
             })
             if(action === 'install' || action === 'i') { // 只在安装的时候给提示语
-                if(getRc(fileName) && getRc(fileName).nexus === 'new') {
-                    console.log('You are using the test address')
-                }
                 if(Ping_Response.avg) {
-                    console.log(chalk.dim('Yonyou Inner Mirror Downloading...\n'));
+                    console.log(chalk.dim('YNPM-[INFO]:Yonyou Inner Mirror Downloading...\n'));
                 } else {
-                    console.log(chalk.dim(`Yonyou Mirror Downloading...\n`));
+                    console.log(chalk.dim(`YNPM-[INFO]:Yonyou Mirror Downloading...\n`));
                 }
             }
             let registry = Ping_Response.avg ? YON_INNER_MIRROR : YON_MIRROR;

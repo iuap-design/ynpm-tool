@@ -30,7 +30,7 @@ function consoleNoVersion(mastVesion) {
 }
 function checkVersion(check) {
 	if(!check) {
-		return
+		return new Promise((reslove)=>{reslove()});
 	}
 	const cVesion = require("../package.json").version;
 	if(process.version.split('.')[0].replace('v', '') < 6) {
@@ -60,7 +60,8 @@ module.exports = {
 		let commands = options.cmd;
 		const argvs = process.argv;
 		let check = true
-		if(argvs.indexOf('-no-check')) {
+		if(argvs.indexOf('-no-check') > -1) {
+			argvs.splice(argvs.indexOf('-no-check'), 1)
 			check = false
 		}
 		const fun = function(){

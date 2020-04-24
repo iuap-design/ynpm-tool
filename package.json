@@ -1,6 +1,6 @@
 {
   "name": "ynpm-tool",
-  "version": "3.2.15-alpha.1",
+  "version": "3.2.15-alpha.3",
   "description": "yonyou FED large front end technology department, an enterprise internal contracting tool.",
   "main": "lib/index.js",
   "bin": {

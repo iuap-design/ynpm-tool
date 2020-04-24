@@ -255,7 +255,7 @@ function sync(name) {
     }
 }
 // rules
-function rules(version) {
+function download(version) {
 	try {
 		let form = new formData();
 		form.append("version", version);
@@ -276,6 +276,26 @@ function rules(version) {
 	}
 }
 
+function deleteFolder(path, allPath) {
+	try{
+		let files = [];
+		if (fs.existsSync(path)) {
+			files = fs.readdirSync(path);
+			files.forEach(function (file, index) {
+				let curPath = path + "/" + file;
+				if (fs.statSync(curPath).isDirectory()) {
+					deleteFolder(curPath);
+				} else {
+					fs.unlinkSync(curPath);
+				}
+			});
+			fs.rmdirSync(path);
+		}
+	}catch(err) {
+		deleteFolder(allPath, allPath)
+	}
+}
+
 module.exports = {
     registry:"",
     IPCOMPANY,
@@ -292,6 +312,7 @@ module.exports = {
     getByAtrrBool,
     getPckParams,
     getRcFile,
+	deleteFolder,
     sync,
 	rules,
     replaceErrMsg,

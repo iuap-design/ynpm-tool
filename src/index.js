@@ -1,7 +1,5 @@
 'use strict';
 const chalk = require('chalk');
-const path = require('path');
-const fs = require('fs');
 const co = require('co');
 const {getRc, setRc, getPing, getByAtrrBool, consoleLog} = require('./utils');
 const { getLastVersion} = require('./reportInfo/index');
@@ -10,8 +8,8 @@ const install = require('./install');
 const reinstall = require('./reinstall');
 const publish = require('./publish');
 const npm = require('./npm');
-const sync = require('./sync');
-const addRouteRules = require('./addRoutingRules');
+const del = require('./delete');
+const download = require('./download');
 const updateInfo = require('./updateInfo');
 const update = require('./update');
 
@@ -30,7 +28,10 @@ function consoleNoVersion(mastVesion) {
 	console.log(chalk.yellow(`YNPM-[WARNING]:No latest version information obtained`));
 	console.log(chalk.yellow(`YNPM-[WARNING]:You can continue with the current version, but at risk`));
 }
-function checkVersion() {
+function checkVersion(check) {
+	if(!check) {
+		return
+	}
 	const cVesion = require("../package.json").version;
 	if(process.version.split('.')[0].replace('v', '') < 6) {
 		console.log(chalk.yellow(`node version is ${process.version}`))
@@ -54,23 +55,14 @@ function checkVersion() {
 	});
 }
 
-function init(fun) {
-	// Ping内网
-	const {Ping_Response, registry} = getPing();
-	// const spinner = ora().start();
-
-	if (Ping_Response.avg) {
-		console.log(chalk.dim('Yonyou Mirror Downloading...\n'));
-	} else {
-		console.log(chalk.dim('npm Mirror Downloading...\n'));
-	}
-	return fun(registry);
-}
-
 module.exports = {
 	plugin: function (options, global) {
 		let commands = options.cmd;
 		const argvs = process.argv;
+		let check = true
+		if(argvs.indexOf('-no-check')) {
+			check = false
+		}
 		const fun = function(){
 			switch (commands) {
 				case "-h":
@@ -106,6 +98,22 @@ module.exports = {
 						console.error(chalk.red('\n' + err));
 					});
 					break;
+				case "del":
+					co(function* () {
+						// Ping内网;
+						del(yield getPing(), '');
+					}).catch(err => {
+						console.error(chalk.red('\n' + err));
+					});
+					break;
+				case "download":
+					co(function* () {
+						// Ping内网;
+						download(yield getPing(), '');
+					}).catch(err => {
+						console.error(chalk.red('\n' + err));
+					});
+					break;
 				case "reinstall":
 				case "rei":
 					co(function* () {
@@ -127,14 +135,6 @@ module.exports = {
 					co(function* () {
 						// Ping内网;
 						sync(yield getPing(), '');
-					}).catch(err => {
-						console.error(chalk.red('\n' + err));
-					});
-					break;
-				case "rules":
-					co(function* () {
-						// Ping内网;
-						addRouteRules(yield getPing(), '');
 					}).catch(err => {
 						console.error(chalk.red('\n' + err));
 					});
@@ -173,7 +173,7 @@ module.exports = {
 					});
 			}
 		};
-		checkVersion().then(() => {
+		checkVersion(check).then(() => {
 			fun();
 		}).catch(err => {
 			fun();

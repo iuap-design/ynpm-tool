@@ -10,7 +10,7 @@ const co = require('co');
 const moment = require('moment');
 const chalk = require('chalk');
 const {userInfo, setPackage} = require('./reportInfo/index');
-const {getRcFile, getRc, HOST_REGISTRY, getPckParams, replaceErrMsg, getIPAdress, uploadReadme} = require('./utils');
+const {getRcFile, getRc, HOST_REGISTRY, HOST_REGISTRY_OUTSIDE,getPckParams, replaceErrMsg, getIPAdress, uploadReadme} = require('./utils');
 const help = require('./help');
 
 const IP_Req = thunkify(request);
@@ -28,6 +28,14 @@ module.exports = (registry) => {
 			var packOrigin = JSON.parse(fs.readFileSync(path.join(process.cwd(), 'package.json')));
 			//validate user rolse
 			let data = yield userInfo(packOrigin.name);
+			let outside = false
+			if(argvs.indexOf('-outside') > -1) {
+				outside = true;
+				argvs.splice(argvs.indexOf('-outside'), 1)
+			} else if(argvs.indexOf('--outside') > -1) {
+				outside = true;
+				argvs.splice(argvs.indexOf('--outside'), 1)
+			}
 			if (!data) {
 				help.setConfig();
 				spinner.stop();
@@ -43,7 +51,7 @@ module.exports = (registry) => {
 			if ((ynpmConfig.user || (ynpmConfig.ynpmUser && ynpmConfig.ynpmPassword)) && ynpmConfig.sshk && data) {
 				console.log('Available: Pass Validation, Start to Publish...');
 				let userconfig = getRcFile('ynpm');
-				const arg_publish_inner = `npm --registry=${HOST_REGISTRY} --userconfig=${userconfig} publish ` + argvs.slice(3).join(' ');
+				const arg_publish_inner = `npm --registry=${outside ? HOST_REGISTRY_OUTSIDE : HOST_REGISTRY} --userconfig=${userconfig} publish ` + argvs.slice(3).join(' ');
 				spinner.text = 'Publishing your package in Yonyou Local Area Net';
 				console.log(arg_publish_inner)
 				try {

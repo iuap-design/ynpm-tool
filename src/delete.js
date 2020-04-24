@@ -20,7 +20,7 @@ module.exports = () => {
 		if(pkg) {
 			if(fs.existsSync(node_modules + '/' + pkg)) {
 				console.log('\n')
-				console.log(chalk.green(`YNPM-[INFO]:node_modules/${pkg} to be deleted, please wait!`));
+				console.log(chalk.green(`YNPM-[INFO]:node_modules/${pkg} will be deleted, please wait!`));
 				deleteFolder(node_modules + '/' + pkg, node_modules + '/' + pkg)
 			}
 			spinner.stop();
@@ -28,7 +28,7 @@ module.exports = () => {
 		} else {
 			if(fs.existsSync(node_modules)) {
 				console.log('\n')
-				console.log(chalk.green(`YNPM-[INFO]:node_modules to be deleted, please wait!`));
+				console.log(chalk.green(`YNPM-[INFO]:node_modules will be deleted, please wait!`));
 				deleteFolder(node_modules, node_modules)
 			}
 			spinner.stop();

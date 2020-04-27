@@ -19,20 +19,22 @@ const fileName = "ynpm";
 
 //  Nexus OSS 3.12 Info
 const IPCOMPANY = '10.3.15.79';//内网
-let YON_INNER_MIRROR, HOST_REGISTRY, YON_MIRROR,YON_FAST_MIRROR, YON_OUTSIDE_MIRROR,HOST_REGISTRY_OUTSIDE;
+let YON_INNER_MIRROR, HOST_REGISTRY, YON_MIRROR,YON_FAST_MIRROR, YON_OUTSIDE_MIRROR,HOST_REGISTRY_OUTSIDE,YON_OUTSIDE_MIRROR_PRE;
 if(getRc(fileName) && getRc(fileName).nexus !== 'old') {
 	YON_INNER_MIRROR = 'http://maven.yonyou.com/nexus/repository/ynpm-all/'; //
 	YON_MIRROR = 'http://maven.yonyou.com/nexus/repository/ynpm-all/';
 	YON_OUTSIDE_MIRROR = 'http://125.35.5.158:9000/repository/ynpm-group/';
+	YON_OUTSIDE_MIRROR_PRE = 'http://125.35.5.158:9000/repository/ynpm-pre/';
 	YON_FAST_MIRROR = 'http://maven.yonyou.com/nexus/repository/ynpm-fast/';
-	// HOST_REGISTRY = 'http://maven.yonyou.com/nexus/repository/ynpm-private/';
+	HOST_REGISTRY = 'http://maven.yonyou.com/nexus/repository/ynpm-private/';
 	HOST_REGISTRY_OUTSIDE = 'http://125.35.5.158:9000/repository/ynpm-outside/';
 } else {
 	YON_INNER_MIRROR = 'http://'+IPCOMPANY+':80/repository/ynpm-all/';
 	YON_MIRROR = 'http://ynpm.yonyoucloud.com/repository/ynpm-all/';
-	YON_OUTSIDE_MIRROR = 'http://125.35.5.158:9000/repository/ynpm-group/'
-	YON_FAST_MIRROR = 'http://maven.yonyou.com/nexus/repository/ynpm-fast/'
-	// HOST_REGISTRY = 'http://'+IPCOMPANY+':80/repository/ynpm-private/';
+	YON_OUTSIDE_MIRROR = 'http://125.35.5.158:9000/repository/ynpm-group/';
+	YON_OUTSIDE_MIRROR_PRE = 'http://125.35.5.158:9000/repository/ynpm-pre/';
+	YON_FAST_MIRROR = 'http://maven.yonyou.com/nexus/repository/ynpm-fast/';
+	HOST_REGISTRY = 'http://'+IPCOMPANY+':80/repository/ynpm-private/';
 	HOST_REGISTRY_OUTSIDE = 'http://125.35.5.158:9000/repository/ynpm-outside/';
 }
 if(getRc(fileName) && getRc(fileName).quick === 'using') {
@@ -285,6 +287,7 @@ module.exports = {
 	YON_OUTSIDE_MIRROR,
 	YON_FAST_MIRROR,
 	HOST_REGISTRY_OUTSIDE,
+	YON_OUTSIDE_MIRROR_PRE,
 	// DEAFAULT_MIRROR,
 	HOST_REGISTRY,
 	// CDNJSON,

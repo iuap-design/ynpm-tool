@@ -64,8 +64,16 @@ module.exports = (registry) => {
 					process.exit(0);
 				}
 				let params = getPckParams(packOrigin);
-				if(staticFile) {
-					yield uploadCDN(params.name);
+				if(staticFile) { // 存在静态文件地址时，将静态文件上传到服务器
+					if(typeof staticFile === 'object' && staticFile instanceof Array) {
+						for(let i = 0; i < staticFile.length; i++) {
+							const arr = staticFile[i].split('/')
+							const fileName = arr[arr.length - 1];
+							yield uploadCDN(params.name + '-' +params.version + '-' + fileName, staticFile);
+						}
+					} else {
+						yield uploadCDN(params.name + '-' +params.version, staticFile);
+					}
 				}
 				axios({ //同步物料中心
 					url: HOST_MAIN + '/package/sync',

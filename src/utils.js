@@ -239,12 +239,12 @@ function uploadReadme(name) {
 	}
 }
 // upload cdn
-function uploadCDN(name, path) {
+function uploadCDN(name, version, path) {
 	try {
 		let form = new formData();
 		if (fs.existsSync(path)) {
 			form.append("file", fs.readFileSync(path, 'utf-8'));
-			form.append("name", name);
+			form.append("name", name + '.' + new Date().getTime());
 			return fetch(HOST_MAIN + '/other/upload', {method: 'post', body: form})
 				.then(res => res.json())
 				.then((res) => {

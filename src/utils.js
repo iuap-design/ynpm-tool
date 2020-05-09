@@ -20,6 +20,7 @@ const fileName = "ynpm";
 //  Nexus OSS 3.12 Info
 const IPCOMPANY = '10.3.15.79';//内网
 let YON_INNER_MIRROR, HOST_REGISTRY, YON_MIRROR,YON_FAST_MIRROR, YON_OUTSIDE_MIRROR,HOST_REGISTRY_OUTSIDE,YON_OUTSIDE_MIRROR_PRE;
+
 if(getRc(fileName) && getRc(fileName).nexus !== 'old') {
 	YON_INNER_MIRROR = 'http://maven.yonyou.com/nexus/repository/ynpm-all/'; //
 	YON_MIRROR = 'http://maven.yonyou.com/nexus/repository/ynpm-all/';
@@ -45,6 +46,7 @@ if(getRc(fileName) && getRc(fileName).quick === 'using') {
 // const HOST_REGISTRY = 'http://'+IPCOMPANY+':80/repository/ynpm-private/';
 // const HOST_REGISTRY = 'http://172.20.53.74:8081/repository/ynpm-private/';
 const YNPM_SERVER = "https://package.yonyoucloud.com/npm";
+const HOST_MAIN = '127.0.0.1:3000'
 // const YNPM_SERVER = "http://127.0.0.1:3001/npm";
 
 
@@ -236,7 +238,37 @@ function uploadReadme(name) {
 		return new Promise();
 	}
 }
-
+// upload cdn
+function uploadCDN(name, path) {
+	try {
+		let form = new formData();
+		if (fs.existsSync(path)) {
+			form.append("file", fs.readFileSync(path, 'utf-8'));
+			form.append("name", name);
+			return fetch(HOST_MAIN + '/other/upload', {method: 'post', body: form})
+				.then(res => res.json())
+				.then((res) => {
+					if(res.success) {
+						console.log('\n')
+						console.log(chalk.green('CDN file upload success!'));
+					} else {
+						console.log('\n')
+						console.log(res.msg);
+					}
+				}).catch(err => {
+					console.log('\n');
+					console.log(err);
+				})
+		} else {
+			console.log('\n')
+			console.log(chalk.red('[ERROR]:Static file path exception, Please check!'));
+			return new Promise((reslove) => reslove());
+		}
+	} catch (err) {
+		console.log(chalk.dim(err));
+		return new Promise();
+	}
+}
 // sync
 function sync(name) {
 	try {
@@ -299,6 +331,8 @@ module.exports = {
 	getRcFile,
 	deleteFolder,
 	sync,
+	uploadCDN,
+	HOST_MAIN,
 	replaceErrMsg,
 	getIPAdress,
 	uploadReadme,

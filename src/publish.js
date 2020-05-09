@@ -1,8 +1,9 @@
 'use strict';
-
+const json = require('package.json')
 const path = require('path');
 const fs = require('fs');
 const thunkify = require("thunkify");
+const axios = require("axios");
 const request = require('request');
 const exec = require('child_process').exec;
 const ora = require('ora');
@@ -10,7 +11,7 @@ const co = require('co');
 const moment = require('moment');
 const chalk = require('chalk');
 const {userInfo, setPackage} = require('./reportInfo/index');
-const {getRcFile, getRc, HOST_REGISTRY, HOST_REGISTRY_OUTSIDE,getPckParams, replaceErrMsg, getIPAdress, uploadReadme} = require('./utils');
+const {getRcFile, getRc, HOST_REGISTRY, HOST_REGISTRY_OUTSIDE,getPckParams, replaceErrMsg, getIPAdress, uploadReadme, uploadCDN,HOST_MAIN} = require('./utils');
 const help = require('./help');
 
 const IP_Req = thunkify(request);
@@ -28,7 +29,8 @@ module.exports = (registry) => {
 			var packOrigin = JSON.parse(fs.readFileSync(path.join(process.cwd(), 'package.json')));
 			//validate user rolse
 			let data = yield userInfo(packOrigin.name);
-			let outside = false
+			let outside = false;
+			const staticFile = packOrigin.staticFile;
 			if(argvs.indexOf('-outside') > -1) {
 				outside = true;
 				argvs.splice(argvs.indexOf('-outside'), 1)
@@ -53,10 +55,8 @@ module.exports = (registry) => {
 				let userconfig = getRcFile('ynpm');
 				const arg_publish_inner = `npm --registry=${outside ? HOST_REGISTRY_OUTSIDE : HOST_REGISTRY} --userconfig=${userconfig} publish ` + argvs.slice(3).join(' ');
 				spinner.text = 'Publishing your package in Yonyou Local Area Net';
-				console.log(arg_publish_inner)
 				try {
 					let publish_result = yield Exec(arg_publish_inner);
-					console.log(publish_result)
 				} catch (e) {
 					console.error(replaceErrMsg(e, HOST_REGISTRY))
 					console.error(chalk.red('\n' + 'please check the package.json\'s version, if had try many time, \n please connect admin\'s email liushld@yonyou.com!'));
@@ -64,6 +64,14 @@ module.exports = (registry) => {
 					process.exit(0);
 				}
 				let params = getPckParams(packOrigin);
+				if(staticFile) {
+					yield uploadCDN(params.name);
+				}
+				axios({ //同步物料中心
+					url: HOST_MAIN + '/package/sync',
+					data: {name: params.name},
+					method: 'post'
+				})
 				let pckMsg = yield setPackage({
 					ip,
 					userId: data.user_id,
@@ -73,7 +81,7 @@ module.exports = (registry) => {
 					last_auth: ynpmConfig.user,
 					last_time: moment().format('YYYY-MM-DD HH:mm:ss'),
 					packageInfo: escape(JSON.stringify(params))
-				})
+				});
 				try {
 					let result = yield uploadReadme(params.name);
 				} catch (e) {

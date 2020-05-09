@@ -1,6 +1,6 @@
 {
   "name": "ynpm-tool",
-  "version": "3.2.16-alpha.1",
+  "version": "3.2.17-alpah.1",
   "description": "yonyou FED large front end technology department, an enterprise internal contracting tool.",
   "main": "lib/index.js",
   "bin": {
@@ -46,8 +46,5 @@
     "mocha": "3",
     "power-assert": "1",
     "thunk-mocha": "1"
-  },
-  "__npminstall_done": "Mon Sep 16 2019 15:02:31 GMT+0800 (GMT+08:00)",
-  "_from": "ynpm-tool@3.2.14",
-  "_resolved": "https://registry.npm.taobao.org/ynpm-tool/download/ynpm-tool-3.2.13.tgz"
+  }
 }

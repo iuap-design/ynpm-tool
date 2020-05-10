@@ -1,9 +1,8 @@
 'use strict';
-const json = require('package.json')
 const path = require('path');
 const fs = require('fs');
 const thunkify = require("thunkify");
-const axios = require("axios");
+const fetch = require("node-fetch");
 const request = require('request');
 const exec = require('child_process').exec;
 const ora = require('ora');
@@ -69,15 +68,14 @@ module.exports = (registry) => {
 						for(let i = 0; i < staticFile.length; i++) {
 							const arr = staticFile[i].split('/')
 							const fileName = arr[arr.length - 1];
-							yield uploadCDN(params.name + '-' +params.version + '-' + fileName, staticFile);
+							yield uploadCDN(params.name,params.name + '-' +params.version + '-' + fileName + '.js', staticFile);
 						}
 					} else {
-						yield uploadCDN(params.name + '-' +params.version, staticFile);
+						yield uploadCDN(params.name,params.name + '-' +params.version + '.js', staticFile);
 					}
 				}
-				axios({ //同步物料中心
-					url: HOST_MAIN + '/package/sync',
-					data: {name: params.name},
+				fetch(HOST_MAIN + '/package/sync', { //同步物料中心
+					body: {name: params.name},
 					method: 'post'
 				})
 				let pckMsg = yield setPackage({

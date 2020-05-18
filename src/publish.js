@@ -29,7 +29,7 @@ module.exports = (registry) => {
 			//validate user rolse
 			let data = yield userInfo(packOrigin.name);
 			let outside = false;
-			const staticFile = packOrigin.staticFile;
+			let staticFile = packOrigin.staticFile;
 			if(argvs.indexOf('-outside') > -1) {
 				outside = true;
 				argvs.splice(argvs.indexOf('-outside'), 1)
@@ -63,6 +63,19 @@ module.exports = (registry) => {
 					process.exit(0);
 				}
 				let params = getPckParams(packOrigin);
+				if(packOrigin.MDF) {
+					staticFile = './dist/index.js'
+				}
+				let pckMsg = yield setPackage({
+					ip,
+					userId: data.user_id,
+					name: params.name,
+					author: ynpmConfig.user,
+					version: params.version,
+					last_auth: ynpmConfig.user,
+					last_time: moment().format('YYYY-MM-DD HH:mm:ss'),
+					packageInfo: escape(JSON.stringify(params))
+				});
 				if(staticFile) { // 存在静态文件地址时，将静态文件上传到服务器
 					if(typeof staticFile === 'object' && staticFile instanceof Array) {
 						for(let i = 0; i < staticFile.length; i++) {
@@ -74,20 +87,6 @@ module.exports = (registry) => {
 						yield uploadCDN(params.name,params.name + '-' +params.version + '.js', staticFile);
 					}
 				}
-				fetch(HOST_MAIN + '/package/sync', { //同步物料中心
-					body: {name: params.name},
-					method: 'post'
-				})
-				let pckMsg = yield setPackage({
-					ip,
-					userId: data.user_id,
-					name: params.name,
-					author: ynpmConfig.user,
-					version: params.version,
-					last_auth: ynpmConfig.user,
-					last_time: moment().format('YYYY-MM-DD HH:mm:ss'),
-					packageInfo: escape(JSON.stringify(params))
-				});
 				try {
 					let result = yield uploadReadme(params.name);
 				} catch (e) {

@@ -63,7 +63,7 @@ module.exports = (registry) => {
 					process.exit(0);
 				}
 				let params = getPckParams(packOrigin);
-				if(packOrigin.MDF) {
+				if(packOrigin.syncToMDD) {
 					staticFile = './dist/index.js'
 				}
 				let pckMsg = yield setPackage({

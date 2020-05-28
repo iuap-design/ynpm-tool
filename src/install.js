@@ -123,11 +123,8 @@ module.exports = (registry, ifHasLog) => {
 			stop(spinner, resultInstall.status);
 			return
 		}
-		let formatResult
-
-		let tempPkgs = {}
 		yield addDownloadNum({installPackMap: JSON.stringify(pkgs)})
-		yield packageDownloadDetail(JSON.stringify(formatResult))
+		yield packageDownloadDetail(JSON.stringify(pkgs))
 		console.log('\n')
 		console.log(chalk.green(`√ Finish, Happy enjoy coding!`));
 		stop(spinner);

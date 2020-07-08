@@ -292,7 +292,24 @@ function sync(name) {
 		return new Promise();
 	}
 }
-
+function fix() {
+	try {
+		return fetch(getHttpConfig().host + '/package/fix', {method: 'post'})
+			.then(res => res.json())
+			.then((res) => {
+				if(res.success) {
+					console.log('\n');
+					console.log(chalk.green(`Repair success!`));
+				} else {
+					console.log('\n');
+					console.error(chalk.red('\n' + res.message));
+				}
+			})
+	} catch (err) {
+		console.log(chalk.dim(err));
+		return new Promise();
+	}
+}
 function deleteFolder(path, allPath) {
 	try{
 		let files = [];
@@ -333,6 +350,7 @@ module.exports = {
 	getRcFile,
 	deleteFolder,
 	sync,
+	fix,
 	uploadCDN,
 	HOST_MAIN,
 	replaceErrMsg,

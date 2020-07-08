@@ -9,6 +9,8 @@ const reinstall = require('./reinstall');
 const publish = require('./publish');
 const npm = require('./npm');
 const del = require('./delete');
+const sync = require('./sync');
+const fix = require('./fix');
 const download = require('./download');
 const updateInfo = require('./updateInfo');
 const update = require('./update');
@@ -136,6 +138,14 @@ module.exports = {
 					co(function* () {
 						// Ping内网;
 						sync(yield getPing(), '');
+					}).catch(err => {
+						console.error(chalk.red('\n' + err));
+					});
+					break;
+				case "fix":
+					co(function* () {
+						// Ping内网;
+						fix(yield getPing(), '');
 					}).catch(err => {
 						console.error(chalk.red('\n' + err));
 					});

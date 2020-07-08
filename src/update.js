@@ -15,7 +15,7 @@ const stdio = [
 ];
 
 module.exports = (registry) => {
-	const spinner = ora().start();
+	const spinner = ora().start();0
 	spinner.color = 'green';
 	co(function* () {
 		const argv = argvs.slice(2);

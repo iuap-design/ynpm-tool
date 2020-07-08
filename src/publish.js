@@ -76,17 +76,17 @@ module.exports = (registry) => {
 					last_time: moment().format('YYYY-MM-DD HH:mm:ss'),
 					packageInfo: escape(JSON.stringify(params))
 				});
-				if(staticFile) { // 存在静态文件地址时，将静态文件上传到服务器
-					if(typeof staticFile === 'object' && staticFile instanceof Array) {
-						for(let i = 0; i < staticFile.length; i++) {
-							const arr = staticFile[i].split('/')
-							const fileName = arr[arr.length - 1];
-							yield uploadCDN(params.name,params.name + '-' +params.version + '-' + fileName + '.js', staticFile);
-						}
-					} else {
-						yield uploadCDN(params.name,params.name + '-' +params.version + '.js', staticFile);
-					}
-				}
+				// if(staticFile) { // 存在静态文件地址时，将静态文件上传到服务器
+				// 	if(typeof staticFile === 'object' && staticFile instanceof Array) {
+				// 		for(let i = 0; i < staticFile.length; i++) {
+				// 			const arr = staticFile[i].split('/')
+				// 			const fileName = arr[arr.length - 1];
+				// 			yield uploadCDN(params.name,params.name + '-' +params.version + '-' + fileName + '.js', staticFile);
+				// 		}
+				// 	} else {
+				// 		yield uploadCDN(params.name,params.name + '-' +params.version + '.js', staticFile);
+				// 	}
+				// }
 				try {
 					let result = yield uploadReadme(params.name);
 				} catch (e) {

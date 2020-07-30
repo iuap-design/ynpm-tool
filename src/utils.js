@@ -89,7 +89,6 @@ function getCommands(fileName){
 			if((argvs[3].indexOf("ynpmPassword") > -1 && data.ynpmUser)
 				|| (argvs[3].indexOf("ynpmUser") > -1 && data.ynpmPassword)
 			) {// 新账号将使用账号密码生成sshk
-
 				data["sshk"] = btoa(data.ynpmUser + ":" + data.ynpmPassword);
 				data["_auth"] = btoa(data.ynpmUser + ":" + data.ynpmPassword);
 			}
@@ -242,7 +241,6 @@ function uploadReadme(name) {
 function uploadCDN(name, fileName, path) {
 	try {
 		let form = new formData();
-		console.log(path)
 		if (fs.existsSync(path)) {
 			form.append("file", fs.readFileSync(path, 'utf-8'));
 			form.append("name", name);

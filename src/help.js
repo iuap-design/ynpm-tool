@@ -8,7 +8,6 @@ module.exports = {
 	help: () => {
 		console.log(chalk.green('Usage :'));
 		console.log();
-
 		console.log(chalk.green(
 			`
           Usage:
@@ -35,6 +34,9 @@ module.exports = {
           ----------------------------------------------------
             ynpm --registry: change default mirror address
             ynpm sync <pkg>: Synchronize npm to ynpm
+            ynpm download <pkg>: download package
+            ynpm delete <pkg>: delete package from node_modules
+            ynpm fix <pkg>: fix
           `
 		));
 		console.log();
@@ -43,12 +45,12 @@ module.exports = {
 		console.log(chalk.green(`
       help:
       ------------------------请设置npm发包账户信息----------------------------
-      设置用户名
-      $ ynpm set user="xx"
-      设置email
-      $ ynpm set email=xx@yonyou.com 
-      生成key
-      $ ynpm sshk
+      设置用户名（友互通登录账号）
+      $ ynpm set user=liushld@yonyou.com
+      设置ynpm登录账号（域账号）
+      $ ynpm set ynpmUser=liushld
+      设置ynpm登录密码（域账号密码）
+      $ ynpm set ynpmPassword=liushld
       ------------------------请设置npm发包账户信息----------------------------
       `));
 	},

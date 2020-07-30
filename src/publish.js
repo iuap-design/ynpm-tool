@@ -10,7 +10,7 @@ const co = require('co');
 const moment = require('moment');
 const chalk = require('chalk');
 const {userInfo, setPackage} = require('./reportInfo/index');
-const {getRcFile, getRc, HOST_REGISTRY, HOST_REGISTRY_OUTSIDE,getPckParams, replaceErrMsg, getIPAdress, uploadReadme, uploadCDN,HOST_MAIN} = require('./utils');
+const {getRcFile, getRc, HOST_REGISTRY, HOST_REGISTRY_OUTSIDE,getPckParams, replaceErrMsg, getIPAdress, uploadReadme} = require('./utils');
 const help = require('./help');
 
 const IP_Req = thunkify(request);
@@ -25,20 +25,29 @@ module.exports = (registry) => {
 		if (argvs[2] == 'publish') {
 			var ynpmConfig = getRc("ynpm");
 			ynpmConfig.sshk = ynpmConfig._auth;
+			if(!ynpmConfig.user) {
+				console.log(chalk.red('[ERROR] Configure your user before publish!'))
+				spinner.stop();
+				return process.exit(0);
+			}
+			if(!ynpmConfig._auth) {
+				if(!ynpmConfig.ynpmUser) {
+					console.log(chalk.red('[ERROR] Configure your ynpmUser before publish!'))
+					spinner.stop();
+					return process.exit(0);
+				}
+				if(!ynpmConfig.ynpmPassword) {
+					console.log(chalk.red('[ERROR] Configure your ynpmPassword before publish!'))
+					spinner.stop();
+					return process.exit(0);
+				}
+			}
 			var packOrigin = JSON.parse(fs.readFileSync(path.join(process.cwd(), 'package.json')));
 			//validate user rolse
 			let data = yield userInfo(packOrigin.name);
-			let outside = false;
 			let staticFile = packOrigin.staticFile;
-			if(argvs.indexOf('-outside') > -1) {
-				outside = true;
-				argvs.splice(argvs.indexOf('-outside'), 1)
-			} else if(argvs.indexOf('--outside') > -1) {
-				outside = true;
-				argvs.splice(argvs.indexOf('--outside'), 1)
-			}
 			if (!data) {
-				help.setConfig();
+				console.log(chalk.red('[ERROR] !'))
 				spinner.stop();
 				process.exit(0);
 			} else if (data === 'NO PERMISSION') {
@@ -49,10 +58,10 @@ module.exports = (registry) => {
 				process.exit(0);
 			}
 
-			if ((ynpmConfig.user || (ynpmConfig.ynpmUser && ynpmConfig.ynpmPassword)) && ynpmConfig.sshk && data) {
+			if (ynpmConfig.sshk && data) {
 				console.log('Available: Pass Validation, Start to Publish...');
 				let userconfig = getRcFile('ynpm');
-				const arg_publish_inner = `npm --registry=${outside ? HOST_REGISTRY_OUTSIDE : HOST_REGISTRY} --userconfig=${userconfig} publish ` + argvs.slice(3).join(' ');
+				const arg_publish_inner = `npm --userconfig=${userconfig} publish ` + argvs.slice(3).join(' ');
 				spinner.text = 'Publishing your package in Yonyou Local Area Net';
 				try {
 					let publish_result = yield Exec(arg_publish_inner);
@@ -63,9 +72,6 @@ module.exports = (registry) => {
 					process.exit(0);
 				}
 				let params = getPckParams(packOrigin);
-				if(packOrigin.syncToMDD) {
-					staticFile = './dist/index.js'
-				}
 				let pckMsg = yield setPackage({
 					ip,
 					userId: data.user_id,
@@ -76,17 +82,6 @@ module.exports = (registry) => {
 					last_time: moment().format('YYYY-MM-DD HH:mm:ss'),
 					packageInfo: escape(JSON.stringify(params))
 				});
-				// if(staticFile) { // 存在静态文件地址时，将静态文件上传到服务器
-				// 	if(typeof staticFile === 'object' && staticFile instanceof Array) {
-				// 		for(let i = 0; i < staticFile.length; i++) {
-				// 			const arr = staticFile[i].split('/')
-				// 			const fileName = arr[arr.length - 1];
-				// 			yield uploadCDN(params.name,params.name + '-' +params.version + '-' + fileName + '.js', staticFile);
-				// 		}
-				// 	} else {
-				// 		yield uploadCDN(params.name,params.name + '-' +params.version + '.js', staticFile);
-				// 	}
-				// }
 				try {
 					let result = yield uploadReadme(params.name);
 				} catch (e) {

@@ -173,7 +173,15 @@ module.exports = {
 					break;
 				case "sshk":
 					let ynpmrcCon = getRc("ynpm");
-					help.showSSHKMsg(ynpmrcCon.sshk);
+					if(!ynpmrcCon.user) {
+						console.log('need user!');
+					} else if(!ynpmrcCon.ynpmUser) {
+						console.log('need ynpmUser!')
+					} else if(!ynpmrcCon.ynpmPassword) {
+						console.log('need ynpmPassword!')
+					} else {
+						help.showSSHKMsg(ynpmrcCon.sshk);
+					}
 					break;
 				default:
 					co(function* () {

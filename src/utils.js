@@ -45,9 +45,9 @@ if(getRc(fileName) && getRc(fileName).quick === 'using') {
 // const YON_MIRROR = 'http://maven.yonyou.com/repository/';
 // const HOST_REGISTRY = 'http://'+IPCOMPANY+':80/repository/ynpm-private/';
 // const HOST_REGISTRY = 'http://172.20.53.74:8081/repository/ynpm-private/';
-const YNPM_SERVER = "https://package.yonyoucloud.com/npm";
+// const YNPM_SERVER = "https://package.yonyoucloud.com/npm";
 const HOST_MAIN = '127.0.0.1:3000'
-// const YNPM_SERVER = "http://127.0.0.1:3001/npm";
+const YNPM_SERVER = "http://127.0.0.1:3567/npm";
 
 
 
@@ -86,9 +86,10 @@ function getCommands(fileName){
 			let data = propertiesParser.read(getRcFile(fileName));
 			attr = argvs[3].split("=");
 			data[attr[0]] = attr[1];
-			if((argvs[3].indexOf("ynpmPassword") > -1 && data.ynpmUser)
-				|| (argvs[3].indexOf("ynpmUser") > -1 && data.ynpmPassword)
-			) {// 新账号将使用账号密码生成sshk
+			if(argvs[3].indexOf("ynpmUser")) {
+				data["sshk"] = data["_auth"] = data.ynpmPassword = '' //更换用户则清理sshk和password
+			}
+			if((argvs[3].indexOf("ynpmPassword") > -1 && data.user && data.ynpmUser)) {// 新账号将使用账号密码生成sshk
 				data["sshk"] = btoa(data.ynpmUser + ":" + data.ynpmPassword);
 				data["_auth"] = btoa(data.ynpmUser + ":" + data.ynpmPassword);
 			}
@@ -96,7 +97,7 @@ function getCommands(fileName){
 				data["sshk"] = btoa(data.user+":"+data.user);
 				data["_auth"] = btoa(data.user+":"+data.user);
 			}
-			if(data["sshk"] && data.ynpmUser && data.ynpmPassword) {
+			if(data["sshk"] && data.ynpmUser && data.ynpmPassword && data.user) {
 				help.showSSHKMsg(data["sshk"]);
 			}
 			config = data;

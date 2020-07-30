@@ -68,7 +68,7 @@ module.exports = {
 		console.log(chalk.green(`
         help:
         -------------请复制你的sshk到-----------------
-        https://package.yonyoucloud.com#setting 设置您的key
+        https://modulestore.yonyoucloud.com/
 
         ${sshk}
 

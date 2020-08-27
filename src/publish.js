@@ -61,7 +61,7 @@ module.exports = (registry) => {
 			if (ynpmConfig.sshk && data) {
 				console.log('Available: Pass Validation, Start to Publish...');
 				let userconfig = getRcFile('ynpm');
-				const arg_publish_inner = `npm --userconfig=${userconfig} publish ` + argvs.slice(3).join(' ');
+				const arg_publish_inner = `npm --userconfig=${userconfig} --registry=${HOST_REGISTRY} publish ` + argvs.slice(3).join(' ');
 				spinner.text = 'Publishing your package in Yonyou Local Area Net';
 				try {
 					let publish_result = yield Exec(arg_publish_inner);

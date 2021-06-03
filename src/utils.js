@@ -84,10 +84,11 @@ function getCommands(fileName){
 	try{
 		let attr
 		if(argvs[2] == "set"){
-			let data = propertiesParser.read(getRcFile(fileName));
+			let rcConfig = propertiesParser.read(getRcFile(fileName));
+			let data = JSON.parse(JSON.stringify(rcConfig));
 			attr = argvs[3].split("=");
 			data[attr[0]] = attr[1];
-			if(argvs[3].indexOf("ynpmUser")) {
+			if(argvs[3].indexOf("ynpmUser") > -1 && data['ynpmUser'] !== rcConfig['ynpmUser']) {
 				data["sshk"] = data["_auth"] = data.ynpmPassword = '' //更换用户则清理sshk和password
 			}
 			if((argvs[3].indexOf("ynpmPassword") > -1 && data.user && data.ynpmUser)) {// 新账号将使用账号密码生成sshk

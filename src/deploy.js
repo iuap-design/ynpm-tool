@@ -6,7 +6,7 @@ const chalk = require('chalk');
 const fs = require('fs');
 const fetch = require('node-fetch');
 const formData = require('form-data');
-const {getHttpConfig} = require('./utils');
+const {YNPM_SERVER_DEPLOY} = require('./utils');
 
 function deploy(path, environment, project) {
 	try {
@@ -16,7 +16,7 @@ function deploy(path, environment, project) {
 			form.append("environment", environment);
 			form.append("project", project);
 			console.log(chalk.green('Deploy start..., Please wait upload!'));
-			return fetch(getHttpConfig().host + '/ynpm/deploy', {method: 'post', body: form})
+			return fetch(YNPM_SERVER_DEPLOY + '/ynpm/deploy', {method: 'post', body: form})
 				.then(res => res.json())
 				.then((res) => {
 					if (res.success) {

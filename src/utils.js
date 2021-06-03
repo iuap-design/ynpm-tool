@@ -46,7 +46,7 @@ if(getRc(fileName) && getRc(fileName).quick === 'using') {
 // const HOST_REGISTRY = 'http://'+IPCOMPANY+':80/repository/ynpm-private/';
 // const HOST_REGISTRY = 'http://172.20.53.74:8081/repository/ynpm-private/';
 const YNPM_SERVER = "https://package.yonyoucloud.com/npm";
-const SERVER = "http://libraui-backend.online.app.yyuap.com/npm";
+const YNPM_SERVER_DEPLOY = "http://libraui-backend.online.app.yyuap.com/npm";
 const HOST_MAIN = '127.0.0.1:3000'
 // const YNPM_SERVER = "http://127.0.0.1:3567/npm";
 // const YNPM_SERVER = "https://modulestore.yonyoucloud.com/api/npm";
@@ -343,7 +343,7 @@ module.exports = {
 	YON_OUTSIDE_MIRROR_PRE,
 	// DEAFAULT_MIRROR,
 	HOST_REGISTRY,
-	SERVER,
+	YNPM_SERVER_DEPLOY,
 	// CDNJSON,
 	getHttpConfig,
 	setRc,

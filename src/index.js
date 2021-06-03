@@ -10,6 +10,7 @@ const publish = require('./publish');
 const npm = require('./npm');
 const del = require('./delete');
 const sync = require('./sync');
+const deploy = require('./deploy');
 const fix = require('./fix');
 const download = require('./download');
 const updateInfo = require('./updateInfo');
@@ -138,6 +139,14 @@ module.exports = {
 					co(function* () {
 						// Ping内网;
 						sync(yield getPing(), '');
+					}).catch(err => {
+						console.error(chalk.red('\n' + err));
+					});
+					break;
+				case "deploy": //远程部署静态文件
+					co(function* () {
+						// Ping内网;
+						deploy(yield getPing(), '');
 					}).catch(err => {
 						console.error(chalk.red('\n' + err));
 					});

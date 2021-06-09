@@ -49,10 +49,23 @@ module.exports = () => {
 	co(function* () {
 		const ynpmConfig = getRc("ynpm");
 		const argvs = process.argv.slice(3);
-		const environment = argvs[1];
-		const project = argvs[0];
-		const path = argvs[2];
-		const sshk = argvs[3] || ynpmConfig.sshk;
+		let project,path,sshk,environment;
+		console.log(process.env)
+		argvs.map(item => {
+			if(~item.indexOf('-project=') || ~item.indexOf('--project=')) {
+				project = item.split('=')[1]
+			}
+			if(~item.indexOf('-env=') || ~item.indexOf('--env=')) {
+				environment = item.split('=')[1]
+			}
+			if(~item.indexOf('-path=') || ~item.indexOf('--path=')) {
+				path = item.split('=')[1]
+			}
+			if(~item.indexOf('-sshk=') || ~item.indexOf('--sshk=')) {
+				sshk = item.split('=')[1]
+			}
+		})
+		sshk = sshk || ynpmConfig.sshk
 		if (environment && project && path && sshk) {
 			yield deploy(path, environment, project, sshk);
 			spinner.stop();

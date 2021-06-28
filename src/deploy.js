@@ -49,13 +49,13 @@ module.exports = () => {
 	co(function* () {
 		const ynpmConfig = getRc("ynpm");
 		const argvs = process.argv.slice(3);
-		let project,path,sshk,environment;
-		console.log(process.env)
+		let project,path,sshk;
+		let environment = process.env.LOG_INSTANCE_ID.split('-')[0]
 		argvs.map(item => {
 			if(~item.indexOf('-project=') || ~item.indexOf('--project=')) {
 				project = item.split('=')[1]
 			}
-			if(~item.indexOf('-env=') || ~item.indexOf('--env=')) {
+			if(~item.indexOf('-env=') || ~item.indexOf('--env=') && !env) {
 				environment = item.split('=')[1]
 			}
 			if(~item.indexOf('-path=') || ~item.indexOf('--path=')) {

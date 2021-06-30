@@ -85,7 +85,12 @@ function getCommands(fileName){
 	try{
 		let attr
 		if(argvs[2] == "set"){
-			let rcConfig = propertiesParser.read(getRcFile(fileName));
+			let rcConfig = null
+			if(getValidateRc(fileName)) {
+				rcConfig = propertiesParser.read(getRcFile(fileName));
+			} else {
+				rcConfig = {}
+			}
 			let data = JSON.parse(JSON.stringify(rcConfig));
 			attr = argvs[3].split("=");
 			data[attr[0]] = attr[1];
@@ -96,7 +101,7 @@ function getCommands(fileName){
 				data["sshk"] = btoa(data.ynpmUser + ":" + data.ynpmPassword);
 				data["_auth"] = btoa(data.ynpmUser + ":" + data.ynpmPassword);
 			}
-			if(data.user && !data.ynpmUser && !data.ynpmPassword) { // 旧账号将使用user生成sshk
+			if(data.user && !data.ynpmUser && !data.ynpmPassword) { // 旧账号将使用user直接生成sshk
 				data["sshk"] = btoa(data.user+":"+data.user);
 				data["_auth"] = btoa(data.user+":"+data.user);
 			}
